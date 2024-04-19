@@ -19,28 +19,27 @@ namespace MovieStore.Web.Controllers
             return View(genreList);
         }
 
-        public IActionResult Upsert(int? id) //Update+Insert
+		public IActionResult Upsert(int? id) //Update+Insert
 		{
-            Genre genre;
+			Genre genre;
 
-            //insert
-            if (id == null || id == 0)
-            {
-                genre = new();
-                return View(genre);
-            }
-            
-            
-            //update
-            genre = _db.Genres.Find(id);
-			
-			if (genre == null) 
+			//insert
+			if (id == null || id == 0)
+			{
+				genre = new();
+				return View(genre);
+			}
+
+			//update
+			genre = _db.Genres.Find(id);
+
+			if (genre == null)
 			{
 				return NotFound();
 			}
-           
+
 			return View(genre);
-        }
+		}
 
 		[HttpPost]
 		public IActionResult Upsert(Genre genre)
@@ -68,14 +67,12 @@ namespace MovieStore.Web.Controllers
 
 		public IActionResult Delete(int? id)
 		{
-			Genre genre;
-
 			if (id == null || id == 0)
 			{
 				return NotFound();
 			}
 
-			genre = _db.Genres.Find(id);
+			Genre genre = _db.Genres.Find(id);
 
 			if (genre == null)
 			{

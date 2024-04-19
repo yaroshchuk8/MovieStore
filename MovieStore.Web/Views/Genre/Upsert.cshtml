@@ -1,5 +1,9 @@
 ﻿@model Genre
 
+@{
+	ViewData["Title"] = Model.Id != 0 ? "Genre Update" : "Genre Creation";
+}
+
 <form method="post">
 	<input asp-for="Id" hidden />
 	<div class="row">
@@ -26,5 +30,5 @@
 </form>
 
 @section Scripts {
-		<partial name="_ValidationScriptsPartial" />
+	<partial name="_ValidationScriptsPartial" />
 }
