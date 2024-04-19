@@ -5,6 +5,10 @@ VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieStore.Web", "MovieStore.Web\MovieStore.Web.csproj", "{A49C6F67-40C7-4094-8EBD-F5633256FCED}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieStore.Models", "MovieStore.Models\MovieStore.Models.csproj", "{415936F5-D963-4104-8169-995BFCB202EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieStore.DataAccess", "MovieStore.DataAccess\MovieStore.DataAccess.csproj", "{AD5D9463-0300-46F5-9890-B62E09ED3089}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{A49C6F67-40C7-4094-8EBD-F5633256FCED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A49C6F67-40C7-4094-8EBD-F5633256FCED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A49C6F67-40C7-4094-8EBD-F5633256FCED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{415936F5-D963-4104-8169-995BFCB202EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{415936F5-D963-4104-8169-995BFCB202EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{415936F5-D963-4104-8169-995BFCB202EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{415936F5-D963-4104-8169-995BFCB202EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD5D9463-0300-46F5-9890-B62E09ED3089}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD5D9463-0300-46F5-9890-B62E09ED3089}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD5D9463-0300-46F5-9890-B62E09ED3089}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD5D9463-0300-46F5-9890-B62E09ED3089}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
