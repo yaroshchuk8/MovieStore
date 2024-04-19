@@ -1,13 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MovieStore.Models;
-using System.Text;
 
 namespace MovieStore.DataAccess.Data
 {
     public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
-        
+
         public DbSet<Genre> Genres { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -20,6 +19,5 @@ namespace MovieStore.DataAccess.Data
                 new Genre { Id = 5, Name = "SciFi" }
                 );
         }
-
     }
 }
