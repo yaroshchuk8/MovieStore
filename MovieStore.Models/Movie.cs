@@ -24,5 +24,8 @@ namespace MovieStore.Models
 
         [ValidateNever]
         public List<Genre> Genres { get; set; }
+
+        [ValidateNever]
+        public List<Actor> Actors { get; set; }
     }
 }

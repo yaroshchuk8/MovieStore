@@ -9,6 +9,7 @@ namespace MovieStore.DataAccess.Data
 
 		public DbSet<Movie> Movies { get; set; }
 		public DbSet<Genre> Genres { get; set; }
+		public DbSet<Actor> Actors { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -16,6 +17,11 @@ namespace MovieStore.DataAccess.Data
 				.HasMany(x => x.Genres)
 				.WithMany(y => y.Movies)
 				.UsingEntity(j => j.ToTable("MovieGenre"));
+
+			modelBuilder.Entity<Movie>()
+				.HasMany(x => x.Actors)
+				.WithMany(y => y.Movies)
+				.UsingEntity(j => j.ToTable("MovieActor"));
 
 			modelBuilder.Entity<Genre>().HasData(
 				new Genre { Id = 1, Name = "Action" },
