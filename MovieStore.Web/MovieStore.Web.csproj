@@ -20,4 +20,8 @@
     <ProjectReference Include="..\MovieStore.Models\MovieStore.Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\movie\" />
+  </ItemGroup>
+
 </Project>
