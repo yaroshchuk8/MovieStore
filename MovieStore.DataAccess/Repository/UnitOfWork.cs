@@ -8,12 +8,14 @@ namespace MovieStore.DataAccess.Repository
 		private readonly ApplicationDbContext _context;
 		public MovieRepository Movie { get; private set; }
 		public GenreRepository Genre { get; private set; }
+		public ActorRepository Actor { get; private set; }
 
 		public UnitOfWork(ApplicationDbContext context)
 		{
 			_context = context;
 			Movie = new MovieRepository(_context);
 			Genre = new GenreRepository(_context);
+			Actor = new ActorRepository(_context);
 		}
 
 		public void Save()

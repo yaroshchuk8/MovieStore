@@ -10,6 +10,7 @@ namespace MovieStore.DataAccess.Repository.IRepository
     {
         MovieRepository Movie { get; }
         GenreRepository Genre { get; }
+        ActorRepository Actor { get; }
 
         void Save();
     }

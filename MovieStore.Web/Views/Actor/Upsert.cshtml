@@ -1,15 +1,19 @@
-﻿@model Genre
+﻿@model Actor
 
 @{
-    ViewData["Title"] = Model.Id != 0 ? "Genre Update" : "Genre Creation";
+    ViewData["Title"] = Model.Id != 0 ? "Actor Update" : "Actor Creation";
 }
 
-<form method="post">
+<form method="post" enctype="multipart/form-data">
     <input asp-for="Id" hidden />
+    @if (Model.Id != 0)
+    {
+        <input asp-for="ImageUrl" hidden />
+    }
     <div class="row">
         <div class="border p-3 mt-4">
             <div class="row pb-2">
-                <h2 class="text-primary">@(Model.Id != 0 ? "Update" : "Create") Genre</h2>
+                <h2 class="text-primary">@(Model.Id != 0 ? "Update" : "Create") Actor</h2>
                 <hr />
             </div>
             <div class="mb-3">
@@ -17,12 +21,16 @@
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
+            <div class="mb-3">
+                <label asp-for="ImageUrl"></label>
+                <input type="file" name="file" asp-for="ImageUrl" class="form-control" />
+            </div>
             <div class="row">
                 <div class="col-6 col-md-3">
                     <button type="submit" class="btn btn-primary btn-lg form-control">@(Model.Id != 0 ? "Update" : "Create")</button>
                 </div>
                 <div class="col-6 col-md-3">
-                    <a asp-controller="Genre" asp-action="Index" class="btn btn-secondary btn-lg form-control">Back to List</a>
+                    <a asp-controller="Actor" asp-action="Index" class="btn btn-secondary btn-lg form-control">Back to List</a>
                 </div>
             </div>
         </div>
