@@ -1,21 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MovieStore.DataAccess.Data;
+using MovieStore.DataAccess.Repository.IRepository;
 using MovieStore.Models;
 
 namespace MovieStore.Web.Controllers
 {
     public class GenreController : Controller
     {
-        private readonly ApplicationDbContext _db;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public GenreController(ApplicationDbContext db)
+        public GenreController(IUnitOfWork unitOfWork)
         {
-            _db = db;
+            _unitOfWork = unitOfWork;
         }
 
         public IActionResult Index()
         {
-            List<Genre> genreList = _db.Genres.ToList();
+            List<Genre> genreList = _unitOfWork.Genre.GetAll().ToList();
             return View(genreList);
         }
 
@@ -31,7 +31,7 @@ namespace MovieStore.Web.Controllers
             }
 
             //update
-            genre = _db.Genres.Find(id);
+            genre = _unitOfWork.Genre.Get(x => x.Id == id);
 
             if (genre == null)
             {
@@ -48,15 +48,15 @@ namespace MovieStore.Web.Controllers
             {
                 if (genre.Id == 0)
                 {
-                    _db.Genres.Add(genre);
+                    _unitOfWork.Genre.Add(genre);
                     // TempData["success"] = "Product created successfuly";
                 }
                 else
                 {
-                    _db.Genres.Update(genre);
+                    _unitOfWork.Genre.Update(genre);
                     // TempData["success"] = "Product updated successfuly";
                 }
-                _db.SaveChanges();
+                _unitOfWork.Save();
                 return RedirectToAction("Index");
             }
             else
@@ -72,16 +72,16 @@ namespace MovieStore.Web.Controllers
             {
                 return NotFound();
             }
-            Genre genreToDelete = _db.Genres.Find(id);
+            Genre genreToDelete = _unitOfWork.Genre.Get(x => x.Id == id);
             if (genreToDelete == null)
             {
                 return NotFound();
             }
-            _db.Genres.Remove(genreToDelete);
-            _db.SaveChanges();
-            
+            _unitOfWork.Genre.Remove(genreToDelete);
+            _unitOfWork.Save();
+
             return RedirectToAction("Index");
-            
+
         }
     }
 }
