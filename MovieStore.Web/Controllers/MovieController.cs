@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MovieStore.DataAccess.Data;
@@ -11,9 +10,9 @@ namespace MovieStore.Web.Controllers
 	public class MovieController : Controller
 	{
 		private readonly ApplicationDbContext _db;
-        private readonly IWebHostEnvironment _webHostEnvironment;
+		private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public MovieController(ApplicationDbContext db, IWebHostEnvironment webHostEnvironment)
+		public MovieController(ApplicationDbContext db, IWebHostEnvironment webHostEnvironment)
 		{
 			_db = db;
 			_webHostEnvironment = webHostEnvironment;
@@ -65,7 +64,7 @@ namespace MovieStore.Web.Controllers
 				if (file != null)
 				{
 					string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-					string productPath = Path.Combine(wwwRootPath, @"images\movie");
+					string moviePath = Path.Combine(wwwRootPath, @"images\movie");
 
 					if (!string.IsNullOrEmpty(movieVM.Movie.ImageUrl))
 					{
@@ -78,12 +77,12 @@ namespace MovieStore.Web.Controllers
 						}
 					}
 
-					using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
+					using (var fileStream = new FileStream(Path.Combine(moviePath, fileName), FileMode.Create))
 					{
 						file.CopyTo(fileStream);
 					}
 
-					movieVM.Movie.ImageUrl = @"\images\product\" + fileName;
+					movieVM.Movie.ImageUrl = @"\images\movie\" + fileName;
 				}
 
 				// updating the existing entry
@@ -128,6 +127,42 @@ namespace MovieStore.Web.Controllers
 
 				return View(movieVM);
 			}
+		}
+
+		[HttpDelete]
+		public IActionResult Delete(int? id)
+		{
+			if (id == null || id == 0)
+			{
+				return NotFound();
+			}
+
+			Movie movieToDelete = _db.Movies.Include(x => x.Genres).FirstOrDefault(x => x.Id == id);
+
+			if (movieToDelete == null)
+			{
+				return NotFound();
+			}
+
+			// delete entries from MovieGenre join table
+			for (int i = movieToDelete.Genres.Count - 1; i >= 0; i--)
+			{
+				movieToDelete.Genres.Remove(movieToDelete.Genres[i]);
+			}
+
+			// delete respective image from /wwwroot/images/movie folder
+			var imagePath =
+				Path.Combine(_webHostEnvironment.WebRootPath,
+				movieToDelete.ImageUrl.TrimStart('\\'));
+
+			if (System.IO.File.Exists(imagePath))
+			{
+				System.IO.File.Delete(imagePath);
+			}
+
+			_db.Movies.Remove(movieToDelete);
+			_db.SaveChanges();
+			return RedirectToAction("Index");
 		}
 	}
 }

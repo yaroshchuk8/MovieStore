@@ -65,29 +65,23 @@ namespace MovieStore.Web.Controllers
             }
         }
 
+        [HttpDelete]
         public IActionResult Delete(int? id)
         {
             if (id == null || id == 0)
             {
                 return NotFound();
             }
-
-            Genre genre = _db.Genres.Find(id);
-
-            if (genre == null)
+            Genre genreToDelete = _db.Genres.Find(id);
+            if (genreToDelete == null)
             {
                 return NotFound();
             }
-
-            return View(genre);
-        }
-
-        [HttpPost]
-        public IActionResult Delete(Genre genre)
-        {
-            _db.Genres.Remove(genre);
+            _db.Genres.Remove(genreToDelete);
             _db.SaveChanges();
+            
             return RedirectToAction("Index");
+            
         }
     }
 }
