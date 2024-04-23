@@ -32,11 +32,18 @@
                 <span asp-validation-for="Movie.Price" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <label asp-for="SelectedItems">Genres</label>
-                <select asp-for="SelectedItems" asp-items="Model.GenreList">
+                <label asp-for="SelectedGenres">Genres</label>
+                <select asp-for="SelectedGenres" asp-items="Model.GenreList">
                     <option disabled selected>--Select Genres--</option>
                 </select>
-                <span asp-validation-for="SelectedItems" class="text-danger"></span>
+                <span asp-validation-for="SelectedGenres" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="SelectedActors">Actors</label>
+                <select asp-for="SelectedActors" asp-items="Model.ActorList">
+                    <option disabled selected>--Select Actors--</option>
+                </select>
+                <span asp-validation-for="SelectedActors" class="text-danger"></span>
             </div>
             <div class="mb-3">
                 <label asp-for="Movie.ImageUrl"></label>
