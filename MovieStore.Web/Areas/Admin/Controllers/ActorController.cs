@@ -2,8 +2,9 @@
 using MovieStore.DataAccess.Repository.IRepository;
 using MovieStore.Models;
 
-namespace MovieStore.Web.Controllers
+namespace MovieStore.Web.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class ActorController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

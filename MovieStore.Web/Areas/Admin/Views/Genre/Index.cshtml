@@ -1,18 +1,16 @@
-﻿@model List<Actor>
+﻿@model List<Genre>
 
 @{
-    ViewData["Title"] = "Actor Management";
+    ViewData["Title"] = "Genre Management";
 }
 
 <div class="container">
     <div class="row pt-4 pb-3">
         <div class="col-6">
-            <h2 class="text-primary">
-                Actor Table
-            </h2>
+            <h2 class="text-primary">Genre Table</h2>
         </div>
         <div class="col-6 text-end">
-            <a asp-controller="Actor" asp-action="Upsert" class="btn btn-primary btn-lg">
+            <a asp-controller="Genre" asp-action="Upsert" class="btn btn-primary btn-lg">
                 <i class="bi bi-file-earmark-plus"></i>  Create
             </a>
         </div>
@@ -20,28 +18,28 @@
 
     <table class="table table-bordered table-striped">
         <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th></th>
-            </tr>
+        <tr>
+            <th>
+                Id
+            </th>
+            <th>
+                Name
+            </th>
+            <th></th>
+        </tr>
         </thead>
         <tbody>
-            @foreach (Actor actor in Model)
+            @foreach(Genre genre in Model)
             {
                 <tr>
-                    <td>
-                        @actor.Id
-                    </td>
-                    <td>
-                        @actor.Name
-                    </td>
+                    <td>@genre.Id</td>
+                    <td>@genre.Name</td>
                     <td>
                         <div class="w-50 btn-group" role="group">
-                            <a asp-controller="Actor" asp-action="Upsert" asp-route-id="@actor.Id" class="btn btn-primary mx-2">
+                            <a asp-controller="Genre" asp-action="Upsert" asp-route-id="@genre.Id" class="btn btn-primary mx-2">
                                 <i class="bi bi-pencil-square"></i> Edit
                             </a>
-                            <a class="btn btn-danger mx-2 delete-btn" data-url="@Url.Action("Delete", "Actor", new { id = actor.Id })">
+                            <a class="btn btn-danger mx-2 delete-btn" data-url="@Url.Action("Delete", "Genre", new { id = genre.Id })">
                                 <i class="bi bi-trash3-fill"></i> Delete
                             </a>
                         </div>

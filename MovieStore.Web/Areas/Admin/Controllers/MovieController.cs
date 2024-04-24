@@ -4,8 +4,9 @@ using MovieStore.DataAccess.Repository.IRepository;
 using MovieStore.Models;
 using MovieStore.Models.ViewModels;
 
-namespace MovieStore.Web.Controllers
+namespace MovieStore.Web.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class MovieController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -26,7 +27,7 @@ namespace MovieStore.Web.Controllers
         public IActionResult Upsert(int? id)
         {
             MovieVM movieVM = new();
-            
+
             movieVM.SelectedGenres = new();
             movieVM.GenreList = _unitOfWork.Genre.GetAll()
                 .Select(item => new SelectListItem
@@ -34,7 +35,7 @@ namespace MovieStore.Web.Controllers
                     Text = item.Name,
                     Value = item.Id.ToString()
                 });
-            
+
             movieVM.SelectedActors = new();
             movieVM.ActorList = _unitOfWork.Actor.GetAll()
                 .Select(item => new SelectListItem
@@ -99,8 +100,11 @@ namespace MovieStore.Web.Controllers
                 if (movieVM.Movie.Id != 0)
                 {
                     Movie movie = _unitOfWork.Movie.Get(m => m.Id == movieVM.Movie.Id, "Genres,Actors");
+                    movie.Title = movieVM.Movie.Title;
+                    movie.Description = movieVM.Movie.Description;
+                    movie.Price = movieVM.Movie.Price;
                     movie.ImageUrl = movieVM.Movie.ImageUrl;
-                    
+
                     //removing existing connections from join tables
                     for (int i = movie.Genres.Count - 1; i >= 0; i--)
                     {
@@ -120,7 +124,7 @@ namespace MovieStore.Web.Controllers
                     {
                         movie.Actors.Add(_unitOfWork.Actor.Get(x => x.Id == Convert.ToInt32(s)));
                     }
-                    
+
                     _unitOfWork.Movie.Update(movie);
                 }
                 // adding new entry 
@@ -138,7 +142,7 @@ namespace MovieStore.Web.Controllers
                     {
                         movieVM.Movie.Actors.Add(_unitOfWork.Actor.Get(x => x.Id == Convert.ToInt32(s)));
                     }
-                    
+
                     _unitOfWork.Movie.Add(movieVM.Movie);
                 }
 
@@ -182,19 +186,17 @@ namespace MovieStore.Web.Controllers
                 return NotFound();
             }
 
-            // delete entries from MovieGenre join table
+            // delete entries from join tables
             for (int i = movieToDelete.Genres.Count - 1; i >= 0; i--)
             {
                 movieToDelete.Genres.Remove(movieToDelete.Genres[i]);
             }
-
-            // delete entries from MovieActor join table
             for (int i = movieToDelete.Actors.Count - 1; i >= 0; i--)
             {
                 movieToDelete.Actors.Remove(movieToDelete.Actors[i]);
             }
 
-            // delete respective image from /wwwroot/images/movie folder
+            // delete image from /wwwroot/images/movie folder
             var imagePath =
                 Path.Combine(_webHostEnvironment.WebRootPath,
                 movieToDelete.ImageUrl.TrimStart('\\'));
