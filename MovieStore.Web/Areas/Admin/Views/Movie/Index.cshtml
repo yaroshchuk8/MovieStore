@@ -19,10 +19,13 @@
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th>Title</th>
+                <th style="width:10%">Title</th>
                 <th>Description</th>
-                <th>Price</th>
-                <th></th>
+                <th style="width:5%">Price</th>
+                <th style="width:13%">Actors</th>
+                <th style="width:10%">Genres</th>
+                <th style="width:10%">Image</th>
+                <th style="width:15%"></th>
             </tr>
         </thead>
         <tbody>
@@ -30,8 +33,21 @@
             {
                 <tr>
                     <td>@movie.Title</td>
-                    <td>@movie.Description</td>
+                    <td><small>@movie.Description</small></td>
                     <td>@movie.Price</td>
+                    <td>
+                        @foreach (Actor actor in movie.Actors)
+                        {
+                            <small>@actor.Name;</small>
+                        }
+                    </td>
+                    <td>
+                        @foreach (Genre genre in movie.Genres)
+                        {
+                            <small>@genre.Name;</small>
+                        }
+                    </td>
+                    <td><img src="@movie.ImageUrl" style="max-height:100px;width:auto"></td>
                     <td>
                         <div class="w-50 btn-group" role="group">
                             <a asp-controller="Movie" asp-action="Upsert" asp-route-id="@movie.Id" class="btn btn-primary mx-2">

@@ -18,7 +18,7 @@ namespace MovieStore.Web.Areas.Admin.Controllers
 
         public IActionResult Index()
         {
-            List<Actor> actorList = _unitOfWork.Actor.GetAll().ToList();
+            List<Actor> actorList = _unitOfWork.Actor.GetAll(includeProperties:"Movies").ToList();
             return View(actorList);
         }
 

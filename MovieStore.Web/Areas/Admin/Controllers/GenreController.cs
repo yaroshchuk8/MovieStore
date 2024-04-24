@@ -16,7 +16,7 @@ namespace MovieStore.Web.Areas.Admin.Controllers
 
         public IActionResult Index()
         {
-            List<Genre> genreList = _unitOfWork.Genre.GetAll().ToList();
+            List<Genre> genreList = _unitOfWork.Genre.GetAll(includeProperties:"Movies").ToList();
             return View(genreList);
         }
 

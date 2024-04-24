@@ -19,13 +19,10 @@
     <table class="table table-bordered table-striped">
         <thead>
         <tr>
-            <th>
-                Id
-            </th>
-            <th>
-                Name
-            </th>
-            <th></th>
+            <th style="width:7%">Id</th>
+            <th>Name</th>
+            <th>Associated movies</th>
+            <th style="width:15%"></th>
         </tr>
         </thead>
         <tbody>
@@ -34,6 +31,12 @@
                 <tr>
                     <td>@genre.Id</td>
                     <td>@genre.Name</td>
+                    <td>
+                        @foreach (Movie movie in genre.Movies)
+                        {
+                            <small>@movie.Title;</small>
+                        }
+                    </td>
                     <td>
                         <div class="w-50 btn-group" role="group">
                             <a asp-controller="Genre" asp-action="Upsert" asp-route-id="@genre.Id" class="btn btn-primary mx-2">

@@ -20,7 +20,7 @@ namespace MovieStore.Web.Areas.Admin.Controllers
 
         public IActionResult Index()
         {
-            List<Movie> movies = _unitOfWork.Movie.GetAll().ToList();
+            List<Movie> movies = _unitOfWork.Movie.GetAll(includeProperties:"Genres,Actors").ToList();
             return View(movies);
         }
 
