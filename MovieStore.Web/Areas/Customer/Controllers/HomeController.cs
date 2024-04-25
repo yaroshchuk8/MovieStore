@@ -19,7 +19,7 @@ namespace MovieStore.Web.Areas.Customer.Controllers
 
         public IActionResult Index()
         {
-            IEnumerable<Movie> movies = _unitOfWork.Movie.GetAll(includeProperties: ("Genres,Actors"));
+            IEnumerable<Movie> movies = _unitOfWork.Movie.GetAll(includeProperties:"Genres,Actors");
             return View(movies);
         }
 

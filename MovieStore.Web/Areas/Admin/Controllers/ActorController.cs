@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MovieStore.DataAccess.Repository.IRepository;
 using MovieStore.Models;
 
 namespace MovieStore.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class ActorController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

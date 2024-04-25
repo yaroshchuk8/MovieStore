@@ -26,24 +26,28 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="Customer" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Content Management
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a class="nav-link" asp-area="Admin" asp-controller="Movie" asp-action="Index">Movie</a>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <a class="nav-link" asp-area="Admin" asp-controller="Actor" asp-action="Index">Actor</a>
-                                </li>
-                                <li>
-                                    <a class="nav-link" asp-area="Admin" asp-controller="Genre" asp-action="Index">Genre</a>
-                                </li>
-                            </ul>
-                        </li>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Content Management
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="nav-link" asp-area="Admin" asp-controller="Movie" asp-action="Index">Movie</a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="nav-link" asp-area="Admin" asp-controller="Actor" asp-action="Index">Actor</a>
+                                    </li>
+                                    <li>
+                                        <a class="nav-link" asp-area="Admin" asp-controller="Genre" asp-action="Index">Genre</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
                     </ul>
+                    <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
