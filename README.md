@@ -1,4 +1,5 @@
-# MovieStore - ASP.NET Core App
+# MovieStore - ASP.NET Core MVC App
+## Simple implementation of Web Store, where admin can upload content and customers can buy it.
 ## Requirements: .NET 8 SDK, SQL Server
 ### Topics covered:
 - MVC pattern
@@ -28,7 +29,9 @@
 
 ---
 
-## In order to access Content Management menu, log in as admin using pre-defined account: { login: **admin@gmail.com**, password: **Admin1234_** }
+### In order to access Content Management menu, log in as admin using pre-defined account: { login: **"admin@gmail.com"**, password: **"Admin1234_"** }
+
+---
 
 ### Database schema:
 ![Database schema](https://i.imgur.com/r7Dk156.png)
