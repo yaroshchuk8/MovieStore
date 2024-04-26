@@ -46,9 +46,9 @@ namespace MovieStore.Web.Areas.Admin.Controllers
                     Value = item.Id.ToString()
                 });
 
+            //insert
             if (id == null || id == 0)
             {
-                //insert
                 movieVM.Movie = new();
                 return View(movieVM);
             }
@@ -101,51 +101,12 @@ namespace MovieStore.Web.Areas.Admin.Controllers
                 // updating the existing entry
                 if (movieVM.Movie.Id != 0)
                 {
-                    Movie movie = _unitOfWork.Movie.Get(m => m.Id == movieVM.Movie.Id, "Genres,Actors");
-                    movie.Title = movieVM.Movie.Title;
-                    movie.Description = movieVM.Movie.Description;
-                    movie.Price = movieVM.Movie.Price;
-                    movie.ImageUrl = movieVM.Movie.ImageUrl;
-
-                    //removing existing connections from join tables
-                    for (int i = movie.Genres.Count - 1; i >= 0; i--)
-                    {
-                        movie.Genres.Remove(movie.Genres[i]);
-                    }
-                    for (int i = movie.Actors.Count - 1; i >= 0; i--)
-                    {
-                        movie.Actors.Remove(movie.Actors[i]);
-                    }
-
-                    //adding newly selected connections to join tables
-                    foreach (string s in movieVM.SelectedGenres)
-                    {
-                        movie.Genres.Add(_unitOfWork.Genre.Get(x => x.Id == Convert.ToInt32(s)));
-                    }
-                    foreach (string s in movieVM.SelectedActors)
-                    {
-                        movie.Actors.Add(_unitOfWork.Actor.Get(x => x.Id == Convert.ToInt32(s)));
-                    }
-
-                    _unitOfWork.Movie.Update(movie);
+                    _unitOfWork.Movie.Update(movieVM);
                 }
                 // adding new entry 
                 else
                 {
-                    movieVM.Movie.Genres = new();
-                    movieVM.Movie.Actors = new();
-
-                    //adding selected connections to join tables
-                    foreach (string s in movieVM.SelectedGenres)
-                    {
-                        movieVM.Movie.Genres.Add(_unitOfWork.Genre.Get(x => x.Id == Convert.ToInt32(s)));
-                    }
-                    foreach (string s in movieVM.SelectedActors)
-                    {
-                        movieVM.Movie.Actors.Add(_unitOfWork.Actor.Get(x => x.Id == Convert.ToInt32(s)));
-                    }
-
-                    _unitOfWork.Movie.Add(movieVM.Movie);
+                    _unitOfWork.Movie.Add(movieVM);
                 }
 
                 _unitOfWork.Save();

@@ -51,6 +51,7 @@ namespace MovieStore.Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                //upserting the image
                 string wwwRootPath = _webHostEnvironment.WebRootPath;
                 if (file != null)
                 {
