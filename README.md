@@ -12,12 +12,13 @@
     - Authorization (Roles)
 - N-tier architecture
 - Repository and UnitOfWork patterns
+- Dependency Injection
 
 ---
 
 ### Execution in terminal:
 ```bash
-> git clone https://github.com/yanulia8/MovieStore.git
+> git clone https://github.com/student2339/MovieStore.git
 > cd .\MovieStore\MovieStore.Web\
 ```
 > If needed, modify connection string in ./MovieStore.Web/appsettings.json according to your SQL Server path
