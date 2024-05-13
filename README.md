@@ -18,7 +18,7 @@
 
 ### Execution in terminal:
 ```bash
-> git clone https://github.com/student2339/MovieStore.git
+> git https://github.com/yaroshchuk8/MovieStore.git
 > cd .\MovieStore\MovieStore.Web\
 ```
 > If needed, modify connection string in ./MovieStore.Web/appsettings.json according to your SQL Server path
