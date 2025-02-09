@@ -15,6 +15,11 @@ internal class ActorConfiguration : IEntityTypeConfiguration<Actor>
         // Many-to-Many Relationship
         builder.HasMany(a => a.Movies)
             .WithMany(m => m.Actors)
-            .UsingEntity(j => j.ToTable("MovieActors"));
+            .UsingEntity(j =>
+            {
+                j.ToTable("MovieActor");
+                j.Property("MoviesId").HasColumnName("MovieId");
+                j.Property("ActorsId").HasColumnName("ActorId");
+            });
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -11,38 +12,35 @@ namespace MovieStore.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Actors",
+                name: "Actor",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     ImageUrl = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Actors", x => x.Id);
+                    table.PrimaryKey("PK_Actor", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Genres",
+                name: "Genre",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Genres", x => x.Id);
+                    table.PrimaryKey("PK_Genre", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Movies",
+                name: "Movie",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Title = table.Column<string>(type: "TEXT", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: false),
                     Price = table.Column<double>(type: "decimal(6,2)", nullable: false),
@@ -50,85 +48,85 @@ namespace MovieStore.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Movies", x => x.Id);
+                    table.PrimaryKey("PK_Movie", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "MovieActors",
+                name: "MovieActor",
                 columns: table => new
                 {
-                    ActorsId = table.Column<int>(type: "INTEGER", nullable: false),
-                    MoviesId = table.Column<int>(type: "INTEGER", nullable: false)
+                    ActorId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    MovieId = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MovieActors", x => new { x.ActorsId, x.MoviesId });
+                    table.PrimaryKey("PK_MovieActor", x => new { x.ActorId, x.MovieId });
                     table.ForeignKey(
-                        name: "FK_MovieActors_Actors_ActorsId",
-                        column: x => x.ActorsId,
-                        principalTable: "Actors",
+                        name: "FK_MovieActor_Actor_ActorId",
+                        column: x => x.ActorId,
+                        principalTable: "Actor",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_MovieActors_Movies_MoviesId",
-                        column: x => x.MoviesId,
-                        principalTable: "Movies",
+                        name: "FK_MovieActor_Movie_MovieId",
+                        column: x => x.MovieId,
+                        principalTable: "Movie",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "MovieGenres",
+                name: "MovieGenre",
                 columns: table => new
                 {
-                    GenresId = table.Column<int>(type: "INTEGER", nullable: false),
-                    MoviesId = table.Column<int>(type: "INTEGER", nullable: false)
+                    GenreId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    MovieId = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MovieGenres", x => new { x.GenresId, x.MoviesId });
+                    table.PrimaryKey("PK_MovieGenre", x => new { x.GenreId, x.MovieId });
                     table.ForeignKey(
-                        name: "FK_MovieGenres_Genres_GenresId",
-                        column: x => x.GenresId,
-                        principalTable: "Genres",
+                        name: "FK_MovieGenre_Genre_GenreId",
+                        column: x => x.GenreId,
+                        principalTable: "Genre",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_MovieGenres_Movies_MoviesId",
-                        column: x => x.MoviesId,
-                        principalTable: "Movies",
+                        name: "FK_MovieGenre_Movie_MovieId",
+                        column: x => x.MovieId,
+                        principalTable: "Movie",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_MovieActors_MoviesId",
-                table: "MovieActors",
-                column: "MoviesId");
+                name: "IX_MovieActor_MovieId",
+                table: "MovieActor",
+                column: "MovieId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MovieGenres_MoviesId",
-                table: "MovieGenres",
-                column: "MoviesId");
+                name: "IX_MovieGenre_MovieId",
+                table: "MovieGenre",
+                column: "MovieId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "MovieActors");
+                name: "MovieActor");
 
             migrationBuilder.DropTable(
-                name: "MovieGenres");
+                name: "MovieGenre");
 
             migrationBuilder.DropTable(
-                name: "Actors");
+                name: "Actor");
 
             migrationBuilder.DropTable(
-                name: "Genres");
+                name: "Genre");
 
             migrationBuilder.DropTable(
-                name: "Movies");
+                name: "Movie");
         }
     }
 }

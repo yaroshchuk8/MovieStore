@@ -14,6 +14,11 @@ internal class GenreConfiguration : IEntityTypeConfiguration<Genre>
         // Many-to-Many Relationship
         builder.HasMany(g => g.Movies)
             .WithMany(m => m.Genres)
-            .UsingEntity(j => j.ToTable("MovieGenres"));
+            .UsingEntity(j =>
+            {
+                j.ToTable("MovieGenre");
+                j.Property("MoviesId").HasColumnName("MovieId");
+                j.Property("GenresId").HasColumnName("GenreId");
+            });
     }
 }
