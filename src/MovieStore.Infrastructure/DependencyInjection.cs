@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using MovieStore.Application.Interfaces;
 using MovieStore.Infrastructure.Persistence;
+using MovieStore.Infrastructure.Persistence.Repositories;
 
 namespace MovieStore.Infrastructure;
 
@@ -15,6 +17,8 @@ public static class DependencyInjection
     {
         services.AddDbContext<MovieStoreDbContext>(options => 
             options.UseSqlite("Data Source = MovieStore.db"));
+
+        services.AddScoped<IGenreRepository, GenreRepository>();
         
         return services;
     }

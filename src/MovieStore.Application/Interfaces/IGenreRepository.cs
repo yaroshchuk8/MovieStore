@@ -3,7 +3,7 @@ using MovieStore.Domain.Entities;
 
 namespace MovieStore.Application.Interfaces;
 
-public interface IGenreService
+public interface IGenreRepository
 {
     Task<IEnumerable<GenreOutDto>> GetAllAsync();
     Task AddAsync(GenreInDto genre);

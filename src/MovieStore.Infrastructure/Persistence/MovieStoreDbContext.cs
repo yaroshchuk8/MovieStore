@@ -3,7 +3,7 @@ using MovieStore.Domain.Entities;
 
 namespace MovieStore.Infrastructure.Persistence;
 
-internal class MovieStoreDbContext : DbContext
+public class MovieStoreDbContext : DbContext
 {
     public MovieStoreDbContext(DbContextOptions<MovieStoreDbContext> options) : base(options) {}
     
