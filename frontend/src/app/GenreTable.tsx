@@ -16,7 +16,7 @@ interface GenreOutDto {
 
 const GenreTable = () => {
   const [genres, setGenres] = useState<GenreOutDto[]>([]);
-  const apiUrl = "https://localhost:7004/api/genre";
+  const apiUrl = "http://localhost:5000/api/genre";
 
   useEffect(() => {
     axios.get<GenreOutDto[]>(apiUrl)
