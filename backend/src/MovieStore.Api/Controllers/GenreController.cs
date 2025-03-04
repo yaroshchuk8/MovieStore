@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using MovieStore.Application.DTOs.Genres;
+using MovieStore.Application.DTOs.Movies;
 using MovieStore.Application.Interfaces;
 
 namespace MovieStore.Api.Controllers;
@@ -17,6 +18,18 @@ public class GenreController : BaseApiController
     public async Task<IEnumerable<GenreOutDto>> GetAll()
     {
         return await _genreService.GetAllAsync();
+    }
+
+    [HttpGet("{id:guid}")]
+    public async Task<GenreOutDto> GetById(Guid id)
+    {
+        return await _genreService.GetByIdAsync(id);
+    }
+    
+    [HttpGet("movies")]
+    public async Task<IEnumerable<MovieSmallOutDto>> GetMovies()
+    {
+        return await _genreService.GetMovies();
     }
 
     [HttpPost]

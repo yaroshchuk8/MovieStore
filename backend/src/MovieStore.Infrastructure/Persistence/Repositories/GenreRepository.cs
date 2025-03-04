@@ -32,6 +32,37 @@ public class GenreRepository : IGenreRepository
             .ToListAsync();
     }
 
+    public async Task<GenreOutDto> GetByIdAsync(Guid id)
+    {
+        return await _context.Genre
+            .AsNoTracking()
+            .Where(g => g.Id == id)
+            .Select((g) => new GenreOutDto
+            {
+                Id = g.Id,
+                Name = g.Name,
+                Movies = g.Movies.Select(m => new MovieSmallOutDto()
+                {
+                    Id = m.Id,
+                    Title = m.Title
+                }).ToList()
+            })
+            .FirstOrDefaultAsync();
+    }
+    
+    // get movie ids and titles
+    public async Task<IEnumerable<MovieSmallOutDto>> GetMovies()
+    {
+        return await _context.Movie
+            .AsNoTracking()
+            .Select(m => new MovieSmallOutDto()
+            {
+                Id = m.Id,
+                Title = m.Title
+            })
+            .ToListAsync();
+    }
+
     public async Task AddAsync(GenreInDto genre)
     {
         // optimised way to add entry, no querying needed

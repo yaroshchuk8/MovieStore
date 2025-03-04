@@ -1,4 +1,5 @@
 using MovieStore.Application.DTOs.Genres;
+using MovieStore.Application.DTOs.Movies;
 using MovieStore.Application.Interfaces;
 using MovieStore.Domain.Entities;
 
@@ -16,6 +17,16 @@ public class GenreService : IGenreService
     public async Task<IEnumerable<GenreOutDto>> GetAllAsync()
     {
         return await _genreRepository.GetAllAsync();
+    }
+
+    public async Task<GenreOutDto> GetByIdAsync(Guid id)
+    {
+        return await _genreRepository.GetByIdAsync(id);
+    }
+    
+    public async Task<IEnumerable<MovieSmallOutDto>> GetMovies()
+    {
+        return await _genreRepository.GetMovies();
     }
 
     public async Task AddAsync(GenreInDto genre)

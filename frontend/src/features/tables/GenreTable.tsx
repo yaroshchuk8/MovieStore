@@ -4,23 +4,17 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
 import {MovieSmallInDto} from "../../types/movie.ts";
 import {GenreInDto} from "../../types/genre.ts";
+import {Box, Button, IconButton, Tooltip, Typography} from "@mui/material";
+import {useNavigate} from "react-router";
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
-const columns: GridColDef[] = [
-  { field: 'id', headerName: 'ID', flex: 1 },
-  { field: 'name', headerName: 'Name', flex: 1 },
-  {
-    field: 'associatedMovies',
-    headerName: 'Associated Movies',
-    flex: 2,
-    description: 'This column has a value getter and is not sortable.',
-    sortable: false,
-    valueGetter: (_value, row) => row.movies.length > 0 ? row.movies.map((movie: MovieSmallInDto) => movie.title).join(", ") : "No movies"
-  },
-];
-
-const GenreTable = () => {
+function GenreTable() {
   const [genres, setGenres] = useState<GenreInDto[]>([]);
   const apiUrl = "http://localhost:5000/api/genre";
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios.get<GenreInDto[]>(apiUrl)
@@ -32,9 +26,56 @@ const GenreTable = () => {
       });
   }, []);
 
+  const columns: GridColDef[] = [
+    { field: 'id', headerName: 'ID', flex: 1 },
+    { field: 'name', headerName: 'Name', flex: 1 },
+    {
+      field: 'associatedMovies',
+      headerName: 'Associated Movies',
+      flex: 2,
+      description: 'Movies associated with respective genre',
+      sortable: false,
+      valueGetter: (_value, row) =>
+        row.movies.length > 0 ? row.movies.map((movie: MovieSmallInDto) => movie.title).join(", ") : "No movies"
+    },
+    {
+      field: 'Actions',
+      headerName: '',
+      sortable: false,
+      disableColumnMenu: true,
+      renderCell: (params) => {
+        const genreId = params.row.id;
+        return (
+          <>
+            <Tooltip title="Click to edit">
+              <IconButton
+                onClick={() => navigate(`/genre/edit/${genreId}`, {state: {genre: params.row}})}
+                color="info"
+              >
+                <EditIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Click to delete">
+              <IconButton>
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
+          </>
+        );
+      },
+    },
+  ];
+
   return (
     <>
-      <h1>Genre table</h1>
+      <Box display="flex" justifyContent="space-between" sx={{marginY: 2, paddingX: 1}} >
+        <Typography variant="h4">Genre table</Typography>
+        <Tooltip title="Click to create">
+          <Button onClick={() => navigate(`/genre/create`)} variant="text" color="primary">
+            <AddCircleOutlineIcon fontSize="large" />
+          </Button>
+        </Tooltip>
+      </Box>
       <Paper sx={{ width: '100%' }}>
         <DataGrid
           rows={genres}
@@ -52,6 +93,6 @@ const GenreTable = () => {
       </Paper>
     </>
   );
-};
+}
 
 export default GenreTable;

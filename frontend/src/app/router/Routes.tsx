@@ -1,6 +1,7 @@
 import {createBrowserRouter} from "react-router";
 import App from "../layout/App.tsx";
 import GenreTable from "../../features/tables/GenreTable.tsx";
+import GenreForm from "../../features/tables/GenreForm.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -8,7 +9,9 @@ export const router = createBrowserRouter([
     element: <App />,
     children: [
       { path: "genre", element: <GenreTable /> },
-      { path: "*", element: <div>Not found</div> }
+      { path: "genre/create", element: <GenreForm /> },
+      { path: "genre/edit/:id", element: <GenreForm /> },
+      { path: "*", element: <h1>Not found</h1> },
     ]
   }
 ])
