@@ -56,7 +56,10 @@ function GenreTable() {
               </IconButton>
             </Tooltip>
             <Tooltip title="Click to delete">
-              <IconButton>
+              <IconButton
+                onClick={() => axios.delete(`http://localhost:5000/api/genre/${genreId}`)
+                  .then(() => setGenres(genres.filter(genre => genre.id !== genreId)))}
+              >
                 <DeleteIcon />
               </IconButton>
             </Tooltip>
