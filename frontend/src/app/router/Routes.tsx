@@ -1,5 +1,5 @@
 import {createBrowserRouter} from "react-router";
-import App from "../layout/App.tsx";
+import App from "../App.tsx";
 import GenreTable from "../../features/tables/GenreTable.tsx";
 import GenreForm from "../../features/tables/GenreForm.tsx";
 

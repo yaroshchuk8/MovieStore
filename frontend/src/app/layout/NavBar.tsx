@@ -1,6 +1,7 @@
 import {AppBar, Box, Container, MenuItem, Toolbar, Typography} from "@mui/material";
 import MovieFilterIcon from '@mui/icons-material/MovieFilter';
 import { NavLink } from "react-router";
+import MenuItemLink from "../../components/MenuItemLink.tsx";
 
 export default function NavBar() {
   return (
@@ -14,17 +15,9 @@ export default function NavBar() {
                 MovieStore
               </Typography>
             </MenuItem>
-            <MenuItem component={NavLink} to='/genre' sx={{
-              fontSize: '1rem',
-              textTransform: 'uppercase',
-              fontWeight: 'bold',
-              color: 'inherit',
-              '&.active': {
-                color: 'yellow'
-              }
-            }}>
+            <MenuItemLink to='/genre'>
               Genre
-            </MenuItem>
+            </MenuItemLink>
           </Toolbar>
         </Container>
       </AppBar>
