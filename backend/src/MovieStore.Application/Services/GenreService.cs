@@ -29,9 +29,9 @@ public class GenreService : IGenreService
         return await _genreRepository.GetMovies();
     }
 
-    public async Task AddAsync(GenreInDto genre)
+    public async Task CreateAsync(GenreInDto genre)
     {
-        await _genreRepository.AddAsync(genre);
+        await _genreRepository.CreateAsync(genre);
     }
 
     public async Task UpdateAsync(GenreInDto genre)

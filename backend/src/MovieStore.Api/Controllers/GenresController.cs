@@ -5,48 +5,41 @@ using MovieStore.Application.Interfaces;
 
 namespace MovieStore.Api.Controllers;
 
-public class GenreController : BaseApiController
+public class GenresController(IGenreService genreService) : ApiControllerBase
 {
-    private readonly IGenreService _genreService;
-
-    public GenreController(IGenreService genreService)
-    {
-        _genreService = genreService;
-    }
-
     [HttpGet]
     public async Task<IEnumerable<GenreOutDto>> GetAll()
     {
-        return await _genreService.GetAllAsync();
+        return await genreService.GetAllAsync();
     }
 
     [HttpGet("{id:guid}")]
     public async Task<GenreOutDto> GetById(Guid id)
     {
-        return await _genreService.GetByIdAsync(id);
+        return await genreService.GetByIdAsync(id);
     }
     
     [HttpGet("movies")]
     public async Task<IEnumerable<MovieSmallOutDto>> GetMovies()
     {
-        return await _genreService.GetMovies();
+        return await genreService.GetMovies();
     }
 
     [HttpPost]
     public async Task Create(GenreInDto genre)
     {
-        await _genreService.AddAsync(genre);
+        await genreService.CreateAsync(genre);
     }
 
     [HttpPut]
     public async Task Update(GenreInDto genre)
     {
-        await _genreService.UpdateAsync(genre);
+        await genreService.UpdateAsync(genre);
     }
     
     [HttpDelete("{id:guid}")]
     public async Task Delete(Guid id)
     {
-        await _genreService.DeleteAsync(id);
+        await genreService.DeleteAsync(id);
     }
 }

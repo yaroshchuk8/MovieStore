@@ -6,18 +6,11 @@ using MovieStore.Domain.Entities;
 
 namespace MovieStore.Infrastructure.Persistence.Repositories;
 
-public class GenreRepository : IGenreRepository
+public class GenreRepository(MovieStoreDbContext context) : IGenreRepository
 {
-    private readonly MovieStoreDbContext _context;
-
-    public GenreRepository(MovieStoreDbContext context)
-    {
-        _context = context;
-    }
-    
     public async Task<IEnumerable<GenreOutDto>> GetAllAsync()
     {
-        return await _context.Genre
+        return await context.Genre
             .AsNoTracking()
             .Select(g => new GenreOutDto
             {
@@ -34,7 +27,7 @@ public class GenreRepository : IGenreRepository
 
     public async Task<GenreOutDto> GetByIdAsync(Guid id)
     {
-        return await _context.Genre
+        return await context.Genre
             .AsNoTracking()
             .Where(g => g.Id == id)
             .Select((g) => new GenreOutDto
@@ -53,7 +46,7 @@ public class GenreRepository : IGenreRepository
     // get movie ids and titles
     public async Task<IEnumerable<MovieSmallOutDto>> GetMovies()
     {
-        return await _context.Movie
+        return await context.Movie
             .AsNoTracking()
             .Select(m => new MovieSmallOutDto()
             {
@@ -63,7 +56,7 @@ public class GenreRepository : IGenreRepository
             .ToListAsync();
     }
 
-    public async Task AddAsync(GenreInDto genre)
+    public async Task CreateAsync(GenreInDto genre)
     {
         // optimised way to add entry, no querying needed
         Genre newGenre = new()
@@ -79,17 +72,17 @@ public class GenreRepository : IGenreRepository
         // needed for EF Core to update MovieGenre join table
         foreach (var movie in newGenre.Movies)
         {
-            _context.Entry(movie).State = EntityState.Unchanged;
+            context.Entry(movie).State = EntityState.Unchanged;
         }
         
-        _context.Genre.Add(newGenre);
-        await _context.SaveChangesAsync();
+        context.Genre.Add(newGenre);
+        await context.SaveChangesAsync();
     }
 
     public async Task UpdateAsync(GenreInDto genre)
     {
         // unoptimized, to be reworked
-        var genreToUpdate = await _context.Genre
+        var genreToUpdate = await context.Genre
             .Include(g => g.Movies)
             .FirstOrDefaultAsync(g => g.Id == genre.Id);
 
@@ -105,13 +98,13 @@ public class GenreRepository : IGenreRepository
             genreToUpdate.Movies.RemoveAll(m => !genre.MovieIds.Contains(m.Id));
 
             // Add new movies if not already associated
-            var moviesToAdd = await _context.Movie
+            var moviesToAdd = await context.Movie
                 .Where(m => genre.MovieIds.Contains(m.Id) && !existingMovieIds.Contains(m.Id))
                 .ToListAsync();
 
             genreToUpdate.Movies.AddRange(moviesToAdd);
 
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
     }
 
@@ -121,9 +114,9 @@ public class GenreRepository : IGenreRepository
         Genre genreToDelete = new() { Id = id };
         
         // needed for EF Core to update MovieGenre join table
-        _context.Entry(genreToDelete).State = EntityState.Unchanged;
+        context.Entry(genreToDelete).State = EntityState.Unchanged;
         
-        _context.Remove(genreToDelete);
-        await _context.SaveChangesAsync();
+        context.Remove(genreToDelete);
+        await context.SaveChangesAsync();
     }
 }

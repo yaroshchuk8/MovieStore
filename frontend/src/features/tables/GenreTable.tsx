@@ -12,7 +12,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 function GenreTable() {
   const [genres, setGenres] = useState<GenreInDto[]>([]);
-  const apiUrl = "http://localhost:5000/api/genre";
+  const apiUrl = "http://localhost:5000/api/genres";
 
   const navigate = useNavigate();
 
@@ -49,7 +49,7 @@ function GenreTable() {
           <>
             <Tooltip title="Click to edit">
               <IconButton
-                onClick={() => navigate(`/genre/edit/${genreId}`, {state: {genre: params.row}})}
+                onClick={() => navigate(`/genres/edit/${genreId}`, {state: {genre: params.row}})}
                 color="info"
               >
                 <EditIcon />
@@ -57,7 +57,7 @@ function GenreTable() {
             </Tooltip>
             <Tooltip title="Click to delete">
               <IconButton
-                onClick={() => axios.delete(`http://localhost:5000/api/genre/${genreId}`)
+                onClick={() => axios.delete(`http://localhost:5000/api/genres/${genreId}`)
                   .then(() => setGenres(genres.filter(genre => genre.id !== genreId)))}
               >
                 <DeleteIcon />

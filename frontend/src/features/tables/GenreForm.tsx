@@ -24,12 +24,12 @@ function GenreForm() {
   useEffect(() => {
     // fetch genre if navigated directly via link
     if (!selectedGenre && id) {
-      axios.get<GenreInDto>(`http://localhost:5000/api/genre/${id}`)
+      axios.get<GenreInDto>(`http://localhost:5000/api/genres/${id}`)
         .then(response => setSelectedGenre(response.data))
         .catch(error => console.error("Failed to fetch genre:", error));
     }
     // fetch movies
-    axios.get<MovieSmallInDto[]>('http://localhost:5000/api/genre/movies')
+    axios.get<MovieSmallInDto[]>('http://localhost:5000/api/genres/movies')
       .then(response => setMovies(response.data))
       .catch(error => console.error("Failed to fetch movies:", error));
   }, []);
@@ -50,11 +50,11 @@ function GenreForm() {
 
     if (selectedGenre) {
       // update
-      axios.put<GenreOutDto>("http://localhost:5000/api/genre", genre)
+      axios.put<GenreOutDto>("http://localhost:5000/api/genres", genre)
         .then(() => navigate("/genre"));
     } else {
       // create
-      axios.post<GenreOutDto>("http://localhost:5000/api/genre", genre)
+      axios.post<GenreOutDto>("http://localhost:5000/api/genres", genre)
         .then(() => navigate("/genre"));
     }
   };
