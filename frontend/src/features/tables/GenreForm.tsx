@@ -1,7 +1,7 @@
 import {Autocomplete, Box, Button, Paper, TextField, Typography,} from "@mui/material";
-import {GenreInDto, GenreOutDto} from "../../types/genre.ts";
+import {GenreDto, GenreUpsertDto} from "../../types/genre.ts";
 import {Controller, useForm} from "react-hook-form";
-import {MovieSmallInDto} from "../../types/movie.ts";
+import {MovieSummaryDto} from "../../types/movie.ts";
 import axios from "axios";
 import {useLocation, useNavigate, useParams} from "react-router";
 import {useEffect, useState} from "react";
@@ -11,9 +11,9 @@ function GenreForm() {
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams();
-  const [selectedGenre, setSelectedGenre] = useState<GenreInDto>(location.state?.genre);
-  const [movies, setMovies] = useState<MovieSmallInDto[]>([]);
-  const { handleSubmit, control, register, formState: { errors }, reset } = useForm<GenreInDto>({
+  const [selectedGenre, setSelectedGenre] = useState<GenreDto>(location.state?.genre);
+  const [movies, setMovies] = useState<MovieSummaryDto[]>([]);
+  const { handleSubmit, control, register, formState: { errors }, reset } = useForm<GenreDto>({
     defaultValues: selectedGenre ? selectedGenre : {
       id: v4(), // random guid to create new genre, will be replaced in edit mode
       name: '',
@@ -24,12 +24,12 @@ function GenreForm() {
   useEffect(() => {
     // fetch genre if navigated directly via link
     if (!selectedGenre && id) {
-      axios.get<GenreInDto>(`http://localhost:5000/api/genres/${id}`)
+      axios.get<GenreDto>(`http://localhost:5000/api/genres/${id}`)
         .then(response => setSelectedGenre(response.data))
         .catch(error => console.error("Failed to fetch genre:", error));
     }
     // fetch movies
-    axios.get<MovieSmallInDto[]>('http://localhost:5000/api/genres/movies')
+    axios.get<MovieSummaryDto[]>('http://localhost:5000/api/genres/movies')
       .then(response => setMovies(response.data))
       .catch(error => console.error("Failed to fetch movies:", error));
   }, []);
@@ -41,20 +41,20 @@ function GenreForm() {
     }
   }, [selectedGenre]);
 
-  const onSubmit = (data: GenreInDto) => {
-    const genre: GenreOutDto = {
+  const onSubmit = (data: GenreDto) => {
+    const genre: GenreUpsertDto = {
       id: data.id,
       name: data.name,
-      movieIds: data.movies.map((movie: MovieSmallInDto) => movie.id)
+      movieIds: data.movies.map((movie: MovieSummaryDto) => movie.id)
     }
 
     if (selectedGenre) {
       // update
-      axios.put<GenreOutDto>("http://localhost:5000/api/genres", genre)
+      axios.put<GenreUpsertDto>("http://localhost:5000/api/genres", genre)
         .then(() => navigate("/genre"));
     } else {
       // create
-      axios.post<GenreOutDto>("http://localhost:5000/api/genres", genre)
+      axios.post<GenreUpsertDto>("http://localhost:5000/api/genres", genre)
         .then(() => navigate("/genre"));
     }
   };

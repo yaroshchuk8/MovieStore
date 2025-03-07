@@ -9,7 +9,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\Actors\" />
+    <Folder Include="Actors\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
   <PropertyGroup>

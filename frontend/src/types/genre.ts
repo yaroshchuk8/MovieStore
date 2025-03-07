@@ -1,14 +1,14 @@
-import {MovieSmallInDto} from "./movie.ts";
+import {MovieSummaryDto} from "./movie.ts";
 
 // api -> client
-export interface GenreInDto {
+export interface GenreDto {
   id: string;
   name: string;
-  movies: MovieSmallInDto[];
+  movies: MovieSummaryDto[];
 }
 
 // client -> api
-export interface GenreOutDto {
+export interface GenreUpsertDto {
   id: string;
   name: string;
   movieIds: string[];

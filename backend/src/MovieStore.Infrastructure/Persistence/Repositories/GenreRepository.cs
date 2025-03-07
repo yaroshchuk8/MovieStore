@@ -1,22 +1,22 @@
 using Microsoft.EntityFrameworkCore;
-using MovieStore.Application.DTOs.Genres;
-using MovieStore.Application.DTOs.Movies;
-using MovieStore.Application.Interfaces;
+using MovieStore.Application.Genres.DTOs;
+using MovieStore.Application.Genres.Interfaces;
+using MovieStore.Application.Movies.DTOs;
 using MovieStore.Domain.Entities;
 
 namespace MovieStore.Infrastructure.Persistence.Repositories;
 
 public class GenreRepository(MovieStoreDbContext context) : IGenreRepository
 {
-    public async Task<IEnumerable<GenreOutDto>> GetAllAsync()
+    public async Task<IEnumerable<GenreDto>> GetAllAsync()
     {
         return await context.Genre
             .AsNoTracking()
-            .Select(g => new GenreOutDto
+            .Select(g => new GenreDto
             {
                 Id = g.Id,
                 Name = g.Name,
-                Movies = g.Movies.Select(m => new MovieSmallOutDto()
+                Movies = g.Movies.Select(m => new MovieSummaryDto()
                 {
                     Id = m.Id,
                     Title = m.Title
@@ -25,16 +25,16 @@ public class GenreRepository(MovieStoreDbContext context) : IGenreRepository
             .ToListAsync();
     }
 
-    public async Task<GenreOutDto> GetByIdAsync(Guid id)
+    public async Task<GenreDto> GetByIdAsync(Guid id)
     {
         return await context.Genre
             .AsNoTracking()
             .Where(g => g.Id == id)
-            .Select((g) => new GenreOutDto
+            .Select((g) => new GenreDto
             {
                 Id = g.Id,
                 Name = g.Name,
-                Movies = g.Movies.Select(m => new MovieSmallOutDto()
+                Movies = g.Movies.Select(m => new MovieSummaryDto()
                 {
                     Id = m.Id,
                     Title = m.Title
@@ -44,11 +44,11 @@ public class GenreRepository(MovieStoreDbContext context) : IGenreRepository
     }
     
     // get movie ids and titles
-    public async Task<IEnumerable<MovieSmallOutDto>> GetMovies()
+    public async Task<IEnumerable<MovieSummaryDto>> GetMovies()
     {
         return await context.Movie
             .AsNoTracking()
-            .Select(m => new MovieSmallOutDto()
+            .Select(m => new MovieSummaryDto()
             {
                 Id = m.Id,
                 Title = m.Title
@@ -56,7 +56,7 @@ public class GenreRepository(MovieStoreDbContext context) : IGenreRepository
             .ToListAsync();
     }
 
-    public async Task CreateAsync(GenreInDto genre)
+    public async Task CreateAsync(GenreUpsertDto genre)
     {
         // optimised way to add entry, no querying needed
         Genre newGenre = new()
@@ -79,7 +79,7 @@ public class GenreRepository(MovieStoreDbContext context) : IGenreRepository
         await context.SaveChangesAsync();
     }
 
-    public async Task UpdateAsync(GenreInDto genre)
+    public async Task UpdateAsync(GenreUpsertDto genre)
     {
         // unoptimized, to be reworked
         var genreToUpdate = await context.Genre

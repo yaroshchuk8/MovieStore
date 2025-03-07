@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using MovieStore.Application.Interfaces;
+using MovieStore.Application.Genres.Interfaces;
 using MovieStore.Infrastructure.Persistence;
 using MovieStore.Infrastructure.Persistence.Repositories;
 

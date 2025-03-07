@@ -2,8 +2,8 @@ import axios from "axios";
 import {useEffect, useState} from "react";
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
-import {MovieSmallInDto} from "../../types/movie.ts";
-import {GenreInDto} from "../../types/genre.ts";
+import {MovieSummaryDto} from "../../types/movie.ts";
+import {GenreDto} from "../../types/genre.ts";
 import {Box, Button, IconButton, Tooltip, Typography} from "@mui/material";
 import {useNavigate} from "react-router";
 import EditIcon from '@mui/icons-material/Edit';
@@ -11,13 +11,13 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 function GenreTable() {
-  const [genres, setGenres] = useState<GenreInDto[]>([]);
+  const [genres, setGenres] = useState<GenreDto[]>([]);
   const apiUrl = "http://localhost:5000/api/genres";
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get<GenreInDto[]>(apiUrl)
+    axios.get<GenreDto[]>(apiUrl)
       .then((response) => {
         setGenres(response.data);
       })
@@ -36,7 +36,7 @@ function GenreTable() {
       description: 'Movies associated with respective genre',
       sortable: false,
       valueGetter: (_value, row) =>
-        row.movies.length > 0 ? row.movies.map((movie: MovieSmallInDto) => movie.title).join(", ") : "No movies"
+        row.movies.length > 0 ? row.movies.map((movie: MovieSummaryDto) => movie.title).join(", ") : "No movies"
     },
     {
       field: 'Actions',

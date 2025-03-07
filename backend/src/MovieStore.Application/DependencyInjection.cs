@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
-using MovieStore.Application.Interfaces;
-using MovieStore.Application.Services;
+using MovieStore.Application.Genres.Interfaces;
+using MovieStore.Application.Genres.Services;
 
 namespace MovieStore.Application;
 

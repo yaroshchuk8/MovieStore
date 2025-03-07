@@ -1,6 +1,6 @@
-namespace MovieStore.Application.DTOs.Genres;
+namespace MovieStore.Application.Genres.DTOs;
 
-public class GenreInDto
+public class GenreUpsertDto
 {
     public Guid Id { get; set; }
     public string Name { get; set; }

@@ -3,10 +3,8 @@ using MovieStore.Domain.Entities;
 
 namespace MovieStore.Infrastructure.Persistence;
 
-public class MovieStoreDbContext : DbContext
+public class MovieStoreDbContext(DbContextOptions<MovieStoreDbContext> options) : DbContext(options)
 {
-    public MovieStoreDbContext(DbContextOptions<MovieStoreDbContext> options) : base(options) {}
-    
     public DbSet<Movie> Movie { get; set; }
     public DbSet<Actor> Actor { get; set; }
     public DbSet<Genre> Genre { get; set; }

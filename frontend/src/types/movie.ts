@@ -1,5 +1,5 @@
 // api -> client
-export interface MovieSmallInDto {
+export interface MovieSummaryDto {
   id: string;
   title: string;
 }
