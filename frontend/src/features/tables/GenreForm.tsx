@@ -29,7 +29,7 @@ function GenreForm() {
         .catch(error => console.error("Failed to fetch genre:", error));
     }
     // fetch movies
-    axios.get<MovieSummaryDto[]>('http://localhost:5000/api/genres/movies')
+    axios.get<MovieSummaryDto[]>('http://localhost:5000/api/movies/summary')
       .then(response => setMovies(response.data))
       .catch(error => console.error("Failed to fetch movies:", error));
   }, []);
@@ -51,11 +51,11 @@ function GenreForm() {
     if (selectedGenre) {
       // update
       axios.put<GenreUpsertDto>("http://localhost:5000/api/genres", genre)
-        .then(() => navigate("/genre"));
+        .then(() => navigate("/genres"));
     } else {
       // create
       axios.post<GenreUpsertDto>("http://localhost:5000/api/genres", genre)
-        .then(() => navigate("/genre"));
+        .then(() => navigate("/genres"));
     }
   };
 
@@ -106,7 +106,7 @@ function GenreForm() {
         />
 
         <Box display='flex' justifyContent='end' gap={3}>
-          <Button onClick={() => navigate("/genre")} color='inherit'>Cancel</Button>
+          <Button onClick={() => navigate("/genres")} color='inherit'>Cancel</Button>
           <Button
             type="submit"
             color='success'

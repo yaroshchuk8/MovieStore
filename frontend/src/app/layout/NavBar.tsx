@@ -15,7 +15,7 @@ export default function NavBar() {
                 MovieStore
               </Typography>
             </MenuItem>
-            <MenuItemLink to='/genre'>
+            <MenuItemLink to='/genres'>
               Genre
             </MenuItemLink>
           </Toolbar>

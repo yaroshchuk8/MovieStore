@@ -18,12 +18,6 @@ public class GenresController(IGenreService genreService) : ApiControllerBase
     {
         return await genreService.GetByIdAsync(id);
     }
-    
-    [HttpGet("movies")]
-    public async Task<IEnumerable<MovieSummaryDto>> GetMovies()
-    {
-        return await genreService.GetMovies();
-    }
 
     [HttpPost]
     public async Task Create(GenreUpsertDto genre)

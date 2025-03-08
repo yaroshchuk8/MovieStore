@@ -42,19 +42,6 @@ public class GenreRepository(MovieStoreDbContext context) : IGenreRepository
             })
             .FirstOrDefaultAsync();
     }
-    
-    // get movie ids and titles
-    public async Task<IEnumerable<MovieSummaryDto>> GetMovies()
-    {
-        return await context.Movie
-            .AsNoTracking()
-            .Select(m => new MovieSummaryDto()
-            {
-                Id = m.Id,
-                Title = m.Title
-            })
-            .ToListAsync();
-    }
 
     public async Task CreateAsync(GenreUpsertDto genre)
     {

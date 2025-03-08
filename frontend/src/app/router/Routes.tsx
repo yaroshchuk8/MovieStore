@@ -8,9 +8,9 @@ export const router = createBrowserRouter([
     path: "/",
     element: <App />,
     children: [
-      { path: "genre", element: <GenreTable /> },
-      { path: "genre/create", element: <GenreForm /> },
-      { path: "genre/edit/:id", element: <GenreForm /> },
+      { path: "genres", element: <GenreTable /> },
+      { path: "genres/create", element: <GenreForm /> },
+      { path: "genres/edit/:id", element: <GenreForm /> },
       { path: "*", element: <h1>Not found</h1> },
     ]
   }

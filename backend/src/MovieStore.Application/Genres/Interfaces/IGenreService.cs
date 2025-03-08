@@ -7,7 +7,6 @@ public interface IGenreService
 {
     Task<IEnumerable<GenreDto>> GetAllAsync();
     Task<GenreDto> GetByIdAsync(Guid id);
-    Task<IEnumerable<MovieSummaryDto>> GetMovies();
     Task CreateAsync(GenreUpsertDto genre);
     Task UpdateAsync(GenreUpsertDto genre);
     Task DeleteAsync(Guid id);

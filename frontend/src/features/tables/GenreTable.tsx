@@ -74,7 +74,7 @@ function GenreTable() {
       <Box display="flex" justifyContent="space-between" sx={{marginY: 2, paddingX: 1}} >
         <Typography variant="h4">Genre table</Typography>
         <Tooltip title="Click to create">
-          <Button onClick={() => navigate(`/genre/create`)} variant="text" color="primary">
+          <Button onClick={() => navigate(`/genres/create`)} variant="text" color="primary">
             <AddCircleOutlineIcon fontSize="large" />
           </Button>
         </Tooltip>

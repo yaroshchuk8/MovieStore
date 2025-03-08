@@ -15,11 +15,6 @@ public class GenreService(IGenreRepository genreRepository) : IGenreService
     {
         return await genreRepository.GetByIdAsync(id);
     }
-    
-    public async Task<IEnumerable<MovieSummaryDto>> GetMovies()
-    {
-        return await genreRepository.GetMovies();
-    }
 
     public async Task CreateAsync(GenreUpsertDto genre)
     {

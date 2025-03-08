@@ -9,8 +9,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Actors\" />
-    <Folder Include="Services\" />
+    <Folder Include="Actors\DTOs\" />
+    <Folder Include="Actors\Services\" />
   </ItemGroup>
 
   <PropertyGroup>
