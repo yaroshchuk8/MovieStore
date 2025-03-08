@@ -6,10 +6,25 @@ namespace MovieStore.Infrastructure.Persistence.Repositories;
 
 public class MovieRepository(MovieStoreDbContext context) : IMovieRepository
 {
+    public async Task<IEnumerable<MovieDto>> GetAllAsync()
+    {
+        return await context.Movies
+            .AsNoTracking()
+            .Select(m => new MovieDto
+            {
+                Id = m.Id,
+                Title = m.Title,
+                Description = m.Description,
+                Price = m.Price,
+                ImageUrl = m.ImageUrl,
+            })
+            .ToListAsync();
+    }
+    
     // get movie ids and titles
     public async Task<IEnumerable<MovieSummaryDto>> GetAllSummariesAsync()
     {
-        return await context.Movie
+        return await context.Movies
             .AsNoTracking()
             .Select(m => new MovieSummaryDto
             {

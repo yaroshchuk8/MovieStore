@@ -17,7 +17,7 @@ internal class ActorConfiguration : IEntityTypeConfiguration<Actor>
             .WithMany(m => m.Actors)
             .UsingEntity(j =>
             {
-                j.ToTable("MovieActor");
+                j.ToTable("MovieActors");
                 j.Property("MoviesId").HasColumnName("MovieId");
                 j.Property("ActorsId").HasColumnName("ActorId");
             });

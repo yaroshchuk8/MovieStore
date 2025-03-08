@@ -12,7 +12,7 @@ namespace MovieStore.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Actor",
+                name: "Actors",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
@@ -21,11 +21,11 @@ namespace MovieStore.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Actor", x => x.Id);
+                    table.PrimaryKey("PK_Actors", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Genre",
+                name: "Genres",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
@@ -33,11 +33,11 @@ namespace MovieStore.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Genre", x => x.Id);
+                    table.PrimaryKey("PK_Genres", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Movie",
+                name: "Movies",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
@@ -48,11 +48,11 @@ namespace MovieStore.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Movie", x => x.Id);
+                    table.PrimaryKey("PK_Movies", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "MovieActor",
+                name: "MovieActors",
                 columns: table => new
                 {
                     ActorId = table.Column<Guid>(type: "TEXT", nullable: false),
@@ -60,23 +60,23 @@ namespace MovieStore.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MovieActor", x => new { x.ActorId, x.MovieId });
+                    table.PrimaryKey("PK_MovieActors", x => new { x.ActorId, x.MovieId });
                     table.ForeignKey(
-                        name: "FK_MovieActor_Actor_ActorId",
+                        name: "FK_MovieActors_Actors_ActorId",
                         column: x => x.ActorId,
-                        principalTable: "Actor",
+                        principalTable: "Actors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_MovieActor_Movie_MovieId",
+                        name: "FK_MovieActors_Movies_MovieId",
                         column: x => x.MovieId,
-                        principalTable: "Movie",
+                        principalTable: "Movies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "MovieGenre",
+                name: "MovieGenres",
                 columns: table => new
                 {
                     GenreId = table.Column<Guid>(type: "TEXT", nullable: false),
@@ -84,29 +84,29 @@ namespace MovieStore.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MovieGenre", x => new { x.GenreId, x.MovieId });
+                    table.PrimaryKey("PK_MovieGenres", x => new { x.GenreId, x.MovieId });
                     table.ForeignKey(
-                        name: "FK_MovieGenre_Genre_GenreId",
+                        name: "FK_MovieGenres_Genres_GenreId",
                         column: x => x.GenreId,
-                        principalTable: "Genre",
+                        principalTable: "Genres",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_MovieGenre_Movie_MovieId",
+                        name: "FK_MovieGenres_Movies_MovieId",
                         column: x => x.MovieId,
-                        principalTable: "Movie",
+                        principalTable: "Movies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_MovieActor_MovieId",
-                table: "MovieActor",
+                name: "IX_MovieActors_MovieId",
+                table: "MovieActors",
                 column: "MovieId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MovieGenre_MovieId",
-                table: "MovieGenre",
+                name: "IX_MovieGenres_MovieId",
+                table: "MovieGenres",
                 column: "MovieId");
         }
 
@@ -114,19 +114,19 @@ namespace MovieStore.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "MovieActor");
+                name: "MovieActors");
 
             migrationBuilder.DropTable(
-                name: "MovieGenre");
+                name: "MovieGenres");
 
             migrationBuilder.DropTable(
-                name: "Actor");
+                name: "Actors");
 
             migrationBuilder.DropTable(
-                name: "Genre");
+                name: "Genres");
 
             migrationBuilder.DropTable(
-                name: "Movie");
+                name: "Movies");
         }
     }
 }

@@ -6,6 +6,12 @@ namespace MovieStore.Api.Controllers;
 
 public class MoviesController(IMovieService movieService) : ApiControllerBase
 {
+    [HttpGet]
+    public async Task<IEnumerable<MovieDto>> GetMovies()
+    {
+        return await movieService.GetAllAsync();
+    }
+    
     [HttpGet("summary")]
     public async Task<IEnumerable<MovieSummaryDto>> GetSummaries()
     {

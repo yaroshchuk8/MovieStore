@@ -10,7 +10,7 @@ public class GenreRepository(MovieStoreDbContext context) : IGenreRepository
 {
     public async Task<IEnumerable<GenreDto>> GetAllAsync()
     {
-        return await context.Genre
+        return await context.Genres
             .AsNoTracking()
             .Select(g => new GenreDto
             {
@@ -27,7 +27,7 @@ public class GenreRepository(MovieStoreDbContext context) : IGenreRepository
 
     public async Task<GenreDto> GetByIdAsync(Guid id)
     {
-        return await context.Genre
+        return await context.Genres
             .AsNoTracking()
             .Where(g => g.Id == id)
             .Select((g) => new GenreDto
@@ -62,14 +62,14 @@ public class GenreRepository(MovieStoreDbContext context) : IGenreRepository
             context.Entry(movie).State = EntityState.Unchanged;
         }
         
-        context.Genre.Add(newGenre);
+        context.Genres.Add(newGenre);
         await context.SaveChangesAsync();
     }
 
     public async Task UpdateAsync(GenreUpsertDto genre)
     {
         // unoptimized, to be reworked
-        var genreToUpdate = await context.Genre
+        var genreToUpdate = await context.Genres
             .Include(g => g.Movies)
             .FirstOrDefaultAsync(g => g.Id == genre.Id);
 
@@ -85,7 +85,7 @@ public class GenreRepository(MovieStoreDbContext context) : IGenreRepository
             genreToUpdate.Movies.RemoveAll(m => !genre.MovieIds.Contains(m.Id));
 
             // Add new movies if not already associated
-            var moviesToAdd = await context.Movie
+            var moviesToAdd = await context.Movies
                 .Where(m => genre.MovieIds.Contains(m.Id) && !existingMovieIds.Contains(m.Id))
                 .ToListAsync();
 

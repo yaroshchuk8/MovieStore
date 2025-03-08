@@ -16,7 +16,7 @@ internal class GenreConfiguration : IEntityTypeConfiguration<Genre>
             .WithMany(m => m.Genres)
             .UsingEntity(j =>
             {
-                j.ToTable("MovieGenre");
+                j.ToTable("MovieGenres");
                 j.Property("MoviesId").HasColumnName("MovieId");
                 j.Property("GenresId").HasColumnName("GenreId");
             });
