@@ -16,7 +16,7 @@ public class MovieRepository(MovieStoreDbContext context) : IMovieRepository
                 Title = m.Title,
                 Description = m.Description,
                 Price = m.Price,
-                ImageUrl = m.ImageUrl,
+                ImageUrl = m.ImagePath,
             })
             .ToListAsync();
     }

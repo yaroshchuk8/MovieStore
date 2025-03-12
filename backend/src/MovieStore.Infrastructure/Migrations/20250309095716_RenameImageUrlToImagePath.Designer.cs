@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MovieStore.Infrastructure.Persistence;
 
@@ -10,9 +11,11 @@ using MovieStore.Infrastructure.Persistence;
 namespace MovieStore.Infrastructure.Migrations
 {
     [DbContext(typeof(MovieStoreDbContext))]
-    partial class MovieStoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250309095716_RenameImageUrlToImagePath")]
+    partial class RenameImageUrlToImagePath
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.1");

@@ -26,6 +26,7 @@ var app = builder.Build();
         app.MapOpenApi();
     }
 
+    app.UseStaticFiles();
     app.UseCors("CorsPolicy");
     app.UseAuthorization();
     app.MapControllers();
