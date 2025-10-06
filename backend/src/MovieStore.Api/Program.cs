@@ -1,4 +1,7 @@
+using MovieStore.Api;
+using MovieStore.Api.Configuration;
 using MovieStore.Application;
+using MovieStore.Application.Common.Extensions;
 using MovieStore.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,16 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddOpenApi();
     
     builder.Services
+        .AddApi(builder.Configuration)
         .AddApplication()
-        .AddInfrastructure();
-    
-    builder.Services.AddCors(opt =>
-    {
-        opt.AddPolicy("CorsPolicy", policy =>
-        {
-            policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000", "https://localhost:3000");
-        });
-    });
+        .AddInfrastructure(builder.Configuration);
 }
 
 var app = builder.Build();
@@ -25,10 +21,13 @@ var app = builder.Build();
     {
         app.MapOpenApi();
     }
-
-    app.UseStaticFiles();
-    app.UseCors("CorsPolicy");
+    
+    var corsSettings = builder.Configuration.GetAndValidateSection<CorsSettings>(nameof(CorsSettings));
+    app.UseCors(corsSettings.PolicyName);
+    
+    app.UseAuthentication();
     app.UseAuthorization();
+    
     app.MapControllers();
     
     app.Run();

@@ -5,7 +5,7 @@ using MovieStore.Domain.Entities;
 
 namespace MovieStore.Infrastructure.Persistence.Repositories;
 
-public class ActorRepository(MovieStoreDbContext context) : IActorRepository
+internal class ActorRepository(MovieStoreDbContext context) : IActorRepository
 {
     public async Task CreateAsync(ActorUpsertDto actor)
     {

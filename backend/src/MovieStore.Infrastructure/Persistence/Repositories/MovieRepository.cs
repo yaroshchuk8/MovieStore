@@ -4,7 +4,7 @@ using MovieStore.Application.Movies.Interfaces;
 
 namespace MovieStore.Infrastructure.Persistence.Repositories;
 
-public class MovieRepository(MovieStoreDbContext context) : IMovieRepository
+internal class MovieRepository(MovieStoreDbContext context) : IMovieRepository
 {
     public async Task<IEnumerable<MovieDto>> GetAllAsync()
     {

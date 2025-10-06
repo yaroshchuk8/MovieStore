@@ -6,7 +6,7 @@ using MovieStore.Domain.Entities;
 
 namespace MovieStore.Infrastructure.Persistence.Repositories;
 
-public class GenreRepository(MovieStoreDbContext context) : IGenreRepository
+internal class GenreRepository(MovieStoreDbContext context) : IGenreRepository
 {
     public async Task<IEnumerable<GenreDto>> GetAllAsync()
     {
