@@ -2,7 +2,7 @@ namespace MovieStore.Application.Genres.DTOs;
 
 public class GenreUpsertDto
 {
-    public Guid Id { get; set; }
+    public long Id { get; set; }
     public string Name { get; set; }
-    public List<Guid> MovieIds { get; set; }
+    public List<long> MovieIds { get; set; }
 }

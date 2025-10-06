@@ -3,7 +3,8 @@ using MovieStore.Domain.Entities;
 
 namespace MovieStore.Infrastructure.Persistence.Repositories;
 
-internal class GenreRepository(MovieStoreDbContext context) : BaseRepository<Genre>(context), IGenreRepository
+internal class MovieActorRepository(MovieStoreDbContext context)
+    : BaseRepository<MovieActor>(context), IMovieActorRepository
 {
     
 }

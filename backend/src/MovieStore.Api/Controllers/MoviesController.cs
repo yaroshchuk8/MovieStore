@@ -1,11 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
-using MovieStore.Application.Movies.DTOs;
-using MovieStore.Application.Movies.Interfaces;
-
 namespace MovieStore.Api.Controllers;
 
-public class MoviesController(IMovieService movieService, IWebHostEnvironment env) : ApiControllerBase
+public class MoviesController : ApiControllerBase
 {
+    /*
     [HttpGet]
     public async Task<IEnumerable<MovieDto>> GetMovies()
     {
@@ -32,4 +29,5 @@ public class MoviesController(IMovieService movieService, IWebHostEnvironment en
         
         await stream.CopyToAsync(fileStreamOutput);
     }
+    */
 }

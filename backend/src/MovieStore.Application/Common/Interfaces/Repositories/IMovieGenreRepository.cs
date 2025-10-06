@@ -1,0 +1,8 @@
+using MovieStore.Domain.Entities;
+
+namespace MovieStore.Application.Common.Interfaces.Repositories;
+
+public interface IMovieGenreRepository : IBaseRepository<MovieGenre>
+{
+    
+}

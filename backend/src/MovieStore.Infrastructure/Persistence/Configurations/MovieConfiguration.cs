@@ -13,7 +13,5 @@ internal class MovieConfiguration : IEntityTypeConfiguration<Movie>
         builder.Property(m => m.Description).IsRequired();
         builder.Property(m => m.Price).IsRequired().HasColumnType("decimal(6,2)");
         builder.Property(m => m.ImagePath).IsRequired(false);
-
-        // Many-to-Many Relationships (Already defined in Actor and Genre Configurations)
     }
 }

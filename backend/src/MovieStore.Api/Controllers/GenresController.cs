@@ -1,12 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
-using MovieStore.Application.Genres.DTOs;
-using MovieStore.Application.Genres.Interfaces;
-using MovieStore.Application.Movies.DTOs;
-
 namespace MovieStore.Api.Controllers;
 
-public class GenresController(IGenreService genreService) : ApiControllerBase
+public class GenresController : ApiControllerBase
 {
+    /*
     [HttpGet]
     public async Task<IEnumerable<GenreDto>> GetAll()
     {
@@ -36,4 +32,5 @@ public class GenresController(IGenreService genreService) : ApiControllerBase
     {
         await genreService.DeleteAsync(id);
     }
+    */
 }

@@ -12,13 +12,13 @@ internal class GenreConfiguration : IEntityTypeConfiguration<Genre>
         builder.Property(g => g.Name).IsRequired();
 
         // Many-to-Many Relationship
-        builder.HasMany(g => g.Movies)
-            .WithMany(m => m.Genres)
-            .UsingEntity(j =>
-            {
-                j.ToTable("MovieGenres");
-                j.Property("MoviesId").HasColumnName("MovieId");
-                j.Property("GenresId").HasColumnName("GenreId");
-            });
+        // builder.HasMany(g => g.Movies)
+        //     .WithMany(m => m.Genres)
+        //     .UsingEntity(j =>
+        //     {
+        //         j.ToTable("MovieGenres");
+        //         j.Property("MoviesId").HasColumnName("MovieId");
+        //         j.Property("GenresId").HasColumnName("GenreId");
+        //     });
     }
 }

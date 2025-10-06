@@ -1,11 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MovieStore.Application.Actors.Interfaces;
 using MovieStore.Application.Common.Extensions;
 using MovieStore.Application.Common.Interfaces;
-using MovieStore.Application.Genres.Interfaces;
-using MovieStore.Application.Movies.Interfaces;
+using MovieStore.Application.Common.Interfaces.Repositories;
 using MovieStore.Infrastructure.Configuration;
 using MovieStore.Infrastructure.Files;
 using MovieStore.Infrastructure.Persistence;
@@ -17,7 +15,11 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        return services.AddPersistence(configuration).AddServices().AddRepositories();
+        return services
+            .AddConfiguration(configuration)
+            .AddPersistence(configuration)
+            .AddServices()
+            .AddRepositories();
     }
     
     private static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
@@ -40,6 +42,16 @@ public static class DependencyInjection
         services.AddScoped<IActorRepository, ActorRepository>();
         services.AddScoped<IGenreRepository, GenreRepository>();
         services.AddScoped<IMovieRepository, MovieRepository>();
+        services.AddScoped<IUnitOfWork>(serviceProvider => serviceProvider.GetRequiredService<MovieStoreDbContext>());
+        
+        return services;
+    }
+    
+    private static IServiceCollection AddConfiguration(this IServiceCollection services, IConfiguration configuration)
+    {
+        var fileStorageSettings = configuration.GetAndValidateSection<FileStorageSettings>(nameof(FileStorageSettings));
+        
+        services.AddSingleton(fileStorageSettings);
         
         return services;
     }

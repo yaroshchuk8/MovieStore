@@ -2,9 +2,9 @@ namespace MovieStore.Domain.Entities;
 
 public class Genre
 {
-    public Guid Id { get; set; }
+    public long Id { get; set; }
     public string Name { get; set; }
-
-    // Navigation property for many-to-many relationship
-    public List<Movie> Movies { get; set; } = new();
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    
+    public List<MovieGenre> MovieGenres { get; set; }
 }

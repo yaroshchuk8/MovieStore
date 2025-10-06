@@ -13,13 +13,13 @@ internal class ActorConfiguration : IEntityTypeConfiguration<Actor>
         builder.Property(a => a.ImagePath).IsRequired(false);
 
         // Many-to-Many Relationship
-        builder.HasMany(a => a.Movies)
-            .WithMany(m => m.Actors)
-            .UsingEntity(j =>
-            {
-                j.ToTable("MovieActors");
-                j.Property("MoviesId").HasColumnName("MovieId");
-                j.Property("ActorsId").HasColumnName("ActorId");
-            });
+        // builder.HasMany(a => a.Movies)
+        //     .WithMany(m => m.Actors)
+        //     .UsingEntity(j =>
+        //     {
+        //         j.ToTable("MovieActors");
+        //         j.Property("MoviesId").HasColumnName("MovieId");
+        //         j.Property("ActorsId").HasColumnName("ActorId");
+        //     });
     }
 }

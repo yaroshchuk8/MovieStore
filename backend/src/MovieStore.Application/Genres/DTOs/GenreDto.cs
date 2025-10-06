@@ -4,7 +4,7 @@ namespace MovieStore.Application.Genres.DTOs;
 
 public class GenreDto
 {
-    public Guid Id { get; set; }
+    public long Id { get; set; }
     public string Name { get; set; }
     public List<MovieSummaryDto> Movies { get; set; }
 }

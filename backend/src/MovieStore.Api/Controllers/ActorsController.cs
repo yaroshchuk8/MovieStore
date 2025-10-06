@@ -1,14 +1,19 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using MovieStore.Application.Actors.DTOs;
-using MovieStore.Application.Actors.Interfaces;
+using MovieStore.Infrastructure.Configuration;
 
 namespace MovieStore.Api.Controllers;
 
-public class ActorsController(IActorService actorService, IWebHostEnvironment env) : ApiControllerBase
+public class ActorsController(FileStorageSettings fileStorageSettings) : ApiControllerBase
 {
+    [HttpGet]
+    public IActionResult Test()
+    {
+        return Ok();
+    }
     
-    [HttpPost]
+    /*[HttpPost]
     public async Task Create([FromForm] string actor, [FromForm] IFormFile? file)
     {
         // this endpoint accepts actor as string, then converts it to ActorUpsertDto (form-data specifics)
@@ -29,5 +34,5 @@ public class ActorsController(IActorService actorService, IWebHostEnvironment en
         }
         
         await actorService.CreateAsync(actorDto, stream, webRootPath, fileExtension);
-    }
+    }*/
 }

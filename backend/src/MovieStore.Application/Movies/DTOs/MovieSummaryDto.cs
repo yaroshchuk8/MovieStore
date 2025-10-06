@@ -2,6 +2,6 @@ namespace MovieStore.Application.Movies.DTOs;
 
 public class MovieSummaryDto
 {
-    public Guid Id { get; set; }
+    public long Id { get; set; }
     public string Title { get; set; }
 }
