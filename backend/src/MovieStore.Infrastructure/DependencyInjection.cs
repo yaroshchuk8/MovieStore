@@ -5,9 +5,9 @@ using MovieStore.Application.Common.Extensions;
 using MovieStore.Application.Common.Interfaces;
 using MovieStore.Application.Common.Interfaces.Repositories;
 using MovieStore.Infrastructure.Configuration;
-using MovieStore.Infrastructure.Files;
 using MovieStore.Infrastructure.Persistence;
 using MovieStore.Infrastructure.Persistence.Repositories;
+using MovieStore.Infrastructure.Services;
 
 namespace MovieStore.Infrastructure;
 
@@ -50,7 +50,6 @@ public static class DependencyInjection
     private static IServiceCollection AddConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
         var fileStorageSettings = configuration.GetAndValidateSection<FileStorageSettings>(nameof(FileStorageSettings));
-        
         services.AddSingleton(fileStorageSettings);
         
         return services;

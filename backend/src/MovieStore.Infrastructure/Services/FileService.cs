@@ -1,6 +1,6 @@
 using MovieStore.Application.Common.Interfaces;
 
-namespace MovieStore.Infrastructure.Files;
+namespace MovieStore.Infrastructure.Services;
 
 public class FileService : IFileService
 {

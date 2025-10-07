@@ -1,12 +1,14 @@
 using MovieStore.Api;
 using MovieStore.Api.Configuration;
+using MovieStore.Api.Extensions;
 using MovieStore.Application;
 using MovieStore.Application.Common.Extensions;
 using MovieStore.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 {
-    builder.Services.AddControllers();
+    builder.Services.AddControllers()
+        .ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true); // disable data annotation validation
     builder.Services.AddOpenApi();
     
     builder.Services
@@ -17,6 +19,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 var app = builder.Build();
 {
+    app.UseFluentValidationExceptionHandler();
+    
     if (app.Environment.IsDevelopment())
     {
         app.MapOpenApi();
