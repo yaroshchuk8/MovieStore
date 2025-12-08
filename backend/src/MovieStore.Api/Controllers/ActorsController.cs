@@ -9,16 +9,9 @@ namespace MovieStore.Api.Controllers;
 
 public class ActorsController(ISender sender) : ApiControllerBase
 {
-    [HttpGet]
+    /*[HttpGet]
     public IActionResult Test()
     {
         return Ok();
-    }
-    
-     [HttpPost]
-     public async Task<IActionResult> Create(CreateGenreCommand createGenreCommand)
-     {
-         var result = await sender.Send(createGenreCommand);
-         return Ok(result);
-     }
+    }*/
 }

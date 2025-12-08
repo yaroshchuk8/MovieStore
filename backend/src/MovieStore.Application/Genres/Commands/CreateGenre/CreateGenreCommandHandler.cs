@@ -2,18 +2,28 @@ using MediatR;
 using MovieStore.Application.Common.Interfaces;
 using MovieStore.Application.Common.Interfaces.Repositories;
 using MovieStore.Domain.Entities;
+using ErrorOr;
 
 namespace MovieStore.Application.Genres.Commands.CreateGenre;
 
 public class CreateGenreCommandHandler(IGenreRepository genreRepository, IUnitOfWork unitOfWork)
-    : IRequestHandler<CreateGenreCommand, long>
+    : IRequestHandler<CreateGenreCommand, ErrorOr<Success>>
 {
-    public async Task<long> Handle(CreateGenreCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Success>> Handle(CreateGenreCommand request, CancellationToken cancellationToken)
     {
-        var genre = new Genre { Name = request.Name };
-        await genreRepository.AddAsync(genre);
-        await unitOfWork.CommitChangesAsync();
+        try
+        {
+            var genre = new Genre(name: request.Name, description: request.Description);
+            await genreRepository.AddAsync(genre);
+            await unitOfWork.CommitChangesAsync();
 
-        return genre.Id;
+            return Result.Success;
+        }
+        catch (Exception ex)
+        {
+            return Error.Unexpected(
+                code: "Infrastructure.RepositoryFailure",
+                description: $"Database access failed: {ex.Message}");
+        }
     }
 }

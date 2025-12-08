@@ -11,7 +11,6 @@ internal class MovieConfiguration : IEntityTypeConfiguration<Movie>
         builder.HasKey(m => m.Id);
         builder.Property(m => m.Title).IsRequired();
         builder.Property(m => m.Description).IsRequired();
-        builder.Property(m => m.Price).IsRequired().HasColumnType("decimal(6,2)");
-        builder.Property(m => m.ImagePath).IsRequired(false);
+        builder.Property(m => m.Price).IsRequired(); // .HasColumnType("decimal(6,2)")
     }
 }

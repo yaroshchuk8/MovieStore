@@ -1,8 +1,6 @@
-using MediatR;
+using MediatR; 
+using ErrorOr;
 
 namespace MovieStore.Application.Genres.Commands.CreateGenre;
 
-public record CreateGenreCommand : IRequest<long>
-{
-    public string Name { get; init; }
-}
+public record CreateGenreCommand(string Name, string? Description) : IRequest<ErrorOr<Success>>;

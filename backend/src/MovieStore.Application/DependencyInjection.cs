@@ -7,26 +7,29 @@ namespace MovieStore.Application;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddApplication(this IServiceCollection services)
+    extension(IServiceCollection services)
     {
-        return services.AddMediator().AddFluentValidation();
-    }
-    
-    private static IServiceCollection AddMediator(this IServiceCollection services)
-    {
-        services.AddMediatR(options =>
+        public IServiceCollection AddApplication()
         {
-            options.RegisterServicesFromAssemblyContaining(typeof(DependencyInjection));
-        });
+            return services.AddMediator().AddFluentValidation();
+        }
 
-        return services;
-    }
+        private IServiceCollection AddMediator()
+        {
+            services.AddMediatR(options =>
+            {
+                options.RegisterServicesFromAssemblyContaining(typeof(DependencyInjection));
+            });
 
-    private static IServiceCollection AddFluentValidation(this IServiceCollection services)
-    {
-        services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+            return services;
+        }
 
-        return services;
+        private IServiceCollection AddFluentValidation()
+        {
+            services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+
+            return services;
+        }
     }
 }
