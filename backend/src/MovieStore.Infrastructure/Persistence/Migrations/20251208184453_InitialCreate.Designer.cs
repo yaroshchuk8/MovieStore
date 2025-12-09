@@ -11,7 +11,7 @@ using MovieStore.Infrastructure.Persistence;
 namespace MovieStore.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(MovieStoreDbContext))]
-    [Migration("20251205204716_InitialCreate")]
+    [Migration("20251208184453_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
