@@ -5,5 +5,5 @@ namespace MovieStore.Application.Users.Interfaces;
 
 public interface IUserManagementService
 {
-    Task<ErrorOr<Success>> RegisterUserAsync(string email, string password, string? name, Sex? sex);
+    Task<ErrorOr<string>> RegisterUserAsync(string email, string password, string? name, Sex? sex);
 }

@@ -5,9 +5,9 @@ using MovieStore.Application.Users.Interfaces;
 namespace MovieStore.Application.Users.Commands.RegisterUser;
 
 public class RegisterUserCommandHandler(IUserManagementService userManagementService)
-    : IRequestHandler<RegisterUserCommand, ErrorOr<Success>>
+    : IRequestHandler<RegisterUserCommand, ErrorOr<string>>
 {
-    public async Task<ErrorOr<Success>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<string>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
         var result = await userManagementService.RegisterUserAsync(
             email: request.Email,
