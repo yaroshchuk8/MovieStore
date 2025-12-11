@@ -4,5 +4,7 @@ namespace MovieStore.Infrastructure.Persistence.Identity.Entities;
 
 public class ApplicationRole : IdentityRole<int>
 {
+    public ApplicationRole() : base() { }
     
+    public ApplicationRole(string roleName) : base(roleName) { }
 }

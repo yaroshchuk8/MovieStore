@@ -9,6 +9,7 @@ using MovieStore.Infrastructure.Configuration;
 using MovieStore.Infrastructure.Persistence;
 using MovieStore.Infrastructure.Persistence.Repositories;
 using MovieStore.Infrastructure.Services;
+using MovieStore.Infrastructure.Services.Interfaces;
 
 namespace MovieStore.Infrastructure;
 
@@ -38,6 +39,7 @@ public static class DependencyInjection
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<IUserManagementService, UserManagementService>();
             services.AddScoped<IJwtService, JwtService>();
+            services.AddScoped<IDbInitializer, DbInitializer>();
         
             return services;
         }

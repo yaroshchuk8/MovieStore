@@ -5,6 +5,7 @@ using MovieStore.Application;
 using MovieStore.Application.Common.Extensions;
 using MovieStore.Infrastructure;
 using MovieStore.Infrastructure.Persistence;
+using MovieStore.Infrastructure.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 {
@@ -22,10 +23,9 @@ var app = builder.Build();
 {
     using (var scope = app.Services.CreateScope())
     {
-        var services = scope.ServiceProvider;
-        var context = services.GetRequiredService<MovieStoreDbContext>();
-        
-        await context.Database.MigrateAsync();
+        var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+        await dbInitializer.InitializeAsync();
+        await dbInitializer.SeedAsync();
     }
     
     if (app.Environment.IsDevelopment())
