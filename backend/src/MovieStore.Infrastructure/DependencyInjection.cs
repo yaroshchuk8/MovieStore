@@ -37,6 +37,7 @@ public static class DependencyInjection
         {
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<IUserManagementService, UserManagementService>();
+            services.AddScoped<IJwtService, JwtService>();
         
             return services;
         }
