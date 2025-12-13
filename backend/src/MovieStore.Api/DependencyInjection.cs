@@ -3,9 +3,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using MovieStore.Api.Configuration;
 using MovieStore.Application.Common.Extensions;
-using MovieStore.Infrastructure.Configuration;
+using MovieStore.Infrastructure.Common.Configurations;
+using MovieStore.Infrastructure.Common.Persistence;
 using MovieStore.Infrastructure.Persistence;
-using MovieStore.Infrastructure.Persistence.Identity.Entities;
+using MovieStore.Infrastructure.Users.Persistence.Identity.Entities;
 
 namespace MovieStore.Api;
 

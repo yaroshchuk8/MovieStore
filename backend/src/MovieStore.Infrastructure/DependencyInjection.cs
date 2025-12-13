@@ -5,11 +5,16 @@ using MovieStore.Application.Common.Extensions;
 using MovieStore.Application.Common.Interfaces;
 using MovieStore.Application.Common.Interfaces.Repositories;
 using MovieStore.Application.Users.Interfaces;
-using MovieStore.Infrastructure.Configuration;
+using MovieStore.Infrastructure.Actors.Persistence.Repositories;
+using MovieStore.Infrastructure.Common.Configurations;
+using MovieStore.Infrastructure.Common.Persistence;
+using MovieStore.Infrastructure.Common.Services;
+using MovieStore.Infrastructure.Common.Services.Interfaces;
+using MovieStore.Infrastructure.Genres.Persistence.Repositories;
+using MovieStore.Infrastructure.Movies.Persistence.Repositories;
 using MovieStore.Infrastructure.Persistence;
 using MovieStore.Infrastructure.Persistence.Repositories;
 using MovieStore.Infrastructure.Services;
-using MovieStore.Infrastructure.Services.Interfaces;
 
 namespace MovieStore.Infrastructure;
 

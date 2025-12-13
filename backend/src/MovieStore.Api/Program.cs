@@ -4,8 +4,8 @@ using MovieStore.Api.Configuration;
 using MovieStore.Application;
 using MovieStore.Application.Common.Extensions;
 using MovieStore.Infrastructure;
+using MovieStore.Infrastructure.Common.Services.Interfaces;
 using MovieStore.Infrastructure.Persistence;
-using MovieStore.Infrastructure.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 {

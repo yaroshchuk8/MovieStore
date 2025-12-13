@@ -3,7 +3,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using MovieStore.Application.Actors.DTOs;
 using MovieStore.Application.Genres.Commands.CreateGenre;
-using MovieStore.Infrastructure.Configuration;
 
 namespace MovieStore.Api.Controllers;
 
