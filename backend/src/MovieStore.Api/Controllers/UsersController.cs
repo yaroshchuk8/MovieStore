@@ -20,7 +20,7 @@ public class UsersController(ISender sender) : ApiControllerBase
         var result = await sender.Send(command);
 
         return result.Match(
-            _ => Created(),
+            Ok,
             Problem);
     }
 }

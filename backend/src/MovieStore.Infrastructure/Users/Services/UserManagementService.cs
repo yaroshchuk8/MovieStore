@@ -6,20 +6,18 @@ using MovieStore.Domain.Entities;
 using MovieStore.Domain.Enums;
 using MovieStore.Infrastructure.Common.Persistence;
 using MovieStore.Infrastructure.Common.Services.Interfaces;
-using MovieStore.Infrastructure.Persistence;
 using MovieStore.Infrastructure.Users.Persistence.Identity.Entities;
 
-namespace MovieStore.Infrastructure.Services;
+namespace MovieStore.Infrastructure.Users.Services;
 
 public class UserManagementService(
     MovieStoreDbContext context,
     IUserProfileRepository userProfileRepository,
     IUnitOfWork unitOfWork,
-    UserManager<ApplicationUser> userManager,
-    IJwtService jwtService)
+    UserManager<ApplicationUser> userManager)
     : IUserManagementService
 {
-    public async Task<ErrorOr<string>> RegisterUserAsync(string email, string password, string? name, Sex? sex)
+    public async Task<ErrorOr<IIdentityUserContract>> RegisterUserAsync(string email, string password, string? name, Sex? sex)
     {
         await using var transaction = await context.Database.BeginTransactionAsync();
         try
@@ -35,14 +33,14 @@ public class UserManagementService(
                 return errors;
             }
             
-            // var addUserToRoleResult = await userManager.AddToRoleAsync(identityUser, nameof(Role.Customer));
-            // if (!addUserToRoleResult.Succeeded)
-            // {
-            //     var errors = addUserToRoleResult.Errors
-            //         .Select(e => Error.Validation(code: e.Code, description: e.Description))
-            //         .ToList(); 
-            //     return errors;
-            // }
+            var addUserToRoleResult = await userManager.AddToRoleAsync(identityUser, nameof(Role.Customer));
+            if (!addUserToRoleResult.Succeeded)
+            {
+                var errors = addUserToRoleResult.Errors
+                    .Select(e => Error.Validation(code: e.Code, description: e.Description))
+                    .ToList(); 
+                return errors;
+            }
             
             var domainUser = new UserProfile(identityUser.Id, name, sex);
             await userProfileRepository.AddAsync(domainUser);
@@ -50,9 +48,7 @@ public class UserManagementService(
             
             await transaction.CommitAsync();
 
-            var token = await jwtService.GenerateJwtToken(identityUser);
-            
-            return token;
+            return identityUser;
         }
         catch (Exception)
         {

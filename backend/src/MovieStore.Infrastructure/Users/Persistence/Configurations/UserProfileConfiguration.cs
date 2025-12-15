@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MovieStore.Domain.Entities;
 using MovieStore.Infrastructure.Users.Persistence.Identity.Entities;
 
-namespace MovieStore.Infrastructure.Persistence.Configurations;
+namespace MovieStore.Infrastructure.Users.Persistence.Configurations;
 
 public class UserProfileConfiguration : IEntityTypeConfiguration<UserProfile>
 {
