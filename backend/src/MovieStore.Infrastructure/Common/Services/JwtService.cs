@@ -9,11 +9,11 @@ using MovieStore.Infrastructure.Users.Persistence.Identity.Entities;
 
 namespace MovieStore.Infrastructure.Common.Services;
 
-public class JwtService(JwtSettings jwtSettings, UserManager<ApplicationUser> userManager) : IJwtService
+public class JwtService(JwtSettings jwtSettings, UserManager<IdentityUserEntity> userManager) : IJwtService
 {
     public async Task<string> GenerateJwtToken(IIdentityUserContract identityUserContract)
     {
-        var identityUser = identityUserContract as ApplicationUser;
+        var identityUser = identityUserContract as IdentityUserEntity;
         var roles = await userManager.GetRolesAsync(identityUser);
         
         var tokenHandler = new JwtSecurityTokenHandler();
@@ -23,6 +23,7 @@ public class JwtService(JwtSettings jwtSettings, UserManager<ApplicationUser> us
         {
             Subject = new ClaimsIdentity([
                 new Claim("Id", identityUser.Id.ToString()),
+                new Claim("UserName", identityUser.UserName ?? string.Empty),
                 ..roles.Select(role => new Claim(ClaimTypes.Role, role))
             ]),
             Expires = DateTime.Now.Add(jwtSettings.JwtTokenLifetime),
