@@ -8,14 +8,14 @@ namespace MovieStore.Infrastructure.Common.Persistence;
 
 public class MovieStoreDbContext(DbContextOptions<MovieStoreDbContext> options)
     : IdentityDbContext<
-        ApplicationUser,
-        ApplicationRole,
+        IdentityUserEntity,
+        IdentityRoleEntity,
         int,
-        ApplicationUserClaim,
-        ApplicationUserRole,
-        ApplicationUserLogin,
-        ApplicationRoleClaim,
-        ApplicationUserToken
+        IdentityUserClaimEntity,
+        IdentityUserRoleEntity,
+        IdentityUserLoginEntity,
+        IdentityRoleClaimEntity,
+        IdentityUserTokenEntity
     >(options), IUnitOfWork
 {
     public DbSet<Actor> Actor { get; set; }

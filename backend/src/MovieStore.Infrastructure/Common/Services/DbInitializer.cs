@@ -8,8 +8,8 @@ using MovieStore.Infrastructure.Users.Persistence.Identity.Entities;
 namespace MovieStore.Infrastructure.Common.Services;
 
 public class DbInitializer(
-    UserManager<ApplicationUser> userManager,
-    RoleManager<ApplicationRole> roleManager,
+    UserManager<IdentityUserEntity> userManager,
+    RoleManager<IdentityRoleEntity> roleManager,
     MovieStoreDbContext context)
     : IDbInitializer
 {
@@ -25,7 +25,7 @@ public class DbInitializer(
         {
             if (!await roleManager.RoleExistsAsync(role))
             {
-                await roleManager.CreateAsync(new ApplicationRole(role));
+                await roleManager.CreateAsync(new IdentityRoleEntity(role));
             }
         }
     }

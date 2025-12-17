@@ -10,7 +10,7 @@ public class UserProfileConfiguration : IEntityTypeConfiguration<UserProfile>
     public void Configure(EntityTypeBuilder<UserProfile> builder)
     {
         builder
-            .HasOne<ApplicationUser>()
+            .HasOne<IdentityUserEntity>()
             .WithOne()
             .HasForeignKey<UserProfile>(profile => profile.IdentityUserId)
             .IsRequired()

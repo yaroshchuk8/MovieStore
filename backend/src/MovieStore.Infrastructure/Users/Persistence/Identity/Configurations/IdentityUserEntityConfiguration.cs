@@ -4,10 +4,10 @@ using MovieStore.Infrastructure.Users.Persistence.Identity.Entities;
 
 namespace MovieStore.Infrastructure.Users.Persistence.Identity.Configurations;
 
-public class ApplicationRoleConfiguration : IEntityTypeConfiguration<ApplicationRole>
+public class IdentityUserEntityConfiguration : IEntityTypeConfiguration<IdentityUserEntity>
 {
-    public void Configure(EntityTypeBuilder<ApplicationRole> builder)
+    public void Configure(EntityTypeBuilder<IdentityUserEntity> builder)
     {
-        builder.ToTable("IdentityRole");
+        builder.ToTable("IdentityUser");
     }
 }

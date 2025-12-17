@@ -5,7 +5,6 @@ using MovieStore.Api.Configuration;
 using MovieStore.Application.Common.Extensions;
 using MovieStore.Infrastructure.Common.Configurations;
 using MovieStore.Infrastructure.Common.Persistence;
-using MovieStore.Infrastructure.Persistence;
 using MovieStore.Infrastructure.Users.Persistence.Identity.Entities;
 
 namespace MovieStore.Api;
@@ -85,7 +84,7 @@ public static class DependencyInjection
         private IServiceCollection AddIdentity()
         {
             services
-                .AddIdentity<ApplicationUser, ApplicationRole>()
+                .AddIdentity<IdentityUserEntity, IdentityRoleEntity>()
                 .AddEntityFrameworkStores<MovieStoreDbContext>();
             
             return services;

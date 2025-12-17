@@ -4,10 +4,10 @@ using MovieStore.Infrastructure.Users.Persistence.Identity.Entities;
 
 namespace MovieStore.Infrastructure.Users.Persistence.Identity.Configurations;
 
-public class ApplicationUserConfiguration : IEntityTypeConfiguration<ApplicationUser>
+public class IdentityUserTokenEntityConfiguration : IEntityTypeConfiguration<IdentityUserTokenEntity>
 {
-    public void Configure(EntityTypeBuilder<ApplicationUser> builder)
+    public void Configure(EntityTypeBuilder<IdentityUserTokenEntity> builder)
     {
-        builder.ToTable("IdentityUser");
+        builder.ToTable("IdentityUserToken");
     }
 }

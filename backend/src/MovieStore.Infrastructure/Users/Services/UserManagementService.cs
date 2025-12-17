@@ -14,7 +14,7 @@ public class UserManagementService(
     MovieStoreDbContext context,
     IUserProfileRepository userProfileRepository,
     IUnitOfWork unitOfWork,
-    UserManager<ApplicationUser> userManager)
+    UserManager<IdentityUserEntity> userManager)
     : IUserManagementService
 {
     public async Task<ErrorOr<IIdentityUserContract>> RegisterUserAsync(string email, string password, string? name, Sex? sex)
@@ -22,7 +22,7 @@ public class UserManagementService(
         await using var transaction = await context.Database.BeginTransactionAsync();
         try
         {
-            var identityUser = new ApplicationUser { UserName = email, Email = email };
+            var identityUser = new IdentityUserEntity { UserName = email, Email = email };
             
             var createIdentityUserResult = await userManager.CreateAsync(identityUser, password);
             if (!createIdentityUserResult.Succeeded)
