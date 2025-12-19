@@ -4,16 +4,20 @@ using MovieStore.Application.Common.Interfaces;
 using MovieStore.Application.Users.Interfaces;
 using MovieStore.Domain.Entities;
 using MovieStore.Domain.Enums;
+using MovieStore.Infrastructure.Common.Configurations;
 using MovieStore.Infrastructure.Common.Persistence;
 using MovieStore.Infrastructure.Users.Persistence.Identity.Entities;
+using MovieStore.Infrastructure.Users.Persistence.Identity.Repositories.Interfaces;
 
 namespace MovieStore.Infrastructure.Users.Services;
 
-public class IdentityService(
+internal class IdentityService(
     MovieStoreDbContext context,
     IUserProfileRepository userProfileRepository,
     IUnitOfWork unitOfWork,
-    UserManager<IdentityUserEntity> userManager)
+    UserManager<IdentityUserEntity> userManager,
+    IRefreshTokenRepository refreshTokenRepository,
+    RefreshTokenSettings refreshTokenSettings)
     : IIdentityService
 {
     public async Task<ErrorOr<IIdentityUserContract>> RegisterUserAsync(string email, string password, string? name, Sex? sex)
@@ -53,6 +57,43 @@ public class IdentityService(
         {
             await transaction.RollbackAsync();
             return Error.Unexpected(description: "An unexpected error occurred while creating a user.");
+        }
+    }
+
+    public async Task<ErrorOr<IIdentityUserContract>> CheckUserCredentialsAsync(string email, string password)
+    {
+        var identityUser = await userManager.FindByEmailAsync(email);
+        if (identityUser is null)
+        {
+            return Error.Unauthorized(description: "Invalid credentials.");
+        }
+        
+        var isCorrectPassword = await userManager.CheckPasswordAsync(identityUser, password);
+        if (!isCorrectPassword)
+        {
+            return Error.Unauthorized(description: "Invalid credentials.");   
+        }
+
+        return identityUser;
+    }
+
+    public async Task<ErrorOr<Guid>> GenerateRefreshTokenAsync(int identityUserId)
+    {
+        try
+        {
+            var refreshToken = new RefreshToken
+            {
+                Value = Guid.NewGuid(),
+                ExpiresAt = DateTime.Now.Add(refreshTokenSettings.RefreshTokenLifetime),
+                IdentityUserId = identityUserId
+            };
+            await refreshTokenRepository.AddAsync(refreshToken);
+            await unitOfWork.CommitChangesAsync();
+            return refreshToken.Value;
+        }
+        catch (Exception)
+        {
+            return Error.Unexpected(description: "An unexpected error occurred while creating a refresh token.");
         }
     }
 }
