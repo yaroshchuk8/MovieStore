@@ -11,8 +11,8 @@ using MovieStore.Infrastructure.Common.Persistence;
 namespace MovieStore.Infrastructure.Migrations
 {
     [DbContext(typeof(MovieStoreDbContext))]
-    [Migration("20251213211123_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20251219182815_CreateRefreshTokenTable")]
+    partial class CreateRefreshTokenTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -143,7 +143,29 @@ namespace MovieStore.Infrastructure.Migrations
                     b.ToTable("UserProfile");
                 });
 
-            modelBuilder.Entity("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.ApplicationRole", b =>
+            modelBuilder.Entity("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.IdentityRoleClaimEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("IdentityRoleClaim", (string)null);
+                });
+
+            modelBuilder.Entity("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.IdentityRoleEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -170,7 +192,7 @@ namespace MovieStore.Infrastructure.Migrations
                     b.ToTable("IdentityRole", (string)null);
                 });
 
-            modelBuilder.Entity("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.ApplicationRoleClaim", b =>
+            modelBuilder.Entity("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.IdentityUserClaimEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -182,17 +204,17 @@ namespace MovieStore.Infrastructure.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("RoleId")
+                    b.Property<int>("UserId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoleId");
+                    b.HasIndex("UserId");
 
-                    b.ToTable("IdentityRoleClaim", (string)null);
+                    b.ToTable("IdentityUserClaim", (string)null);
                 });
 
-            modelBuilder.Entity("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.ApplicationUser", b =>
+            modelBuilder.Entity("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.IdentityUserEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -257,29 +279,7 @@ namespace MovieStore.Infrastructure.Migrations
                     b.ToTable("IdentityUser", (string)null);
                 });
 
-            modelBuilder.Entity("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.ApplicationUserClaim", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("ClaimType")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ClaimValue")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("IdentityUserClaim", (string)null);
-                });
-
-            modelBuilder.Entity("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.ApplicationUserLogin", b =>
+            modelBuilder.Entity("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.IdentityUserLoginEntity", b =>
                 {
                     b.Property<string>("LoginProvider")
                         .HasColumnType("TEXT");
@@ -300,7 +300,7 @@ namespace MovieStore.Infrastructure.Migrations
                     b.ToTable("IdentityUserLogin", (string)null);
                 });
 
-            modelBuilder.Entity("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.ApplicationUserRole", b =>
+            modelBuilder.Entity("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.IdentityUserRoleEntity", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("INTEGER");
@@ -315,7 +315,7 @@ namespace MovieStore.Infrastructure.Migrations
                     b.ToTable("IdentityUserRole", (string)null);
                 });
 
-            modelBuilder.Entity("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.ApplicationUserToken", b =>
+            modelBuilder.Entity("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.IdentityUserTokenEntity", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("INTEGER");
@@ -332,6 +332,37 @@ namespace MovieStore.Infrastructure.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("IdentityUserToken", (string)null);
+                });
+
+            modelBuilder.Entity("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.RefreshToken", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("IdentityUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("Value")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdentityUserId");
+
+                    b.HasIndex("Value")
+                        .IsUnique();
+
+                    b.ToTable("RefreshToken");
                 });
 
             modelBuilder.Entity("MovieStore.Domain.Entities.MovieActor", b =>
@@ -374,62 +405,73 @@ namespace MovieStore.Infrastructure.Migrations
 
             modelBuilder.Entity("MovieStore.Domain.Entities.UserProfile", b =>
                 {
-                    b.HasOne("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.ApplicationUser", null)
+                    b.HasOne("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.IdentityUserEntity", null)
                         .WithOne()
                         .HasForeignKey("MovieStore.Domain.Entities.UserProfile", "IdentityUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.ApplicationRoleClaim", b =>
+            modelBuilder.Entity("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.IdentityRoleClaimEntity", b =>
                 {
-                    b.HasOne("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.ApplicationRole", null)
+                    b.HasOne("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.IdentityRoleEntity", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.ApplicationUserClaim", b =>
+            modelBuilder.Entity("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.IdentityUserClaimEntity", b =>
                 {
-                    b.HasOne("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.ApplicationUser", null)
+                    b.HasOne("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.IdentityUserEntity", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.ApplicationUserLogin", b =>
+            modelBuilder.Entity("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.IdentityUserLoginEntity", b =>
                 {
-                    b.HasOne("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.ApplicationUser", null)
+                    b.HasOne("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.IdentityUserEntity", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.ApplicationUserRole", b =>
+            modelBuilder.Entity("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.IdentityUserRoleEntity", b =>
                 {
-                    b.HasOne("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.ApplicationRole", null)
+                    b.HasOne("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.IdentityRoleEntity", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.ApplicationUser", null)
+                    b.HasOne("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.IdentityUserEntity", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.ApplicationUserToken", b =>
+            modelBuilder.Entity("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.IdentityUserTokenEntity", b =>
                 {
-                    b.HasOne("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.ApplicationUser", null)
+                    b.HasOne("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.IdentityUserEntity", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.IdentityUserEntity", "IdentityUser")
+                        .WithMany()
+                        .HasForeignKey("IdentityUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("IdentityUser");
                 });
 
             modelBuilder.Entity("MovieStore.Domain.Entities.Actor", b =>
