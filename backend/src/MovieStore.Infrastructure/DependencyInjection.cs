@@ -66,6 +66,9 @@ public static class DependencyInjection
             var fileStorageSettings = configuration.GetAndValidateSection<FileStorageSettings>(nameof(FileStorageSettings));
             services.AddSingleton(fileStorageSettings);
         
+            var refreshTokenSettings =  configuration.GetAndValidateSection<RefreshTokenSettings>(nameof(RefreshTokenSettings));
+            services.AddSingleton(refreshTokenSettings);
+            
             return services;
         }
     }

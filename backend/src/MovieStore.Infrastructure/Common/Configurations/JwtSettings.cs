@@ -12,6 +12,4 @@ public class JwtSettings
     public string Audience { get; set; }
     [Required]
     public TimeSpan JwtTokenLifetime { get; set; }
-    [Required]
-    public TimeSpan RefreshTokenLifetime { get; set; }
 }
