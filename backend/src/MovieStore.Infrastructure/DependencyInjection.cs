@@ -41,7 +41,7 @@ public static class DependencyInjection
         private IServiceCollection AddServices()
         {
             services.AddScoped<IFileService, FileService>();
-            services.AddScoped<IUserManagementService, UserManagementService>();
+            services.AddScoped<IIdentityService, IdentityService>();
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IDbInitializer, DbInitializer>();
         

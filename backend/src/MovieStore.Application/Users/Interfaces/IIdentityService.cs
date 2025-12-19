@@ -3,7 +3,7 @@ using MovieStore.Domain.Enums;
 
 namespace MovieStore.Application.Users.Interfaces;
 
-public interface IUserManagementService
+public interface IIdentityService
 {
     Task<ErrorOr<IIdentityUserContract>> RegisterUserAsync(string email, string password, string? name, Sex? sex);
 }

@@ -5,17 +5,16 @@ using MovieStore.Application.Users.Interfaces;
 using MovieStore.Domain.Entities;
 using MovieStore.Domain.Enums;
 using MovieStore.Infrastructure.Common.Persistence;
-using MovieStore.Infrastructure.Common.Services.Interfaces;
 using MovieStore.Infrastructure.Users.Persistence.Identity.Entities;
 
 namespace MovieStore.Infrastructure.Users.Services;
 
-public class UserManagementService(
+public class IdentityService(
     MovieStoreDbContext context,
     IUserProfileRepository userProfileRepository,
     IUnitOfWork unitOfWork,
     UserManager<IdentityUserEntity> userManager)
-    : IUserManagementService
+    : IIdentityService
 {
     public async Task<ErrorOr<IIdentityUserContract>> RegisterUserAsync(string email, string password, string? name, Sex? sex)
     {

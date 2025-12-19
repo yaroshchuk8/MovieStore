@@ -4,12 +4,12 @@ using MovieStore.Application.Users.Interfaces;
 
 namespace MovieStore.Application.Users.Commands.RegisterUser;
 
-public class RegisterUserCommandHandler(IUserManagementService userManagementService, IJwtService jwtService)
+public class RegisterUserCommandHandler(IIdentityService identityService, IJwtService jwtService)
     : IRequestHandler<RegisterUserCommand, ErrorOr<string>>
 {
     public async Task<ErrorOr<string>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
-        var identityUserResult = await userManagementService.RegisterUserAsync(
+        var identityUserResult = await identityService.RegisterUserAsync(
             email: request.Email,
             password: request.Password,
             name: request.Name,
