@@ -20,7 +20,12 @@ internal class IdentityService(
     RefreshTokenSettings refreshTokenSettings)
     : IIdentityService
 {
-    public async Task<ErrorOr<IIdentityUserContract>> RegisterUserAsync(string email, string password, string? name, Sex? sex)
+    public async Task<ErrorOr<IIdentityUserContract>> RegisterUserAsync(
+        string email,
+        string password,
+        string? name,
+        Sex? sex,
+        Role role)
     {
         await using var transaction = await context.Database.BeginTransactionAsync();
         try
@@ -36,7 +41,8 @@ internal class IdentityService(
                 return errors;
             }
             
-            var addUserToRoleResult = await userManager.AddToRoleAsync(identityUser, nameof(Role.Customer));
+            var roleName = role.ToString();
+            var addUserToRoleResult = await userManager.AddToRoleAsync(identityUser, roleName);
             if (!addUserToRoleResult.Succeeded)
             {
                 var errors = addUserToRoleResult.Errors
@@ -95,5 +101,17 @@ internal class IdentityService(
         {
             return Error.Unexpected(description: "An unexpected error occurred while creating a refresh token.");
         }
+    }
+    
+    public async Task<ErrorOr<List<string>>> GetUserRolesAsync(IIdentityUserContract identityUserContract)
+    {
+        var identityUser = identityUserContract as IdentityUserEntity;
+        if (identityUser is null)
+        {
+            return Error.Unexpected(description: "An unexpected error occurred while extracting user roles.");
+        }
+        
+        var roles = await userManager.GetRolesAsync(identityUser);
+        return roles.ToList();
     }
 }

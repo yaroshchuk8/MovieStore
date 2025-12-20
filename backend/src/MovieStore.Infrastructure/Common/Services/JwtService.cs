@@ -1,21 +1,16 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using MovieStore.Application.Users.Interfaces;
 using MovieStore.Infrastructure.Common.Configurations;
-using MovieStore.Infrastructure.Users.Persistence.Identity.Entities;
 
 namespace MovieStore.Infrastructure.Common.Services;
 
-public class JwtService(JwtSettings jwtSettings, UserManager<IdentityUserEntity> userManager) : IJwtService
+public class JwtService(JwtSettings jwtSettings) : IJwtService
 {
-    public async Task<string> GenerateJwtToken(IIdentityUserContract identityUserContract)
+    public string GenerateJwt(IIdentityUserContract identityUser, IList<string> roles)
     {
-        var identityUser = identityUserContract as IdentityUserEntity;
-        var roles = await userManager.GetRolesAsync(identityUser);
-        
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(jwtSettings.Secret);
         

@@ -2,5 +2,5 @@ namespace MovieStore.Application.Users.Interfaces;
 
 public interface IJwtService
 {
-    Task<string> GenerateJwtToken(IIdentityUserContract identityUser);
+    string GenerateJwt(IIdentityUserContract identityUser, IList<string> roles);
 }
