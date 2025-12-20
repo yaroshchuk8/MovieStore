@@ -12,6 +12,7 @@ using MovieStore.Infrastructure.Common.Services;
 using MovieStore.Infrastructure.Common.Services.Interfaces;
 using MovieStore.Infrastructure.Genres.Persistence.Repositories;
 using MovieStore.Infrastructure.Movies.Persistence.Repositories;
+using MovieStore.Infrastructure.Users.Persistence.Identity.Repositories;
 using MovieStore.Infrastructure.Users.Persistence.Identity.Repositories.Interfaces;
 using MovieStore.Infrastructure.Users.Persistence.Repositories;
 using MovieStore.Infrastructure.Users.Services;
@@ -60,7 +61,7 @@ public static class DependencyInjection
             services.AddScoped<IUserProfileRepository, UserProfileRepository>();
             
             // Identity
-            services.AddScoped<IRefreshTokenRepository, IRefreshTokenRepository>();
+            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             
             services.AddScoped<IUnitOfWork>(serviceProvider => serviceProvider.GetRequiredService<MovieStoreDbContext>());
         

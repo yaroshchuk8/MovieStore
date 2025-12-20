@@ -1,14 +1,15 @@
 using ErrorOr;
 using MediatR;
 using MovieStore.Application.Users.Interfaces;
+using MovieStore.Contracts.Users.Responses;
 using MovieStore.Domain.Enums;
 
 namespace MovieStore.Application.Users.Commands.RegisterUser;
 
 public class RegisterUserCommandHandler(IIdentityService identityService, IJwtService jwtService)
-    : IRequestHandler<RegisterUserCommand, ErrorOr<string>>
+    : IRequestHandler<RegisterUserCommand, ErrorOr<TokenPairResponse>>
 {
-    public async Task<ErrorOr<string>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<TokenPairResponse>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
         var role = Role.Customer;
         var registerUserResult = await identityService.RegisterUserAsync(
@@ -26,6 +27,13 @@ public class RegisterUserCommandHandler(IIdentityService identityService, IJwtSe
         var roleName = role.ToString();
         var jwtToken = jwtService.GenerateJwt(identityUserContract, [roleName]);
         
-        return jwtToken;
+        var generateRefreshTokenResult = await identityService.GenerateRefreshTokenAsync(identityUserContract.Id);
+        if (generateRefreshTokenResult.IsError)
+        {
+            return generateRefreshTokenResult.Errors;
+        }
+        var refreshToken = generateRefreshTokenResult.Value;
+        
+        return new TokenPairResponse(jwtToken, refreshToken);
     }
 }
