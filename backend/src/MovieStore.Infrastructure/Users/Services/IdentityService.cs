@@ -1,5 +1,6 @@
 using ErrorOr;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using MovieStore.Application.Common.Interfaces;
 using MovieStore.Application.Users.Interfaces;
 using MovieStore.Domain.Entities;
@@ -17,7 +18,7 @@ internal class IdentityService(
     IUnitOfWork unitOfWork,
     UserManager<IdentityUserEntity> userManager,
     IRefreshTokenRepository refreshTokenRepository,
-    RefreshTokenSettings refreshTokenSettings)
+    IOptions<RefreshTokenSettings> refreshTokenOptions)
     : IIdentityService
 {
     public async Task<ErrorOr<IIdentityUserContract>> RegisterUserAsync(
@@ -87,6 +88,7 @@ internal class IdentityService(
     {
         try
         {
+            var refreshTokenSettings = refreshTokenOptions.Value;
             var refreshToken = new RefreshToken
             {
                 Value = Guid.NewGuid(),

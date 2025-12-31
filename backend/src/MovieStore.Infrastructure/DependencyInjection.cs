@@ -23,24 +23,15 @@ public static class DependencyInjection
 {
     extension(IServiceCollection services)
     {
-        public IServiceCollection AddInfrastructure(IConfiguration configuration)
+        public IServiceCollection AddPersistence(IConfiguration configuration)
         {
-            return services
-                .AddConfiguration(configuration)
-                .AddPersistence(configuration)
-                .AddServices()
-                .AddRepositories();
-        }
-
-        private IServiceCollection AddPersistence(IConfiguration configuration)
-        {
-            var dbSettings = configuration.GetAndValidateSection<DbSettings>(nameof(DbSettings));
+            var dbSettings = configuration.GetSection(nameof(DbSettings)).Get<DbSettings>()!;
             services.AddDbContext<MovieStoreDbContext>(options => options.UseSqlite(dbSettings.ConnectionString));
-        
+            
             return services;
         }
 
-        private IServiceCollection AddServices()
+        public IServiceCollection AddInfrastructureServices()
         {
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<IIdentityService, IdentityService>();
@@ -50,7 +41,7 @@ public static class DependencyInjection
             return services;
         }
 
-        private IServiceCollection AddRepositories()
+        public IServiceCollection AddInfrastructureRepositories()
         {
             // Domain
             services.AddScoped<IActorRepository, ActorRepository>();
@@ -65,17 +56,6 @@ public static class DependencyInjection
             
             services.AddScoped<IUnitOfWork>(serviceProvider => serviceProvider.GetRequiredService<MovieStoreDbContext>());
         
-            return services;
-        }
-
-        private IServiceCollection AddConfiguration(IConfiguration configuration)
-        {
-            var fileStorageSettings = configuration.GetAndValidateSection<FileStorageSettings>(nameof(FileStorageSettings));
-            services.AddSingleton(fileStorageSettings);
-        
-            var refreshTokenSettings =  configuration.GetAndValidateSection<RefreshTokenSettings>(nameof(RefreshTokenSettings));
-            services.AddSingleton(refreshTokenSettings);
-            
             return services;
         }
     }

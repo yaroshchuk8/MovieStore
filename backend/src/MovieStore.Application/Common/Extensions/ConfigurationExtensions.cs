@@ -5,21 +5,44 @@ namespace MovieStore.Application.Common.Extensions;
 
 public static class ConfigurationExtensions
 {
-    public static T GetAndValidateSection<T>(this IConfiguration configuration, string sectionName)
-        where T : class, new()
+    extension(IConfiguration configuration)
     {
-        var settings = configuration.GetSection(sectionName).Get<T>()
-                       ?? throw new InvalidOperationException($"Missing configuration section '{sectionName}'.");
-
-        var context = new ValidationContext(settings);
-        var results = new List<ValidationResult>();
-        
-        if (!Validator.TryValidateObject(settings, context, results, true))
+        public void ValidateRequiredSection<T>(string sectionName)
+            where T : class, new()
         {
+            var configSection = configuration.GetRequiredSection(sectionName);
+            var configObject = new T();
+            configSection.Bind(configObject);
+        
+            var context = new ValidationContext(configObject);
+            var results = new List<ValidationResult>();
+
+            if (Validator.TryValidateObject(configObject, context, results, true))
+            {
+                return;
+            }
+        
             var errors = string.Join("; ", results.Select(r => r.ErrorMessage));
             throw new InvalidOperationException($"Invalid configuration for section '{sectionName}': {errors}");
         }
 
-        return settings;
+        public IConfigurationSection GetAndValidateRequiredSection<T>(string sectionName)
+            where T : class, new()
+        {
+            var configSection = configuration.GetRequiredSection(sectionName);
+            var configObject = new T();
+            configSection.Bind(configObject);
+        
+            var context = new ValidationContext(configObject);
+            var results = new List<ValidationResult>();
+
+            if (Validator.TryValidateObject(configObject, context, results, true))
+            {
+                return configSection;
+            }
+        
+            var errors = string.Join("; ", results.Select(r => r.ErrorMessage));
+            throw new InvalidOperationException($"Invalid configuration for section '{sectionName}': {errors}");
+        }
     }
 }

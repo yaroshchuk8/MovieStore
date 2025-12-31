@@ -2,6 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using MovieStore.Api.Configuration;
+using MovieStore.Api.Handlers;
 using MovieStore.Application.Common.Extensions;
 using MovieStore.Infrastructure.Common.Configurations;
 using MovieStore.Infrastructure.Common.Persistence;
@@ -13,18 +14,31 @@ public static class DependencyInjection
 {
     extension(IServiceCollection services)
     {
-        public IServiceCollection AddApi(IConfiguration configuration)
+
+        public IServiceCollection AddAndValidateConfiguration(IConfiguration configuration)
         {
-            return services
-                .AddCorsPolicy(configuration)
-                .AddJwtAuthentication(configuration)
-                .AddIdentity();
+            // used during compilation
+            configuration.ValidateRequiredSection<CorsSettings>(nameof(CorsSettings));
+            configuration.ValidateRequiredSection<DbSettings>(nameof(DbSettings));
+            
+            // using during runtime
+            var jwtSettingsSection = configuration.GetAndValidateRequiredSection<JwtSettings>(nameof(JwtSettings));
+            var fileStorageSettingsSection =
+                configuration.GetAndValidateRequiredSection<FileStorageSettings>(nameof(FileStorageSettings));
+            var refreshTokenSettingsSection =
+                configuration.GetAndValidateRequiredSection<RefreshTokenSettings>(nameof(RefreshTokenSettings));
+
+            services.Configure<JwtSettings>(jwtSettingsSection);
+            services.Configure<FileStorageSettings>(fileStorageSettingsSection);
+            services.Configure<RefreshTokenSettings>(refreshTokenSettingsSection);
+            
+            return services;
         }
 
-        private IServiceCollection AddCorsPolicy(IConfiguration configuration)
+        public IServiceCollection AddCorsPolicy(IConfiguration configuration)
         {
-            var corsSettings = configuration.GetAndValidateSection<CorsSettings>(nameof(CorsSettings));
-        
+            var corsSettings = configuration.GetSection(nameof(CorsSettings)).Get<CorsSettings>()!;
+            
             services.AddCors(opt =>
             {
                 opt.AddPolicy(corsSettings.PolicyName, policy =>
@@ -36,11 +50,9 @@ public static class DependencyInjection
             return services;
         }
 
-        private IServiceCollection AddJwtAuthentication(IConfiguration configuration)
+        public IServiceCollection AddJwtAuthentication(IConfiguration configuration)
         {
-            var jwtSettings = configuration.GetAndValidateSection<JwtSettings>(nameof(JwtSettings));
-            // add strongly-typed configuration class to DI container for Infrastructure Auth service to use
-            services.AddSingleton(jwtSettings); 
+            var jwtSettings = configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>()!;
         
             var key = Encoding.ASCII.GetBytes(jwtSettings.Secret);
         
@@ -81,12 +93,21 @@ public static class DependencyInjection
             return services;
         }
 
-        private IServiceCollection AddIdentity()
+        public IServiceCollection AddIdentity()
         {
             services
                 .AddIdentity<IdentityUserEntity, IdentityRoleEntity>()
                 .AddEntityFrameworkStores<MovieStoreDbContext>();
             
+            return services;
+        }
+
+        public IServiceCollection AddGlobalExceptionHandler()
+        {
+            services
+                .AddExceptionHandler<GlobalExceptionHandler>()
+                .AddProblemDetails(); // Required for structured error responses
+
             return services;
         }
     }
