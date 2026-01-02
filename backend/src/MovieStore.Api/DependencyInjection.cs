@@ -14,7 +14,6 @@ public static class DependencyInjection
 {
     extension(IServiceCollection services)
     {
-
         public IServiceCollection AddAndValidateConfiguration(IConfiguration configuration)
         {
             // used during compilation

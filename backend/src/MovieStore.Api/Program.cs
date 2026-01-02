@@ -1,7 +1,6 @@
 using MovieStore.Api;
 using MovieStore.Api.Configuration;
 using MovieStore.Application;
-using MovieStore.Application.Common.Extensions;
 using MovieStore.Infrastructure;
 using MovieStore.Infrastructure.Common.Services.Interfaces;
 
@@ -37,9 +36,11 @@ var app = builder.Build();
     {
         app.MapOpenApi();
     }
-    
-    var corsSettings = builder.Configuration.GetSection(nameof(CorsSettings)).Get<CorsSettings>()!;
-    app.UseCors(corsSettings.PolicyName);
+
+    {
+        var corsSettings = builder.Configuration.GetSection(nameof(CorsSettings)).Get<CorsSettings>()!;
+        app.UseCors(corsSettings.PolicyName);
+    }
     
     app.UseAuthentication();
     app.UseAuthorization();

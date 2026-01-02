@@ -21,7 +21,7 @@ internal class IdentityService(
     IOptions<RefreshTokenSettings> refreshTokenOptions)
     : IIdentityService
 {
-    public async Task<ErrorOr<IIdentityUserContract>> RegisterUserAsync(
+    public async Task<ErrorOr<(IIdentityUserContract, Guid)>> CreateUserAndGenerateRefreshTokenAsync(
         string email,
         string password,
         string? name,
@@ -29,42 +29,66 @@ internal class IdentityService(
         Role role)
     {
         await using var transaction = await context.Database.BeginTransactionAsync();
-        try
+        
+        var createUserResult = await CreateUserInternalAsync(email, password, name, sex, role);
+        if (createUserResult.IsError)
         {
-            var identityUser = new IdentityUserEntity { UserName = email, Email = email };
-            
-            var createIdentityUserResult = await userManager.CreateAsync(identityUser, password);
-            if (!createIdentityUserResult.Succeeded)
-            {
-                var errors = createIdentityUserResult.Errors
-                    .Select(e => Error.Validation(code: e.Code, description: e.Description))
-                    .ToList(); 
-                return errors;
-            }
-            
-            var roleName = role.ToString();
-            var addUserToRoleResult = await userManager.AddToRoleAsync(identityUser, roleName);
-            if (!addUserToRoleResult.Succeeded)
-            {
-                var errors = addUserToRoleResult.Errors
-                    .Select(e => Error.Validation(code: e.Code, description: e.Description))
-                    .ToList(); 
-                return errors;
-            }
-            
-            var domainUser = new UserProfile(identityUser.Id, name, sex);
-            await userProfileRepository.AddAsync(domainUser);
-            await unitOfWork.CommitChangesAsync();
-            
-            await transaction.CommitAsync();
-
-            return identityUser;
+            return createUserResult.Errors;
         }
-        catch (Exception)
+        var refreshToken = await GenerateRefreshTokenAsync(createUserResult.Value.Id);
+        
+        await transaction.CommitAsync();
+        
+        return (createUserResult.Value, refreshToken);
+    }
+    
+    public async Task<ErrorOr<IIdentityUserContract>> CreateUserAsync(
+        string email,
+        string password,
+        string? name,
+        Sex? sex,
+        Role role)
+    {
+        await using var transaction = await context.Database.BeginTransactionAsync();
+        var createUserResult = await CreateUserInternalAsync(email, password, name, sex, role);
+        await transaction.CommitAsync();
+        return createUserResult;
+    }
+    
+    // Unsafe method. Needs to be wrapped in a transaction
+    private async Task<ErrorOr<IIdentityUserContract>> CreateUserInternalAsync(
+        string email,
+        string password,
+        string? name,
+        Sex? sex,
+        Role role)
+    {
+        var identityUser = new IdentityUserEntity { UserName = email, Email = email };
+            
+        var createIdentityUserResult = await userManager.CreateAsync(identityUser, password);
+        if (!createIdentityUserResult.Succeeded)
         {
-            await transaction.RollbackAsync();
-            return Error.Unexpected(description: "An unexpected error occurred while creating a user.");
+            var errors = createIdentityUserResult.Errors
+                .Select(e => Error.Validation(code: e.Code, description: e.Description))
+                .ToList(); 
+            return errors;
         }
+            
+        var roleName = role.ToString();
+        var addUserToRoleResult = await userManager.AddToRoleAsync(identityUser, roleName);
+        if (!addUserToRoleResult.Succeeded)
+        {
+            var errors = addUserToRoleResult.Errors
+                .Select(e => Error.Validation(code: e.Code, description: e.Description))
+                .ToList(); 
+            return errors;
+        }
+            
+        var domainUser = new UserProfile(identityUser.Id, name, sex);
+        await userProfileRepository.AddAsync(domainUser);
+        await unitOfWork.CommitChangesAsync();
+        
+        return identityUser;
     }
 
     public async Task<ErrorOr<IIdentityUserContract>> CheckUserCredentialsAsync(string email, string password)
@@ -84,36 +108,25 @@ internal class IdentityService(
         return identityUser;
     }
 
-    public async Task<ErrorOr<Guid>> GenerateRefreshTokenAsync(int identityUserId)
+    public async Task<Guid> GenerateRefreshTokenAsync(int identityUserId)
     {
-        try
+        var refreshTokenSettings = refreshTokenOptions.Value;
+        var refreshToken = new RefreshToken
         {
-            var refreshTokenSettings = refreshTokenOptions.Value;
-            var refreshToken = new RefreshToken
-            {
-                Value = Guid.NewGuid(),
-                ExpiresAt = DateTime.Now.Add(refreshTokenSettings.RefreshTokenLifetime),
-                IdentityUserId = identityUserId
-            };
-            await refreshTokenRepository.AddAsync(refreshToken);
-            await unitOfWork.CommitChangesAsync();
-            return refreshToken.Value;
-        }
-        catch (Exception)
-        {
-            return Error.Unexpected(description: "An unexpected error occurred while creating a refresh token.");
-        }
+            Value = Guid.NewGuid(),
+            ExpiresAt = DateTime.Now.Add(refreshTokenSettings.RefreshTokenLifetime),
+            IdentityUserId = identityUserId
+        };
+        await refreshTokenRepository.AddAsync(refreshToken);
+        await unitOfWork.CommitChangesAsync();
+        return refreshToken.Value;
     }
     
-    public async Task<ErrorOr<List<string>>> GetUserRolesAsync(IIdentityUserContract identityUserContract)
+    public async Task<List<string>> GetUserRolesAsync(IIdentityUserContract identityUserContract)
     {
         var identityUser = identityUserContract as IdentityUserEntity;
-        if (identityUser is null)
-        {
-            return Error.Unexpected(description: "An unexpected error occurred while extracting user roles.");
-        }
         
-        var roles = await userManager.GetRolesAsync(identityUser);
+        var roles = await userManager.GetRolesAsync(identityUser!);
         return roles.ToList();
     }
 }

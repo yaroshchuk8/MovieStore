@@ -12,7 +12,7 @@ public class RegisterUserCommandHandler(IIdentityService identityService, IJwtSe
     public async Task<ErrorOr<TokenPairResponse>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
         var role = Role.Customer;
-        var registerUserResult = await identityService.RegisterUserAsync(
+        var registerUserResult = await identityService.CreateUserAndGenerateRefreshTokenAsync(
             email: request.Email,
             password: request.Password,
             name: request.Name,
@@ -22,17 +22,10 @@ public class RegisterUserCommandHandler(IIdentityService identityService, IJwtSe
         {
             return registerUserResult.Errors;
         }
+        var (identityUserContract, refreshToken) = registerUserResult.Value;
         
-        var identityUserContract =  registerUserResult.Value;
         var roleName = role.ToString();
         var jwtToken = jwtService.GenerateJwt(identityUserContract, [roleName]);
-        
-        var generateRefreshTokenResult = await identityService.GenerateRefreshTokenAsync(identityUserContract.Id);
-        if (generateRefreshTokenResult.IsError)
-        {
-            return generateRefreshTokenResult.Errors;
-        }
-        var refreshToken = generateRefreshTokenResult.Value;
         
         return new TokenPairResponse(jwtToken, refreshToken);
     }

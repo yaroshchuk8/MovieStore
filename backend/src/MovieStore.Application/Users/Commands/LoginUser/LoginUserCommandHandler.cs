@@ -16,24 +16,11 @@ public class LoginUserCommandHandler(IIdentityService identityService, IJwtServi
         {
             return credentialsCheckResult.Errors;
         }
-        
         var identityUserContract = credentialsCheckResult.Value;
         
-        var generateRefreshTokenResult = await identityService.GenerateRefreshTokenAsync(identityUserContract.Id);
-        if (generateRefreshTokenResult.IsError)
-        {
-            return generateRefreshTokenResult.Errors;
-        }
-
-        var getUserRolesResult = await identityService.GetUserRolesAsync(identityUserContract);
-        if (getUserRolesResult.IsError)
-        {
-            return getUserRolesResult.Errors;
-        }
-        var userRoles = getUserRolesResult.Value;
-        
+        var refreshToken = await identityService.GenerateRefreshTokenAsync(identityUserContract.Id);
+        var userRoles = await identityService.GetUserRolesAsync(identityUserContract);
         var jwt = jwtService.GenerateJwt(identityUserContract, userRoles);
-        var refreshToken = generateRefreshTokenResult.Value;
         
         return new TokenPairResponse(jwt, refreshToken);
     }
