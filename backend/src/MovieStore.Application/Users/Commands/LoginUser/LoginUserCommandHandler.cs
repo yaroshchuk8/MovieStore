@@ -6,9 +6,9 @@ using MovieStore.Application.Users.Interfaces;
 namespace MovieStore.Application.Users.Commands.LoginUser;
 
 public class LoginUserCommandHandler(IIdentityService identityService, IJwtService jwtService)
-    : IRequestHandler<LoginUserCommand, ErrorOr<TokenPairResponse>>
+    : IRequestHandler<LoginUserCommand, ErrorOr<AuthTokensResponse>>
 {
-    public async Task<ErrorOr<TokenPairResponse>> Handle(LoginUserCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<AuthTokensResponse>> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
         var credentialsCheckResult =
             await identityService.CheckUserCredentialsAsync(email: request.Email, password: request.Password);
@@ -22,6 +22,6 @@ public class LoginUserCommandHandler(IIdentityService identityService, IJwtServi
         var userRoles = await identityService.GetUserRolesAsync(identityUserContract);
         var jwt = jwtService.GenerateJwt(identityUserContract, userRoles);
         
-        return new TokenPairResponse(jwt, refreshToken);
+        return new AuthTokensResponse(jwt, refreshToken);
     }
 }

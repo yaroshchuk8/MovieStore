@@ -6,27 +6,24 @@ using MovieStore.Domain.Enums;
 
 namespace MovieStore.Application.Users.Commands.RegisterUser;
 
-public class RegisterUserCommandHandler(IIdentityService identityService, IJwtService jwtService)
-    : IRequestHandler<RegisterUserCommand, ErrorOr<TokenPairResponse>>
+public class RegisterUserCommandHandler(IIdentityService identityService)
+    : IRequestHandler<RegisterUserCommand, ErrorOr<AuthTokensResponse>>
 {
-    public async Task<ErrorOr<TokenPairResponse>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<AuthTokensResponse>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
-        var role = Role.Customer;
-        var registerUserResult = await identityService.CreateUserAndGenerateRefreshTokenAsync(
+        const Role role = Role.Customer;
+        var registerUserResult = await identityService.CreateUserAndGenerateTokenPairAsync(
             email: request.Email,
             password: request.Password,
             name: request.Name,
             sex: request.Sex,
-            role: Role.Customer);
+            role: role);
         if (registerUserResult.IsError)
         {
             return registerUserResult.Errors;
         }
-        var (identityUserContract, refreshToken) = registerUserResult.Value;
+        var (_, tokenPair) = registerUserResult.Value;
         
-        var roleName = role.ToString();
-        var jwtToken = jwtService.GenerateJwt(identityUserContract, [roleName]);
-        
-        return new TokenPairResponse(jwtToken, refreshToken);
+        return tokenPair;
     }
 }

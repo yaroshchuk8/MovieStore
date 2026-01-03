@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using MovieStore.Application.Common.Interfaces;
 using MovieStore.Application.Users.Interfaces;
+using MovieStore.Contracts.Users.Responses;
 using MovieStore.Domain.Entities;
 using MovieStore.Domain.Enums;
 using MovieStore.Infrastructure.Common.Configurations;
@@ -18,10 +19,11 @@ internal class IdentityService(
     IUnitOfWork unitOfWork,
     UserManager<IdentityUserEntity> userManager,
     IRefreshTokenRepository refreshTokenRepository,
-    IOptions<RefreshTokenSettings> refreshTokenOptions)
+    IOptions<RefreshTokenSettings> refreshTokenOptions,
+    IJwtService jwtService)
     : IIdentityService
 {
-    public async Task<ErrorOr<(IIdentityUserContract, Guid)>> CreateUserAndGenerateRefreshTokenAsync(
+    public async Task<ErrorOr<(IIdentityUserContract, AuthTokensResponse)>> CreateUserAndGenerateTokenPairAsync(
         string email,
         string password,
         string? name,
@@ -35,11 +37,12 @@ internal class IdentityService(
         {
             return createUserResult.Errors;
         }
-        var refreshToken = await GenerateRefreshTokenAsync(createUserResult.Value.Id);
+        
+        var authTokens = await GenerateAuthTokensAsync(createUserResult.Value, [role.ToString()]);
         
         await transaction.CommitAsync();
         
-        return (createUserResult.Value, refreshToken);
+        return (createUserResult.Value, authTokens);
     }
     
     public async Task<ErrorOr<IIdentityUserContract>> CreateUserAsync(
@@ -120,6 +123,17 @@ internal class IdentityService(
         await refreshTokenRepository.AddAsync(refreshToken);
         await unitOfWork.CommitChangesAsync();
         return refreshToken.Value;
+    }
+
+    public async Task<AuthTokensResponse> GenerateAuthTokensAsync(
+        IIdentityUserContract identityUserContract,
+        IList<string> roles)
+    {
+        var accessToken = jwtService.GenerateJwt(identityUserContract, roles);
+        var refreshToken = await GenerateRefreshTokenAsync(identityUserContract.Id);
+        var authTokens = new AuthTokensResponse(accessToken, refreshToken);
+        
+        return authTokens;
     }
     
     public async Task<List<string>> GetUserRolesAsync(IIdentityUserContract identityUserContract)
