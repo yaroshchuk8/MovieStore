@@ -1,3 +1,4 @@
+using System.IdentityModel.Tokens.Jwt;
 using ErrorOr;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
@@ -117,7 +118,7 @@ internal class IdentityService(
         var refreshToken = new RefreshToken
         {
             Value = Guid.NewGuid(),
-            ExpiresAt = DateTime.Now.Add(refreshTokenSettings.RefreshTokenLifetime),
+            ExpiresAt = DateTime.UtcNow.Add(refreshTokenSettings.RefreshTokenLifetime),
             IdentityUserId = identityUserId
         };
         await refreshTokenRepository.AddAsync(refreshToken);
@@ -142,5 +143,57 @@ internal class IdentityService(
         
         var roles = await userManager.GetRolesAsync(identityUser!);
         return roles.ToList();
+    }
+
+    public async Task<ErrorOr<AuthTokensResponse>> RefreshAuthTokensAsync(string accessToken, Guid refreshToken)
+    {
+        var claimsPrincipalResult = jwtService.ValidateTokenAndGetClaimsPrincipal(accessToken);
+        if (claimsPrincipalResult.IsError)
+        {
+            return claimsPrincipalResult.Errors;
+        }
+
+        var claimsPrincipal = claimsPrincipalResult.Value;
+        
+        // IdentityUser.Id is stored in 'sub' claim
+        var userIdClaim = claimsPrincipal.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+        if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out var userIdFromToken))
+        {
+            return Error.Unauthorized(description: "Invalid token claims.");
+        }
+
+        await using var transaction = await context.Database.BeginTransactionAsync();
+        
+        var storedToken = await refreshTokenRepository.FirstOrDefaultAsync(
+            predicate: rt => rt.Value == refreshToken,
+            asNoTracking: false);
+        
+        if (storedToken is null || 
+            storedToken.IsRevoked || 
+            storedToken.IsUsed || 
+            storedToken.ExpiresAt < DateTime.UtcNow)
+        {
+            return Error.Unauthorized(description: "Invalid or expired refresh token.");
+        }
+        
+        if (storedToken.IdentityUserId != userIdFromToken)
+        {
+            return Error.Unauthorized(description: "Token mismatch.");
+        }
+        
+        var user = await userManager.FindByIdAsync(userIdFromToken.ToString());
+        if (user is null) return Error.Unauthorized();
+
+        // unitOfWork.CommitChangesAsync() is called inside GenerateAuthTokensAsync(), thus doing it here is excessive.
+        // Placing entity state change prior to token generation works.
+        storedToken.IsUsed = true;
+        refreshTokenRepository.Update(storedToken);
+        
+        var roles = await userManager.GetRolesAsync(user);
+        var tokenPair = await GenerateAuthTokensAsync(user, roles);
+        
+        await transaction.CommitAsync();
+
+        return tokenPair;
     }
 }

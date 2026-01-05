@@ -28,4 +28,6 @@ public interface IIdentityService
         IList<string> roles);
     
     Task<List<string>> GetUserRolesAsync(IIdentityUserContract identityUserContract);
+
+    Task<ErrorOr<AuthTokensResponse>> RefreshAuthTokensAsync(string accessToken, Guid refreshToken);
 }

@@ -1,0 +1,17 @@
+using FluentValidation;
+
+namespace MovieStore.Application.Users.Commands.RefreshJwt;
+
+public class RefreshAuthTokensCommandValidator : AbstractValidator<RefreshAuthTokensCommand>
+{
+    public RefreshAuthTokensCommandValidator()
+    {
+        RuleFor(x => x.AccessToken)
+            .NotEmpty().WithMessage("Access token is required.")
+            .Matches(@"^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$").WithMessage("Invalid access token format.");
+
+        RuleFor(x => x.RefreshToken)
+            .NotEmpty().WithMessage("Refresh token is required.")
+            .NotEqual(Guid.Empty).WithMessage("Refresh token cannot be an empty GUID.");
+    }
+}

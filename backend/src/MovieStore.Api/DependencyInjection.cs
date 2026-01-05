@@ -1,3 +1,4 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -51,8 +52,10 @@ public static class DependencyInjection
 
         public IServiceCollection AddJwtAuthentication(IConfiguration configuration)
         {
+            // Prevents "sub" from being renamed to "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+            
             var jwtSettings = configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>()!;
-        
             var key = Encoding.ASCII.GetBytes(jwtSettings.Secret);
         
             services.AddAuthentication(options =>
