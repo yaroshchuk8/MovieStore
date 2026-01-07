@@ -12,6 +12,8 @@ internal class BaseRepository<T>(MovieStoreDbContext context) : IBaseRepository<
         Expression<Func<T, bool>>? predicate = null,
         Func<IQueryable<T>, IQueryable<T>>? includes = null,
         Func<IQueryable<T>, IQueryable<T>>? orderBy = null,
+        int? skip = null,
+        int? take = null,
         bool asNoTracking = true)
     {
         IQueryable<T> query = _dbSet;
@@ -26,14 +28,49 @@ internal class BaseRepository<T>(MovieStoreDbContext context) : IBaseRepository<
             query = query.Where(predicate);
         }
 
-        if (orderBy != null)
-        {
-            query = orderBy(query);
-        }
-        
         if (asNoTracking)
         {
             query = query.AsNoTracking();
+        }
+        
+        // Apply Sorting (Crucial for Skip/Take)
+        if (skip.HasValue || take.HasValue)
+        {
+            if (orderBy != null)
+            {
+                query = orderBy(query);
+            }
+            else
+            {
+                // Automated Metadata-driven sorting
+                var pk = context.Model.FindEntityType(typeof(T))?.FindPrimaryKey();
+                if (pk != null)
+                {
+                    IOrderedQueryable<T>? orderedQuery = null;
+                    for (int i = 0; i < pk.Properties.Count; i++)
+                    {
+                        var propertyName = pk.Properties[i].Name;
+                        orderedQuery = i == 0 
+                            ? query.OrderBy(x => EF.Property<object>(x, propertyName)) 
+                            : orderedQuery!.ThenBy(x => EF.Property<object>(x, propertyName));
+                    }
+                    query = orderedQuery ?? query;
+                }
+            }
+        }
+        else if (orderBy != null)
+        {
+            query = orderBy(query);
+        }
+
+        if (skip.HasValue)
+        {
+            query = query.Skip(skip.Value);
+        }
+        
+        if (take.HasValue)
+        {
+            query = query.Take(take.Value);
         }
 
         return await query.ToListAsync();
@@ -70,7 +107,8 @@ internal class BaseRepository<T>(MovieStoreDbContext context) : IBaseRepository<
         return await query.FirstOrDefaultAsync();
     }
     
-    public async Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate, 
+    public async Task<bool> ExistsAsync(
+        Expression<Func<T, bool>> predicate, 
         Func<IQueryable<T>, IQueryable<T>>? includes = null)
     {
         IQueryable<T> query = _dbSet;
@@ -83,7 +121,8 @@ internal class BaseRepository<T>(MovieStoreDbContext context) : IBaseRepository<
         return await query.AnyAsync(predicate);
     }
     
-    public async Task<int> CountAsync(Expression<Func<T, bool>>? predicate = null,
+    public async Task<int> CountAsync(
+        Expression<Func<T, bool>>? predicate = null,
         Func<IQueryable<T>, IQueryable<T>>? includes = null)
     {
         IQueryable<T> query = _dbSet;

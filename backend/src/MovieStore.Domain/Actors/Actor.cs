@@ -1,4 +1,6 @@
-namespace MovieStore.Domain.Entities;
+using MovieStore.Domain.Movies;
+
+namespace MovieStore.Domain.Actors;
 
 public class Actor(string name, string? imagePath)
 {

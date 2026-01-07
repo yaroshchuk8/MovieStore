@@ -8,6 +8,8 @@ public interface IBaseRepository<T> where T : class
         Expression<Func<T, bool>>? predicate = null,
         Func<IQueryable<T>, IQueryable<T>>? includes = null,
         Func<IQueryable<T>, IQueryable<T>>? orderBy = null,
+        int? skip = null,
+        int? take = null,
         bool asNoTracking = true
     );
 

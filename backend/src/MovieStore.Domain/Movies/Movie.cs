@@ -1,4 +1,4 @@
-namespace MovieStore.Domain.Entities;
+namespace MovieStore.Domain.Movies;
 
 public class Movie(string title, string description, double price)
 {

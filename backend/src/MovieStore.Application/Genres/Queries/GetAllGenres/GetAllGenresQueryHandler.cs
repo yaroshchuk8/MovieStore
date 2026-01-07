@@ -2,31 +2,33 @@ using ErrorOr;
 using MediatR;
 using MovieStore.Application.Common.Interfaces.Repositories;
 using MovieStore.Contracts.Genres.Responses;
+using MovieStore.Domain.Common;
 
 namespace MovieStore.Application.Genres.Queries.GetAllGenres;
 
 public class GetAllGenresQueryHandler(IGenreRepository genreRepository)
-    : IRequestHandler<GetAllGenresQuery, ErrorOr<List<GenreResponse>>>
+    : IRequestHandler<GetAllGenresQuery, ErrorOr<PagedList<GenreResponse>>>
 {
-    public async Task<ErrorOr<List<GenreResponse>>> Handle(
+    public async Task<ErrorOr<PagedList<GenreResponse>>> Handle(
         GetAllGenresQuery request,
         CancellationToken cancellationToken)
     {
-        try
-        {
-            var genres = await genreRepository.GetAllAsync();
+        var totalCount = await genreRepository.CountAsync();
+
+        var genres = await genreRepository.GetAllAsync(
+            skip: (request.PageNumber - 1) * request.PageSize,
+            take: request.PageSize
+        );
+    
+        var items = genres.Select(genre => new GenreResponse(genre.Id, genre.Name, genre.Description)).ToList();
+
+        var result = PagedList<GenreResponse>.Create(
+            items: items,
+            pageNumber: request.PageNumber,
+            pageSize: request.PageSize, 
+            totalCount: totalCount
+        );
         
-            var result = genres
-                .Select(genre => new GenreResponse(genre.Id, genre.Name, genre.Description))
-                .ToList();
-        
-            return result;
-        }
-        catch (Exception ex)
-        {
-            return Error.Unexpected(
-                code: "Infrastructure.RepositoryFailure",
-                description: $"Database access failed: {ex.Message}");
-        }
+        return result;
     }
 }

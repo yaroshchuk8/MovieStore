@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MovieStore.Application.Common.Interfaces;
-using MovieStore.Domain.Entities;
+using MovieStore.Domain.Actors;
+using MovieStore.Domain.Genres;
+using MovieStore.Domain.Movies;
+using MovieStore.Domain.Users;
 using MovieStore.Infrastructure.Users.Persistence.Identity.Entities;
 
 namespace MovieStore.Infrastructure.Common.Persistence;

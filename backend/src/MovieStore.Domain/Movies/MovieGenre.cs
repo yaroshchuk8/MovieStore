@@ -1,4 +1,6 @@
-namespace MovieStore.Domain.Entities;
+using MovieStore.Domain.Genres;
+
+namespace MovieStore.Domain.Movies;
 
 public class MovieGenre(int movieId, int genreId)
 {

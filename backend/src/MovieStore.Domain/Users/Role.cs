@@ -1,4 +1,4 @@
-namespace MovieStore.Domain.Enums;
+namespace MovieStore.Domain.Users;
 
 public enum Role : byte
 {

@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using MovieStore.Api.Extensions;
 using MovieStore.Application.Genres.Commands.CreateGenre;
 using MovieStore.Application.Genres.Queries.GetAllGenres;
 using MovieStore.Contracts.Genres.Requests;
@@ -11,15 +12,20 @@ public class GenresController(ISender sender) : ApiControllerBase
 {
     [HttpGet]
     [ProducesResponseType(typeof(List<GenreResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] int pageNumber, [FromQuery] int pageSize)
     {
-        var query = new GetAllGenresQuery();
+        var query = new GetAllGenresQuery(pageNumber, pageSize);
         
         var result = await sender.Send(query);
         
         return result.Match(
-            Ok,
+            pagedList => 
+            {
+                Response.AddPaginationHeader(pagedList.Metadata);
+                return Ok(pagedList.Items);
+            },
             Problem);
     }
     

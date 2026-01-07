@@ -1,6 +1,4 @@
-using MovieStore.Domain.Enums;
-
-namespace MovieStore.Domain.Entities;
+namespace MovieStore.Domain.Users;
 
 public class UserProfile(int identityUserId, string? name, Sex? sex)
 {

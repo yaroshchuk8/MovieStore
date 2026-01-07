@@ -1,8 +1,8 @@
 using MediatR;
 using MovieStore.Application.Common.Interfaces;
 using MovieStore.Application.Common.Interfaces.Repositories;
-using MovieStore.Domain.Entities;
 using ErrorOr;
+using MovieStore.Domain.Genres;
 
 namespace MovieStore.Application.Genres.Commands.CreateGenre;
 

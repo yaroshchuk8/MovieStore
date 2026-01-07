@@ -1,5 +1,5 @@
 using FluentValidation;
-using MovieStore.Domain.Enums;
+using MovieStore.Domain.Users;
 
 namespace MovieStore.Application.Users.Commands.RegisterUser;
 

@@ -1,4 +1,4 @@
-using MovieStore.Domain.Entities;
+using MovieStore.Domain.Actors;
 
 namespace MovieStore.Application.Common.Interfaces.Repositories;
 

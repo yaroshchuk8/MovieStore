@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using MovieStore.Domain.Entities;
+using MovieStore.Domain.Genres;
 
 namespace MovieStore.Infrastructure.Genres.Persistence.Configurations;
 

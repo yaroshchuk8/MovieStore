@@ -1,5 +1,5 @@
 using MovieStore.Application.Common.Interfaces.Repositories;
-using MovieStore.Domain.Entities;
+using MovieStore.Domain.Actors;
 using MovieStore.Infrastructure.Common.Persistence;
 using MovieStore.Infrastructure.Common.Persistence.Repositories;
 

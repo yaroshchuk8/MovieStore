@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using MovieStore.Domain.Entities;
+using MovieStore.Domain.Users;
 using MovieStore.Infrastructure.Users.Persistence.Identity.Entities;
 
 namespace MovieStore.Infrastructure.Users.Persistence.Configurations;

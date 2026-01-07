@@ -1,6 +1,6 @@
 using ErrorOr;
 using MovieStore.Contracts.Users.Responses;
-using MovieStore.Domain.Enums;
+using MovieStore.Domain.Users;
 
 namespace MovieStore.Application.Users.Interfaces;
 
