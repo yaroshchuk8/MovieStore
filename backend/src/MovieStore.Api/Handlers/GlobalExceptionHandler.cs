@@ -17,7 +17,7 @@ public class GlobalExceptionHandler(
         var problemDetails = new ProblemDetails
         {
             Status = StatusCodes.Status500InternalServerError,
-            Title = "An error occurred while processing your request.",
+            Title = "An unexpected error occurred while processing your request.",
             Type = "https://tools.ietf.org/html/rfc9110#section-15.6.1",
             Detail = null
         };

@@ -1,10 +1,13 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MovieStore.Api.Extensions;
+using MovieStore.Api.OpenApi.Attributes;
 using MovieStore.Application.Genres.Commands.CreateGenre;
 using MovieStore.Application.Genres.Queries.GetAllGenres;
 using MovieStore.Contracts.Genres.Requests;
 using MovieStore.Contracts.Genres.Responses;
+using MovieStore.Domain.Users;
 
 namespace MovieStore.Api.Controllers;
 
@@ -13,7 +16,7 @@ public class GenresController(ISender sender) : ApiControllerBase
     [HttpGet]
     [ProducesResponseType(typeof(List<GenreResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProvidesPaginationHeader]
     public async Task<IActionResult> GetAll([FromQuery] int pageNumber, [FromQuery] int pageSize)
     {
         var query = new GetAllGenresQuery(pageNumber, pageSize);
@@ -30,9 +33,9 @@ public class GenresController(ISender sender) : ApiControllerBase
     }
     
     [HttpPost]
+    [Authorize(Roles = nameof(Role.Admin))]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CreateGenre(CreateGenreRequest request)
     {
         var command = new CreateGenreCommand(Name: request.Name, Description: request.Description);
@@ -43,36 +46,4 @@ public class GenresController(ISender sender) : ApiControllerBase
             _ => Created(),
             Problem);
     }
-
-    /*
-    [HttpGet]
-    public async Task<IEnumerable<GenreDto>> GetAll()
-    {
-        return await genreService.GetAllAsync();
-    }
-
-    [HttpGet("{id:guid}")]
-    public async Task<GenreDto> GetById(Guid id)
-    {
-        return await genreService.GetByIdAsync(id);
-    }
-
-    [HttpPost]
-    public async Task Create(GenreUpsertDto genre)
-    {
-        await genreService.CreateAsync(genre);
-    }
-
-    [HttpPut]
-    public async Task Update(GenreUpsertDto genre)
-    {
-        await genreService.UpdateAsync(genre);
-    }
-
-    [HttpDelete("{id:guid}")]
-    public async Task Delete(Guid id)
-    {
-        await genreService.DeleteAsync(id);
-    }
-    */
 }

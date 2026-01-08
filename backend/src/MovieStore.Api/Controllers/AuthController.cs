@@ -14,7 +14,6 @@ public class AuthController(ISender sender) : ApiControllerBase
     [HttpPost("register")]
     [ProducesResponseType(typeof(AuthTokensResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> RegisterUser(RegisterUserRequest request)
     {
         var command = new RegisterUserCommand(
@@ -34,7 +33,6 @@ public class AuthController(ISender sender) : ApiControllerBase
     [ProducesResponseType(typeof(AuthTokensResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> LoginUser(LoginUserRequest request)
     {
         var command = new LoginUserCommand(Email: request.Email, Password: request.Password);
@@ -50,7 +48,6 @@ public class AuthController(ISender sender) : ApiControllerBase
     [ProducesResponseType(typeof(AuthTokensResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> RefreshAuthTokens(RefreshAuthTokensRequest request)
     {
         var command = new RefreshAuthTokensCommand(request.AccessToken, request.RefreshToken);
