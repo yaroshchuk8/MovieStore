@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace MovieStore.Application.Users.Commands.RefreshJwt;
+namespace MovieStore.Application.Users.Commands.RefreshAuthTokens;
 
 public class RefreshAuthTokensCommandValidator : AbstractValidator<RefreshAuthTokensCommand>
 {

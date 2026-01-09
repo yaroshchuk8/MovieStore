@@ -4,13 +4,13 @@ using MovieStore.Application.Common.Interfaces.Repositories;
 using MovieStore.Contracts.Genres.Responses;
 using MovieStore.Domain.Common;
 
-namespace MovieStore.Application.Genres.Queries.GetAllGenres;
+namespace MovieStore.Application.Genres.Queries.GetGenres;
 
-public class GetAllGenresQueryHandler(IGenreRepository genreRepository)
-    : IRequestHandler<GetAllGenresQuery, ErrorOr<PagedList<GenreResponse>>>
+public class GetGenresQueryHandler(IGenreRepository genreRepository)
+    : IRequestHandler<GetGenresQuery, ErrorOr<PagedList<GenreResponse>>>
 {
     public async Task<ErrorOr<PagedList<GenreResponse>>> Handle(
-        GetAllGenresQuery request,
+        GetGenresQuery request,
         CancellationToken cancellationToken)
     {
         var totalCount = await genreRepository.CountAsync();

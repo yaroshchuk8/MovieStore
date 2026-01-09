@@ -1,10 +1,10 @@
 using FluentValidation;
 
-namespace MovieStore.Application.Genres.Queries.GetAllGenres;
+namespace MovieStore.Application.Genres.Queries.GetGenres;
 
-public class GetAllGenresQueryValidator : AbstractValidator<GetAllGenresQuery>
+public class GetGenresQueryValidator : AbstractValidator<GetGenresQuery>
 {
-    public GetAllGenresQueryValidator()
+    public GetGenresQueryValidator()
     {
         RuleFor(x => x.PageNumber)
             .GreaterThanOrEqualTo(1)

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using MovieStore.Api.Extensions;
 using MovieStore.Api.OpenApi.Attributes;
 using MovieStore.Application.Genres.Commands.CreateGenre;
-using MovieStore.Application.Genres.Queries.GetAllGenres;
+using MovieStore.Application.Genres.Queries.GetGenres;
 using MovieStore.Contracts.Genres.Requests;
 using MovieStore.Contracts.Genres.Responses;
 using MovieStore.Domain.Users;
@@ -19,7 +19,7 @@ public class GenresController(ISender sender) : ApiControllerBase
     // [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetAll([FromQuery] int pageNumber, [FromQuery] int pageSize)
     {
-        var query = new GetAllGenresQuery(pageNumber, pageSize);
+        var query = new GetGenresQuery(pageNumber, pageSize);
         
         var result = await sender.Send(query);
         

@@ -3,7 +3,7 @@ using MediatR;
 using MovieStore.Application.Users.Interfaces;
 using MovieStore.Contracts.Users.Responses;
 
-namespace MovieStore.Application.Users.Commands.RefreshJwt;
+namespace MovieStore.Application.Users.Commands.RefreshAuthTokens;
 
 public class RefreshAuthTokensCommandHandler(IIdentityService identityService)
     : IRequestHandler<RefreshAuthTokensCommand, ErrorOr<AuthTokensResponse>>
