@@ -13,22 +13,19 @@ public class EnumSchemaTransformer : IOpenApiSchemaTransformer
     {
         var type = context.JsonTypeInfo.Type;
 
-        if (type.IsEnum)
+        var underlyingType = Nullable.GetUnderlyingType(type);
+        var effectiveType = underlyingType ?? type;
+
+        if (effectiveType.IsEnum)
         {
-            // 1. Force the type to integer in the OpenAPI spec
             schema.Type = JsonSchemaType.Integer;
-            // schema.Format = "int32";
-
-            // 2. Extract values and names
-            var values = Enum.GetValues(type).Cast<int>().ToList();
-            var names = Enum.GetNames(type);
-
-            // 3. Populate the Enum property for the UI (Scalar/Swagger)
-            schema.Enum = values.Select(JsonNode (v) => JsonValue.Create(v)).ToList();
-
-            // 4. Build a helpful description string: "0 = Male, 1 = Female"
-            var descriptionItems = names.Select(name => $"{(int)Enum.Parse(type, name)} = {name}");
             
+            var values = Enum.GetValues(effectiveType).Cast<int>().ToList();
+            var names = Enum.GetNames(effectiveType);
+            
+            schema.Enum = values.Select(JsonNode (v) => JsonValue.Create(v)).ToList();
+            
+            var descriptionItems = names.Select(name => $"{(int)Enum.Parse(effectiveType, name)} = {name}");
             schema.Description = $"Values: {string.Join(", ", descriptionItems)}";
         }
 
