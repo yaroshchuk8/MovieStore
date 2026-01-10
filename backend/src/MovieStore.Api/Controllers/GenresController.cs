@@ -1,12 +1,12 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MovieStore.Api.Contracts.Genres.Requests;
+using MovieStore.Api.Contracts.Genres.Responses;
 using MovieStore.Api.Extensions;
 using MovieStore.Api.OpenApi.Attributes;
 using MovieStore.Application.Genres.Commands.CreateGenre;
 using MovieStore.Application.Genres.Queries.GetGenres;
-using MovieStore.Contracts.Genres.Requests;
-using MovieStore.Contracts.Genres.Responses;
 using MovieStore.Domain.Users;
 
 namespace MovieStore.Api.Controllers;

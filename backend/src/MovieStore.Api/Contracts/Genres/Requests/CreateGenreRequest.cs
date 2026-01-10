@@ -1,3 +1,3 @@
-namespace MovieStore.Contracts.Genres.Requests;
+namespace MovieStore.Api.Contracts.Genres.Requests;
 
 public record CreateGenreRequest(string Name, string? Description);

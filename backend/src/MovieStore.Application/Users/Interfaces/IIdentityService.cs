@@ -1,12 +1,11 @@
 using ErrorOr;
-using MovieStore.Contracts.Users.Responses;
 using MovieStore.Domain.Users;
 
 namespace MovieStore.Application.Users.Interfaces;
 
 public interface IIdentityService
 {
-    Task<ErrorOr<(IIdentityUserContract, AuthTokensResponse)>> CreateUserAndGenerateTokenPairAsync(
+    Task<ErrorOr<(IIdentityUserContract, string AccessToken, Guid RefreshToken)>> CreateUserAndGenerateAuthTokensAsync(
         string email,
         string password,
         string? name,
@@ -23,11 +22,11 @@ public interface IIdentityService
     Task<ErrorOr<IIdentityUserContract>> CheckUserCredentialsAsync(string email, string password);
     
     Task<Guid> GenerateRefreshTokenAsync(int identityUserId);
-    Task<AuthTokensResponse> GenerateAuthTokensAsync(
+    Task<(string AccessToken, Guid RefreshToken)> GenerateAuthTokensAsync(
         IIdentityUserContract identityUserContract,
         IList<string> roles);
     
     Task<List<string>> GetUserRolesAsync(IIdentityUserContract identityUserContract);
 
-    Task<ErrorOr<AuthTokensResponse>> RefreshAuthTokensAsync(string accessToken, Guid refreshToken);
+    Task<ErrorOr<(string AccessToken, Guid RefreshToken)>> RefreshAuthTokensAsync(string accessToken, Guid refreshToken);
 }

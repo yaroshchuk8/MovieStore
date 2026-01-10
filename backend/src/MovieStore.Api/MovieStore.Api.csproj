@@ -18,7 +18,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\MovieStore.Application\MovieStore.Application.csproj" />
-      <ProjectReference Include="..\MovieStore.Contracts\MovieStore.Contracts.csproj" />
       <ProjectReference Include="..\MovieStore.Infrastructure\MovieStore.Infrastructure.csproj" />
     </ItemGroup>
 
@@ -26,6 +25,10 @@
         <Content Update="@(Content)">
             <Visible Condition="'%(NuGetItemType)' == 'Content'">false</Visible>
         </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Contracts\" />
     </ItemGroup>
 
 </Project>

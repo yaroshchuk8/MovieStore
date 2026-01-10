@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using MovieStore.Application.Common.Interfaces;
 using MovieStore.Application.Users.Interfaces;
-using MovieStore.Contracts.Users.Responses;
 using MovieStore.Domain.Users;
 using MovieStore.Infrastructure.Common.Configurations;
 using MovieStore.Infrastructure.Common.Persistence;
@@ -23,12 +22,13 @@ internal class IdentityService(
     IJwtService jwtService)
     : IIdentityService
 {
-    public async Task<ErrorOr<(IIdentityUserContract, AuthTokensResponse)>> CreateUserAndGenerateTokenPairAsync(
-        string email,
-        string password,
-        string? name,
-        Sex? sex,
-        Role role)
+    public async Task<ErrorOr<(IIdentityUserContract, string AccessToken, Guid RefreshToken)>>
+        CreateUserAndGenerateAuthTokensAsync(
+            string email,
+            string password,
+            string? name,
+            Sex? sex,
+            Role role)
     {
         await using var transaction = await context.Database.BeginTransactionAsync();
         
@@ -42,7 +42,7 @@ internal class IdentityService(
         
         await transaction.CommitAsync();
         
-        return (createUserResult.Value, authTokens);
+        return (createUserResult.Value, authTokens.AccessToken, authTokens.RefreshToken);
     }
     
     public async Task<ErrorOr<IIdentityUserContract>> CreateUserAsync(
@@ -125,15 +125,14 @@ internal class IdentityService(
         return refreshToken.Value;
     }
 
-    public async Task<AuthTokensResponse> GenerateAuthTokensAsync(
+    public async Task<(string AccessToken, Guid RefreshToken)> GenerateAuthTokensAsync(
         IIdentityUserContract identityUserContract,
         IList<string> roles)
     {
         var accessToken = jwtService.GenerateJwt(identityUserContract, roles);
         var refreshToken = await GenerateRefreshTokenAsync(identityUserContract.Id);
-        var authTokens = new AuthTokensResponse(accessToken, refreshToken);
         
-        return authTokens;
+        return (accessToken, refreshToken);
     }
     
     public async Task<List<string>> GetUserRolesAsync(IIdentityUserContract identityUserContract)
@@ -144,7 +143,9 @@ internal class IdentityService(
         return roles.ToList();
     }
 
-    public async Task<ErrorOr<AuthTokensResponse>> RefreshAuthTokensAsync(string accessToken, Guid refreshToken)
+    public async Task<ErrorOr<(string AccessToken, Guid RefreshToken)>> RefreshAuthTokensAsync(
+        string accessToken,
+        Guid refreshToken)
     {
         var claimsPrincipalResult = jwtService.ValidateTokenAndGetClaimsPrincipal(accessToken);
         if (claimsPrincipalResult.IsError)
@@ -189,10 +190,10 @@ internal class IdentityService(
         refreshTokenRepository.Update(storedToken);
         
         var roles = await userManager.GetRolesAsync(user);
-        var tokenPair = await GenerateAuthTokensAsync(user, roles);
+        var authTokens = await GenerateAuthTokensAsync(user, roles);
         
         await transaction.CommitAsync();
 
-        return tokenPair;
+        return authTokens;
     }
 }

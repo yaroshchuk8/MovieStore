@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\MovieStore.Contracts\MovieStore.Contracts.csproj" />
     <ProjectReference Include="..\MovieStore.Domain\MovieStore.Domain.csproj" />
   </ItemGroup>
 

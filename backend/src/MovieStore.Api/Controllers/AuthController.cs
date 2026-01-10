@@ -1,10 +1,10 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using MovieStore.Api.Contracts.Users.Requests;
+using MovieStore.Api.Contracts.Users.Responses;
 using MovieStore.Application.Users.Commands.LoginUser;
 using MovieStore.Application.Users.Commands.RefreshAuthTokens;
 using MovieStore.Application.Users.Commands.RegisterUser;
-using MovieStore.Contracts.Users.Requests;
-using MovieStore.Contracts.Users.Responses;
 using MovieStore.Domain.Users;
 
 namespace MovieStore.Api.Controllers;
@@ -24,7 +24,7 @@ public class AuthController(ISender sender) : ApiControllerBase
         var result = await sender.Send(command);
 
         return result.Match(
-            Ok,
+            authTokens => Ok(new AuthTokensResponse(authTokens.AccessToken, authTokens.RefreshToken)),
             Problem);
     }
     
@@ -38,7 +38,7 @@ public class AuthController(ISender sender) : ApiControllerBase
         var result = await sender.Send(command);
 
         return result.Match(
-            Ok,
+            authTokens => Ok(new AuthTokensResponse(authTokens.AccessToken, authTokens.RefreshToken)),
             Problem);
     }
 
@@ -52,7 +52,7 @@ public class AuthController(ISender sender) : ApiControllerBase
         var result = await sender.Send(command);
         
         return result.Match(
-            Ok,
+            authTokens => Ok(new AuthTokensResponse(authTokens.AccessToken, authTokens.RefreshToken)),
             Problem);
     }
 }

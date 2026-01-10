@@ -1,15 +1,14 @@
 using ErrorOr;
 using MediatR;
 using MovieStore.Application.Common.Interfaces.Repositories;
-using MovieStore.Contracts.Genres.Responses;
 using MovieStore.Domain.Common;
 
 namespace MovieStore.Application.Genres.Queries.GetGenres;
 
 public class GetGenresQueryHandler(IGenreRepository genreRepository)
-    : IRequestHandler<GetGenresQuery, ErrorOr<PagedList<GenreResponse>>>
+    : IRequestHandler<GetGenresQuery, ErrorOr<PagedList<GetGenresQueryResult>>>
 {
-    public async Task<ErrorOr<PagedList<GenreResponse>>> Handle(
+    public async Task<ErrorOr<PagedList<GetGenresQueryResult>>> Handle(
         GetGenresQuery request,
         CancellationToken cancellationToken)
     {
@@ -20,9 +19,9 @@ public class GetGenresQueryHandler(IGenreRepository genreRepository)
             take: request.PageSize
         );
     
-        var items = genres.Select(genre => new GenreResponse(genre.Id, genre.Name, genre.Description)).ToList();
+        var items = genres.Select(genre => new GetGenresQueryResult(genre.Id, genre.Name, genre.Description)).ToList();
 
-        var result = PagedList<GenreResponse>.Create(
+        var result = PagedList<GetGenresQueryResult>.Create(
             items: items,
             pageNumber: request.PageNumber,
             pageSize: request.PageSize, 
