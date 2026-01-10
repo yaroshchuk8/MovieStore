@@ -5,7 +5,6 @@ using MovieStore.Api.Contracts.Users.Responses;
 using MovieStore.Application.Users.Commands.LoginUser;
 using MovieStore.Application.Users.Commands.RefreshAuthTokens;
 using MovieStore.Application.Users.Commands.RegisterUser;
-using MovieStore.Domain.Users;
 
 namespace MovieStore.Api.Controllers;
 
@@ -19,7 +18,7 @@ public class AuthController(ISender sender) : ApiControllerBase
             Email: request.Email,
             Password: request.Password,
             Name: request.Name,
-            Sex: (Sex?)request.Sex);
+            Sex: request.Sex);
 
         var result = await sender.Send(command);
 

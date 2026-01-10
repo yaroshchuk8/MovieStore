@@ -1,15 +1,14 @@
 using MediatR;
 using ErrorOr;
+using MovieStore.Application.Users.DTOs;
 using MovieStore.Application.Users.Interfaces;
 
 namespace MovieStore.Application.Users.Commands.LoginUser;
 
 public class LoginUserCommandHandler(IIdentityService identityService)
-    : IRequestHandler<LoginUserCommand, ErrorOr<(string AccessToken, Guid RefreshToken)>>
+    : IRequestHandler<LoginUserCommand, ErrorOr<AuthTokens>>
 {
-    public async Task<ErrorOr<(string AccessToken, Guid RefreshToken)>> Handle(
-        LoginUserCommand request,
-        CancellationToken cancellationToken)
+    public async Task<ErrorOr<AuthTokens>> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
         var credentialsCheckResult =
             await identityService.CheckUserCredentialsAsync(email: request.Email, password: request.Password);

@@ -1,16 +1,15 @@
 using ErrorOr;
 using MediatR;
+using MovieStore.Application.Users.DTOs;
 using MovieStore.Application.Users.Interfaces;
 using MovieStore.Domain.Users;
 
 namespace MovieStore.Application.Users.Commands.RegisterUser;
 
 public class RegisterUserCommandHandler(IIdentityService identityService)
-    : IRequestHandler<RegisterUserCommand, ErrorOr<(string AccessToken, Guid RefreshToken)>>
+    : IRequestHandler<RegisterUserCommand, ErrorOr<AuthTokens>>
 {
-    public async Task<ErrorOr<(string AccessToken, Guid RefreshToken)>> Handle(
-        RegisterUserCommand request,
-        CancellationToken cancellationToken)
+    public async Task<ErrorOr<AuthTokens>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
         const Role role = Role.Customer;
         var registrationResult = await identityService.CreateUserAndGenerateAuthTokensAsync(
@@ -24,6 +23,6 @@ public class RegisterUserCommandHandler(IIdentityService identityService)
             return registrationResult.Errors;
         }
 
-        return (registrationResult.Value.AccessToken, registrationResult.Value.RefreshToken);
+        return registrationResult.Value.AuthTokens;
     }
 }

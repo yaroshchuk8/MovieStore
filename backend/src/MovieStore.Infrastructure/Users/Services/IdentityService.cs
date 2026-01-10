@@ -3,6 +3,7 @@ using ErrorOr;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using MovieStore.Application.Common.Interfaces;
+using MovieStore.Application.Users.DTOs;
 using MovieStore.Application.Users.Interfaces;
 using MovieStore.Domain.Users;
 using MovieStore.Infrastructure.Common.Configurations;
@@ -22,7 +23,7 @@ internal class IdentityService(
     IJwtService jwtService)
     : IIdentityService
 {
-    public async Task<ErrorOr<(IIdentityUserContract, string AccessToken, Guid RefreshToken)>>
+    public async Task<ErrorOr<(IIdentityUserContract IdentityUserContract, AuthTokens AuthTokens)>>
         CreateUserAndGenerateAuthTokensAsync(
             string email,
             string password,
@@ -42,7 +43,7 @@ internal class IdentityService(
         
         await transaction.CommitAsync();
         
-        return (createUserResult.Value, authTokens.AccessToken, authTokens.RefreshToken);
+        return (createUserResult.Value, authTokens);
     }
     
     public async Task<ErrorOr<IIdentityUserContract>> CreateUserAsync(
@@ -125,14 +126,14 @@ internal class IdentityService(
         return refreshToken.Value;
     }
 
-    public async Task<(string AccessToken, Guid RefreshToken)> GenerateAuthTokensAsync(
+    public async Task<AuthTokens> GenerateAuthTokensAsync(
         IIdentityUserContract identityUserContract,
         IList<string> roles)
     {
         var accessToken = jwtService.GenerateJwt(identityUserContract, roles);
         var refreshToken = await GenerateRefreshTokenAsync(identityUserContract.Id);
         
-        return (accessToken, refreshToken);
+        return new AuthTokens(accessToken, refreshToken);
     }
     
     public async Task<List<string>> GetUserRolesAsync(IIdentityUserContract identityUserContract)
@@ -143,9 +144,7 @@ internal class IdentityService(
         return roles.ToList();
     }
 
-    public async Task<ErrorOr<(string AccessToken, Guid RefreshToken)>> RefreshAuthTokensAsync(
-        string accessToken,
-        Guid refreshToken)
+    public async Task<ErrorOr<AuthTokens>> RefreshAuthTokensAsync(string accessToken, Guid refreshToken)
     {
         var claimsPrincipalResult = jwtService.ValidateTokenAndGetClaimsPrincipal(accessToken);
         if (claimsPrincipalResult.IsError)

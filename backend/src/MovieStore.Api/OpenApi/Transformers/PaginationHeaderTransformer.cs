@@ -17,14 +17,11 @@ public class PaginationHeaderTransformer : IOpenApiOperationTransformer
 
         if (hasPagination && operation.Responses?.TryGetValue("200", out var response) == true)
         {
-            // The trick: If Headers is null, we initialize it. 
-            // We cast to the concrete class 'OpenApiResponse' to access the setter.
             if (response.Headers == null && response is OpenApiResponse concreteResponse)
             {
                 concreteResponse.Headers = new Dictionary<string, IOpenApiHeader>();
             }
-
-            // Now that we've ensured it isn't null, we can add our headers
+            
             if (response.Headers is not null)
             {
                 response.Headers.TryAdd("X-Pagination", new OpenApiHeader

@@ -16,7 +16,6 @@ public class GenresController(ISender sender) : ApiControllerBase
     [HttpGet]
     [ProducesResponseType(typeof(List<GenreResponse>), StatusCodes.Status200OK)]
     [ProvidesPaginationHeader]
-    // [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetAll([FromQuery] int pageNumber, [FromQuery] int pageSize)
     {
         var query = new GetGenresQuery(pageNumber, pageSize);
@@ -27,7 +26,8 @@ public class GenresController(ISender sender) : ApiControllerBase
             pagedList => 
             {
                 Response.AddPaginationHeader(pagedList.Metadata);
-                return Ok(pagedList.Items);
+                var genres = pagedList.Items.Select(g => new GenreResponse(g.Id, g.Name, g.Description)).ToList();
+                return Ok(genres);
             },
             Problem);
     }
@@ -35,7 +35,6 @@ public class GenresController(ISender sender) : ApiControllerBase
     [HttpPost]
     [Authorize(Roles = nameof(Role.Admin))]
     [ProducesResponseType(StatusCodes.Status201Created)]
-    // [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateGenre(CreateGenreRequest request)
     {
         var command = new CreateGenreCommand(Name: request.Name, Description: request.Description);

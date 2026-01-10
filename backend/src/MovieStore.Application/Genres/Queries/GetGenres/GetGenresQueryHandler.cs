@@ -6,9 +6,9 @@ using MovieStore.Domain.Common;
 namespace MovieStore.Application.Genres.Queries.GetGenres;
 
 public class GetGenresQueryHandler(IGenreRepository genreRepository)
-    : IRequestHandler<GetGenresQuery, ErrorOr<PagedList<GetGenresQueryResult>>>
+    : IRequestHandler<GetGenresQuery, ErrorOr<PagedList<GetGenresQueryDto>>>
 {
-    public async Task<ErrorOr<PagedList<GetGenresQueryResult>>> Handle(
+    public async Task<ErrorOr<PagedList<GetGenresQueryDto>>> Handle(
         GetGenresQuery request,
         CancellationToken cancellationToken)
     {
@@ -19,9 +19,9 @@ public class GetGenresQueryHandler(IGenreRepository genreRepository)
             take: request.PageSize
         );
     
-        var items = genres.Select(genre => new GetGenresQueryResult(genre.Id, genre.Name, genre.Description)).ToList();
+        var items = genres.Select(genre => new GetGenresQueryDto(genre.Id, genre.Name, genre.Description)).ToList();
 
-        var result = PagedList<GetGenresQueryResult>.Create(
+        var result = PagedList<GetGenresQueryDto>.Create(
             items: items,
             pageNumber: request.PageNumber,
             pageSize: request.PageSize, 
