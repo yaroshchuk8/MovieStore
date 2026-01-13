@@ -7,7 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using MovieStore.Application.Users.Interfaces;
 using MovieStore.Infrastructure.Common.Configurations;
 
-namespace MovieStore.Infrastructure.Common.Services;
+namespace MovieStore.Infrastructure.Users.Services;
 
 public class JwtService(IOptions<JwtSettings> jwtOptions) : IJwtService
 {
@@ -48,8 +48,7 @@ public class JwtService(IOptions<JwtSettings> jwtOptions) : IJwtService
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret)),
             ValidateLifetime = false // CRITICAL: We want to read it even if it's expired
         };
-
-
+        
         try
         {
             var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
