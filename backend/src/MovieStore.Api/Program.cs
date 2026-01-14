@@ -1,5 +1,6 @@
 using MovieStore.Api;
 using MovieStore.Api.Configuration;
+using MovieStore.Api.Endpoints;
 using MovieStore.Api.OpenApi.Transformers;
 using MovieStore.Application;
 using MovieStore.Infrastructure;
@@ -8,7 +9,7 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 {
-    builder.Services.AddControllers();
+    builder.Services.AddAuthorization();
         
     builder.Services.AddOpenApi(options =>
     {
@@ -84,8 +85,10 @@ var app = builder.Build();
     
     app.UseAuthentication();
     app.UseAuthorization();
+    if (app.Environment.IsDevelopment()) app.MapTestEndpoints();
     
-    app.MapControllers();
+    app.MapAuthEndpoints();
+    app.MapGenreEndpoints();
     
     app.Run();
 }
