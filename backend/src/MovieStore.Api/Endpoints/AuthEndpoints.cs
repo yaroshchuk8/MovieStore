@@ -1,5 +1,4 @@
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 using MovieStore.Api.Contracts.Users.Requests;
 using MovieStore.Api.Contracts.Users.Responses;
 using MovieStore.Api.Helpers;
@@ -13,7 +12,7 @@ public static class AuthEndpoints
 {
     public static void MapAuthEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("api/auth").WithTags("Auth");
+        var group = app.MapGroup("api/auth").WithTags("Auth").DisableAntiforgery();
 
         group.MapPost("/register", RegisterUser)
             .Produces<AuthTokensResponse>(StatusCodes.Status200OK);

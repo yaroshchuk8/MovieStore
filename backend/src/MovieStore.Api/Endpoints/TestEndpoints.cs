@@ -4,7 +4,7 @@ public static class TestEndpoints
 {
     public static void MapTestEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("api/test").WithTags("Test");
+        var group = app.MapGroup("api/test").WithTags("Test").DisableAntiforgery();
 
         group.MapPost("file", TestIFormFile);
     }
