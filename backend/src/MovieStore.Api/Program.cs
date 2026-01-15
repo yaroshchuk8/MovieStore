@@ -85,10 +85,10 @@ var app = builder.Build();
     
     app.UseAuthentication();
     app.UseAuthorization();
-    if (app.Environment.IsDevelopment()) app.MapTestEndpoints();
     
     app.MapAuthEndpoints();
     app.MapGenreEndpoints();
+    if (app.Environment.IsDevelopment()) app.MapTestEndpoints();
     
     app.Run();
 }
