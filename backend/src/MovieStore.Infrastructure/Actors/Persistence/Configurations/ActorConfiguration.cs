@@ -11,7 +11,7 @@ internal class ActorConfiguration : IEntityTypeConfiguration<Actor>
         builder.HasKey(a => a.Id);
         builder.Property(a => a.Name).IsRequired();
         builder.Property(a => a.ImagePath).IsRequired(false);
-        builder.Property(a => a.CreateAt).IsRequired();
+        builder.Property(a => a.CreatedAt).IsRequired();
 
         // Many-to-Many Relationship
         // builder.HasMany(a => a.Movies)
