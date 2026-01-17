@@ -88,6 +88,7 @@ var app = builder.Build();
     
     app.MapAuthEndpoints();
     app.MapGenreEndpoints();
+    app.MapActorEndpoints();
     if (app.Environment.IsDevelopment()) app.MapTestEndpoints();
     
     app.Run();
