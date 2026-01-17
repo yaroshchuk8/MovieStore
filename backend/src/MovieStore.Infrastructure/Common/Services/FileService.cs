@@ -14,10 +14,24 @@ public class FileService(IOptions<FileStorageSettings> fileStorageOptions) : IFi
         var uniqueId = Guid.NewGuid().ToString("N");
         var fileFullName = $"{timestamp}_{uniqueId}{fileExtension}";
         var uploadPath = Path.Combine(_fileStorageSettings.FolderPath, fileFullName);
+      
+        if (!Directory.Exists(_fileStorageSettings.FolderPath))
+        {
+            Directory.CreateDirectory(_fileStorageSettings.FolderPath);
+        }
         
         await using var fileStreamOutput = new FileStream(uploadPath, FileMode.Create);
         await file.CopyToAsync(fileStreamOutput);
 
         return fileFullName;
+    }
+    
+    public async Task DeleteFileAsync(string filePath)
+    {
+        var fullPath = Path.Combine(_fileStorageSettings.FolderPath, filePath);
+        if (File.Exists(fullPath))
+        {
+            File.Delete(fullPath);
+        }
     }
 }
