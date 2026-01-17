@@ -25,7 +25,8 @@ public static class DependencyInjection
         public IServiceCollection AddPersistence(IConfiguration configuration)
         {
             var dbSettings = configuration.GetSection(nameof(DbSettings)).Get<DbSettings>()!;
-            services.AddDbContext<MovieStoreDbContext>(options => options.UseSqlite(dbSettings.ConnectionString));
+            // services.AddDbContext<MovieStoreDbContext>(options => options.UseSqlite(dbSettings.ConnectionString));
+            services.AddDbContext<MovieStoreDbContext>(options => options.UseSqlServer(dbSettings.ConnectionString));
             
             return services;
         }

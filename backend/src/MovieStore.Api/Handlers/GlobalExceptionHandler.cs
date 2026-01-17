@@ -17,35 +17,36 @@ public class GlobalExceptionHandler(
             var statusCode = badRequestException.StatusCode;
             logger.LogWarning(
                 exception,
-                "Bad Request occurred with HTTP {Status}: {Message}",
+                "Bad Request occurred with HTTP status {Status}: {Message}",
                 statusCode,
                 badRequestException.Message);
             
             httpContext.Response.StatusCode = statusCode;
 
-            if (badRequestException.StatusCode == StatusCodes.Status400BadRequest)
+            if (badRequestException.StatusCode != StatusCodes.Status400BadRequest)
             {
-                var problemDetails = new ProblemDetails
-                {
-                    Status = StatusCodes.Status400BadRequest,
-                    Title = "Bad Request.",
-                    Type = "https://tools.ietf.org/html/rfc9110#section-15.5.1",
-                    Detail = "Either a syntax error occurred, a required field is missing, or a field is of the wrong type."
-                };
-                
                 return await problemDetailsService.TryWriteAsync(new ProblemDetailsContext
                 {
                     HttpContext = httpContext,
-                    Exception = exception,
-                    ProblemDetails = problemDetails
+                    Exception = exception
                 });
             }
-
+            
+            var problemDetails = new ProblemDetails
+            {
+                Status = StatusCodes.Status400BadRequest,
+                Title = "Bad Request.",
+                Type = "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+                Detail = "Either a syntax error occurred, a required field is missing, or a field is of the wrong type."
+            };
+                
             return await problemDetailsService.TryWriteAsync(new ProblemDetailsContext
             {
                 HttpContext = httpContext,
-                Exception = exception
+                Exception = exception,
+                ProblemDetails = problemDetails
             });
+
         }
 
         logger.LogError(exception, "Unhandled exception occurred: {Message}", exception.Message);
