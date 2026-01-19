@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MovieStore.Infrastructure.Common.Persistence;
 
@@ -11,9 +12,11 @@ using MovieStore.Infrastructure.Common.Persistence;
 namespace MovieStore.Infrastructure.Migrations
 {
     [DbContext(typeof(MovieStoreDbContext))]
-    partial class MovieStoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260118030541_UpdateSchema")]
+    partial class UpdateSchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,7 +49,7 @@ namespace MovieStore.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Actor", (string)null);
+                    b.ToTable("Actor");
                 });
 
             modelBuilder.Entity("MovieStore.Domain.Genres.Genre", b =>
@@ -73,7 +76,7 @@ namespace MovieStore.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Genre", (string)null);
+                    b.ToTable("Genre");
                 });
 
             modelBuilder.Entity("MovieStore.Domain.Movies.Movie", b =>
@@ -104,7 +107,7 @@ namespace MovieStore.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Movie", (string)null);
+                    b.ToTable("Movie");
                 });
 
             modelBuilder.Entity("MovieStore.Domain.Movies.MovieActor", b =>
@@ -123,7 +126,7 @@ namespace MovieStore.Infrastructure.Migrations
 
                     b.HasIndex("ActorId");
 
-                    b.ToTable("MovieActor", (string)null);
+                    b.ToTable("MovieActor");
                 });
 
             modelBuilder.Entity("MovieStore.Domain.Movies.MovieGenre", b =>
@@ -138,7 +141,7 @@ namespace MovieStore.Infrastructure.Migrations
 
                     b.HasIndex("GenreId");
 
-                    b.ToTable("MovieGenre", (string)null);
+                    b.ToTable("MovieGenre");
                 });
 
             modelBuilder.Entity("MovieStore.Domain.Users.UserProfile", b =>
@@ -169,7 +172,7 @@ namespace MovieStore.Infrastructure.Migrations
                     b.HasIndex("IdentityUserId")
                         .IsUnique();
 
-                    b.ToTable("UserProfile", (string)null);
+                    b.ToTable("UserProfile");
                 });
 
             modelBuilder.Entity("MovieStore.Infrastructure.Users.Persistence.Identity.Entities.IdentityRoleClaimEntity", b =>
@@ -403,7 +406,7 @@ namespace MovieStore.Infrastructure.Migrations
                     b.HasIndex("Value")
                         .IsUnique();
 
-                    b.ToTable("RefreshToken", (string)null);
+                    b.ToTable("RefreshToken");
                 });
 
             modelBuilder.Entity("MovieStore.Domain.Movies.MovieActor", b =>
