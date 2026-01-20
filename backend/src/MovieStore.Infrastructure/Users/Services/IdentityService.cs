@@ -88,7 +88,7 @@ internal class IdentityService(
             return errors;
         }
             
-        var domainUser = new UserProfile(identityUser.Id, name, sex);
+        var domainUser = new UserProfile(identityUser.Id, name, sex) { Wallet = new Wallet() };
         await userProfileRepository.AddAsync(domainUser);
         await unitOfWork.CommitChangesAsync();
         

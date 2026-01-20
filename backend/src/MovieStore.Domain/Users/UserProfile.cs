@@ -10,4 +10,6 @@ public class UserProfile(int identityUserId, string? name, Sex? sex)
     
     public Sex? Sex { get; set; } = sex;
     public DateTime CreatedAt { get; init; }
+    
+    public Wallet? Wallet { get; set; }
 }

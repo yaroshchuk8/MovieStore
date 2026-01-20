@@ -28,6 +28,7 @@ public class MovieStoreDbContext(DbContextOptions<MovieStoreDbContext> options)
     public DbSet<MovieActor> MovieActor { get; set; }
     public DbSet<MovieGenre> MovieGenre { get; set; }
     public DbSet<UserProfile> UserProfile { get; set; }
+    public DbSet<Wallet> Wallet { get; set; }
     
     // Identity
     public DbSet<RefreshToken> RefreshToken { get; set; }
