@@ -1,3 +1,4 @@
+using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
@@ -21,12 +22,12 @@ public class ValidationErrorTransformer : IOpenApiOperationTransformer
 
             // 2. Use TryAdd so manual attributes [ProducesResponseType] 
             // on specific actions still take precedence if they exist.
-            operation.Responses.TryAdd("400", new OpenApiResponse
+            operation.Responses.TryAdd(StatusCodes.Status400BadRequest.ToString(), new OpenApiResponse
             {
                 Description = "Bad Request",
                 Content = new Dictionary<string, OpenApiMediaType>
                 {
-                    ["application/json"] = new()
+                    [MediaTypeNames.Application.Json] = new()
                     {
                         // Links to the existing ValidationProblemDetails schema
                         Schema = new OpenApiSchemaReference(nameof(ValidationProblemDetails), context.Document)

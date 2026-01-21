@@ -24,10 +24,7 @@ public class SchemaRegistrationTransformer : IOpenApiDocumentTransformer
         {
             var schema = await context.GetOrCreateSchemaAsync(type, null, cancellationToken);
             var schemaId = type.Name; 
-            if (!document.Components.Schemas.ContainsKey(schemaId))
-            {
-                document.Components.Schemas.Add(schemaId, schema);
-            }
+            document.Components.Schemas.TryAdd(schemaId, schema);
         }
     }
 }

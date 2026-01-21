@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using MovieStore.Api;
 using MovieStore.Api.Configuration;
 using MovieStore.Api.Endpoints;
@@ -33,14 +34,13 @@ var app = builder.Build();
         {
             options
                 .WithTitle("MovieStore API")
-                .WithTheme(ScalarTheme.Moon) // Optional: Choose a theme
+                .WithTheme(ScalarTheme.Moon)
                 .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
             
-            // This ensures the "Authorize" section uses the Bearer scheme we defined
-            
+            // Ensures the "Authorize" section uses the Bearer scheme
             options.Authentication = new ScalarAuthenticationOptions
             {
-                PreferredSecuritySchemes = ["Bearer"]
+                PreferredSecuritySchemes = [JwtBearerDefaults.AuthenticationScheme]
             };
         }); // scalar/v1
     }

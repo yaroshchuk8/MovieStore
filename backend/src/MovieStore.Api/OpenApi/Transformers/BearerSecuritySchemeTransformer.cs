@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
+using MovieStore.Api.Constants;
 
 namespace MovieStore.Api.OpenApi.Transformers;
 
@@ -13,16 +15,16 @@ public class BearerSecuritySchemeTransformer(IAuthenticationSchemeProvider authe
         CancellationToken cancellationToken)
     {
         var authenticationSchemes = await authenticationSchemeProvider.GetAllSchemesAsync();
-        if (authenticationSchemes.Any(authScheme => authScheme.Name == "Bearer"))
+        if (authenticationSchemes.Any(authScheme => authScheme.Name == JwtBearerDefaults.AuthenticationScheme))
         {
             var requirements = new Dictionary<string, IOpenApiSecurityScheme>
             {   
-                ["Bearer"] = new OpenApiSecurityScheme
+                [JwtBearerDefaults.AuthenticationScheme] = new OpenApiSecurityScheme
                 {
                     Type = SecuritySchemeType.Http,
-                    Scheme = "bearer", // Must be lowercase
+                    Scheme = JwtBearerDefaults.AuthenticationScheme.ToLowerInvariant(), // Must be lowercase
                     In = ParameterLocation.Header,
-                    BearerFormat = "JWT"
+                    BearerFormat = HttpConstants.Auth.JwtFormat
                 }
             };
             document.Components ??= new OpenApiComponents();

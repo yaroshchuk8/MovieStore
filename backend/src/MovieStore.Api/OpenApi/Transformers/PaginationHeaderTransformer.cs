@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.OpenApi;
+using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi;
+using MovieStore.Api.Constants;
 using MovieStore.Api.OpenApi.Attributes;
 using MovieStore.Domain.Common;
 
@@ -15,7 +17,8 @@ public class PaginationHeaderTransformer : IOpenApiOperationTransformer
         var metadata = context.Description.ActionDescriptor.EndpointMetadata;
         var hasPagination = metadata.Any(m => m is ProvidesPaginationHeaderAttribute);
 
-        if (hasPagination && operation.Responses?.TryGetValue("200", out var response) == true)
+        if (hasPagination && operation.Responses?
+                .TryGetValue(StatusCodes.Status200OK.ToString(), out var response) == true)
         {
             if (response.Headers == null && response is OpenApiResponse concreteResponse)
             {
@@ -24,7 +27,7 @@ public class PaginationHeaderTransformer : IOpenApiOperationTransformer
             
             if (response.Headers is not null)
             {
-                response.Headers.TryAdd("X-Pagination", new OpenApiHeader
+                response.Headers.TryAdd(HttpConstants.Headers.XPagination, new OpenApiHeader
                 {
                     Description = "JSON object containing pagination metadata.",
                     Schema = new OpenApiSchema
@@ -42,9 +45,9 @@ public class PaginationHeaderTransformer : IOpenApiOperationTransformer
                     }
                 });
 
-                response.Headers.TryAdd("Access-Control-Expose-Headers", new OpenApiHeader
+                response.Headers.TryAdd(HeaderNames.AccessControlExposeHeaders, new OpenApiHeader
                 {
-                    Description = "Exposes X-Pagination to client-side scripts.",
+                    Description = $"Exposes {HttpConstants.Headers.XPagination} to client-side scripts.",
                     Schema = new OpenApiSchema { Type = JsonSchemaType.String }
                 });
             }

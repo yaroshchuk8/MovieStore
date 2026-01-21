@@ -12,7 +12,7 @@ public class InternalServerErrorTransformer : IOpenApiOperationTransformer
     {
         operation.Responses ??= new OpenApiResponses();
 
-        operation.Responses.TryAdd("500", new OpenApiResponse
+        operation.Responses.TryAdd(StatusCodes.Status500InternalServerError.ToString(), new OpenApiResponse
         {
             Description = "Internal Server Error",
             // Content = new Dictionary<string, OpenApiMediaType>

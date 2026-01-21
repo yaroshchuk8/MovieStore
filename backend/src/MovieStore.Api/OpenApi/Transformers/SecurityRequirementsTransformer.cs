@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
@@ -24,7 +25,7 @@ public class SecurityRequirementsTransformer : IOpenApiOperationTransformer
         {
             var securityRequirement = new OpenApiSecurityRequirement
             {
-                [new OpenApiSecuritySchemeReference("Bearer", context.Document)] = []
+                [new OpenApiSecuritySchemeReference(JwtBearerDefaults.AuthenticationScheme, context.Document)] = []
             };
 
             operation.Security ??= new List<OpenApiSecurityRequirement>();
@@ -33,8 +34,10 @@ public class SecurityRequirementsTransformer : IOpenApiOperationTransformer
             operation.Responses ??= new OpenApiResponses();
             
             // Ensure 401/403 are documented
-            operation.Responses.TryAdd("401", new OpenApiResponse { Description = "Unauthorized" });
-            operation.Responses.TryAdd("403", new OpenApiResponse { Description = "Forbidden" });
+            operation.Responses.TryAdd(
+                StatusCodes.Status401Unauthorized.ToString(), new OpenApiResponse { Description = "Unauthorized" });
+            operation.Responses.TryAdd(
+                StatusCodes.Status403Forbidden.ToString(), new OpenApiResponse { Description = "Forbidden" });
         }
 
         return Task.CompletedTask;

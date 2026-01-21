@@ -24,7 +24,7 @@ public static class GenreEndpoints
 
         group.MapPost("/", CreateGenre)
             .RequireAuthorization(new AuthorizeAttribute { Roles = nameof(Role.Admin) })
-            .Produces(201);
+            .Produces(StatusCodes.Status201Created);
     }
 
     private static async Task<IResult> GetGenres(

@@ -1,3 +1,4 @@
+using System.Net.Mime;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,8 +18,8 @@ public static class ActorEndpoints
 
         group.MapPost("/", CreateActor)
             .RequireAuthorization(new AuthorizeAttribute { Roles = nameof(Role.Admin) })
-            .Accepts<CreateActorRequest>("multipart/form-data")
-            .Produces(201);
+            .Accepts<CreateActorRequest>(MediaTypeNames.Multipart.FormData)
+            .Produces(StatusCodes.Status201Created);
     }
 
     private static async Task<IResult> CreateActor([FromForm]CreateActorRequest request, ISender sender)
