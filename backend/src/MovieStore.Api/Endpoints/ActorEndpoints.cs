@@ -14,7 +14,7 @@ public static class ActorEndpoints
 {
     public static void MapActorEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("api/actors").WithTags("Actors").DisableAntiforgery();
+        var group = app.MapGroup("actors").WithTags("Actors").DisableAntiforgery();
 
         group.MapPost("/", CreateActor)
             .RequireAuthorization(new AuthorizeAttribute { Roles = nameof(Role.Admin) })

@@ -16,7 +16,7 @@ public static class GenreEndpoints
 {
     public static void MapGenreEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("api/genres").WithTags("Genres").DisableAntiforgery();
+        var group = app.MapGroup("genres").WithTags("Genres").DisableAntiforgery();
 
         group.MapGet("/", GetGenres)
             .WithMetadata(new ProvidesPaginationHeaderAttribute())
