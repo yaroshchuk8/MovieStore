@@ -8,6 +8,7 @@ public class RefreshAuthTokensCommandValidator : AbstractValidator<RefreshAuthTo
     {
         RuleFor(x => x.AccessToken)
             .NotEmpty().WithMessage("Access token is required.")
+            .MaximumLength(8192).WithMessage("Access token is too long.")
             .Matches(@"^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$").WithMessage("Invalid access token format.");
 
         RuleFor(x => x.RefreshToken)

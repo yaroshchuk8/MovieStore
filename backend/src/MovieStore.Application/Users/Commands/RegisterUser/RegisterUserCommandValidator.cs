@@ -11,7 +11,7 @@ public class RegisterUserCommandValidator : AbstractValidator<RegisterUserComman
             .EmailAddress().WithMessage("Invalid email address.");
         
         RuleFor(command => command.Name)
-            .MaximumLength(100).WithMessage("Name cannot exceed 100 characters");
+            .MaximumLength(UserProfile.NameMaxLength).WithMessage($"Name can't exceed {UserProfile.NameMaxLength} characters");
         
         RuleFor(command => command.Sex)
             .Must(s => s is null || Enum.IsDefined(typeof(Sex), s.Value))
