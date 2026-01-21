@@ -12,6 +12,7 @@ using MovieStore.Infrastructure.Common.Services.Interfaces;
 using MovieStore.Infrastructure.Genres.Persistence.Repositories;
 using MovieStore.Infrastructure.Movies.Persistence.Repositories;
 using MovieStore.Infrastructure.Users.Persistence.Domain.Repositories;
+using MovieStore.Infrastructure.Users.Persistence.Identity.Entities;
 using MovieStore.Infrastructure.Users.Persistence.Identity.Repositories;
 using MovieStore.Infrastructure.Users.Persistence.Identity.Repositories.Interfaces;
 using MovieStore.Infrastructure.Users.Services;
@@ -22,7 +23,16 @@ public static class DependencyInjection
 {
     extension(IServiceCollection services)
     {
-        public IServiceCollection AddPersistence(IConfiguration configuration)
+        public IServiceCollection AddInfrastructureLayerDependencies(IConfiguration configuration)
+        {
+            return services
+                .AddPersistence(configuration)
+                .AddIdentity()
+                .AddServices()
+                .AddRepositories();
+        }
+        
+        private IServiceCollection AddPersistence(IConfiguration configuration)
         {
             var dbSettings = configuration.GetSection(nameof(DbSettings)).Get<DbSettings>()!;
             // services.AddDbContext<MovieStoreDbContext>(options => options.UseSqlite(dbSettings.ConnectionString));
@@ -31,17 +41,29 @@ public static class DependencyInjection
             return services;
         }
 
-        public IServiceCollection AddInfrastructureServices()
+        private IServiceCollection AddIdentity()
         {
-            services.AddScoped<IFileService, FileService>();
-            services.AddScoped<IIdentityService, IdentityService>();
-            services.AddScoped<IJwtService, JwtService>();
-            services.AddScoped<IDbInitializer, DbInitializer>();
-        
+            services
+                .AddIdentityCore<IdentityUserEntity>(options => 
+                {
+                    options.User.RequireUniqueEmail = true;
+                })
+                .AddRoles<IdentityRoleEntity>()
+                .AddEntityFrameworkStores<MovieStoreDbContext>();
+
             return services;
         }
 
-        public IServiceCollection AddInfrastructureRepositories()
+        private IServiceCollection AddServices()
+        {
+            return services
+                .AddScoped<IFileService, FileService>()
+                .AddScoped<IIdentityService, IdentityService>()
+                .AddScoped<IJwtService, JwtService>()
+                .AddScoped<IDbInitializer, DbInitializer>();
+        }
+
+        private IServiceCollection AddRepositories()
         {
             // Domain
             services.AddScoped<IActorRepository, ActorRepository>();
@@ -50,6 +72,8 @@ public static class DependencyInjection
             services.AddScoped<IMovieActorRepository, MovieActorRepository>();
             services.AddScoped<IMovieGenreRepository, MovieGenreRepository>();
             services.AddScoped<IUserProfileRepository, UserProfileRepository>();
+            services.AddScoped<IWalletRepository, WalletRepository>();
+            services.AddScoped<IPublisherProfileRepository, PublisherProfileRepository>();
             
             // Identity
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();

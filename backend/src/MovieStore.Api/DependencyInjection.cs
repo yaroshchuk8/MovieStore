@@ -4,10 +4,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using MovieStore.Api.Configuration;
 using MovieStore.Api.Handlers;
+using MovieStore.Api.OpenApi.Transformers;
 using MovieStore.Application.Common.Extensions;
 using MovieStore.Infrastructure.Common.Configurations;
-using MovieStore.Infrastructure.Common.Persistence;
-using MovieStore.Infrastructure.Users.Persistence.Identity.Entities;
 
 namespace MovieStore.Api;
 
@@ -21,7 +20,7 @@ public static class DependencyInjection
             configuration.ValidateRequiredSection<CorsSettings>(nameof(CorsSettings));
             configuration.ValidateRequiredSection<DbSettings>(nameof(DbSettings));
             
-            // using during runtime
+            // used during runtime
             var jwtSettingsSection = configuration.GetAndValidateRequiredSection<JwtSettings>(nameof(JwtSettings));
             var fileStorageSettingsSection =
                 configuration.GetAndValidateRequiredSection<FileStorageSettings>(nameof(FileStorageSettings));
@@ -35,7 +34,16 @@ public static class DependencyInjection
             return services;
         }
 
-        public IServiceCollection AddCorsPolicy(IConfiguration configuration)
+        public IServiceCollection AddApiLayerDependencies(IConfiguration configuration)
+        {
+            return services
+                .AddGlobalExceptionHandler()
+                .AddOpenApiWithTransformers()
+                .AddJwtAuth(configuration)
+                .AddCorsPolicy(configuration);
+        }
+        
+        private IServiceCollection AddCorsPolicy(IConfiguration configuration)
         {
             var corsSettings = configuration.GetSection(nameof(CorsSettings)).Get<CorsSettings>()!;
             
@@ -50,8 +58,10 @@ public static class DependencyInjection
             return services;
         }
 
-        public IServiceCollection AddJwtAuthentication(IConfiguration configuration)
+        private IServiceCollection AddJwtAuth(IConfiguration configuration)
         {
+            services.AddAuthorization();
+            
             // Prevents "sub" from being renamed to "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             
@@ -96,22 +106,39 @@ public static class DependencyInjection
             return services;
         }
 
-        public IServiceCollection AddIdentity()
+        private IServiceCollection AddGlobalExceptionHandler()
         {
-            services
-                .AddIdentity<IdentityUserEntity, IdentityRoleEntity>()
-                .AddEntityFrameworkStores<MovieStoreDbContext>();
-            
-            return services;
-        }
-
-        public IServiceCollection AddGlobalExceptionHandler()
-        {
-            services
+            return services
                 .AddExceptionHandler<GlobalExceptionHandler>()
                 .AddProblemDetails(); // Required for structured error responses
+        }
 
-            return services;
+        private IServiceCollection AddOpenApiWithTransformers()
+        {
+            return services.AddOpenApi(options =>
+            {
+                // Everything below is needed for OpenAPI generated documentation 
+        
+                // Defines the "Authorize" globally
+                options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
+
+                // Registers required types
+                options.AddDocumentTransformer<SchemaRegistrationTransformer>();
+
+                options.AddSchemaTransformer<EnumSchemaTransformer>();
+    
+                // Applies the padlock icon to specific [Authorize] endpoints and documents 401/403 responses
+                options.AddOperationTransformer<SecurityRequirementsTransformer>();
+
+                // Applies pagination header for all endpoints with [ProvidesPaginationHeader] marker attribute
+                options.AddOperationTransformer<PaginationHeaderTransformer>();
+        
+                // Applies 500 Internal Error response for all endpoints
+                options.AddOperationTransformer<InternalServerErrorTransformer>();
+
+                // Applies 400 Bad Request response for all endpoint with at least one parameter
+                options.AddOperationTransformer<ValidationErrorTransformer>();
+            });
         }
     }
 }

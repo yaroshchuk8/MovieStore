@@ -11,7 +11,7 @@ public static class DependencyInjection
 {
     extension(IServiceCollection services)
     {
-        public IServiceCollection AddApplication()
+        public IServiceCollection AddApplicationLayerDependencies()
         {
             return services
                 .AddMediator()
