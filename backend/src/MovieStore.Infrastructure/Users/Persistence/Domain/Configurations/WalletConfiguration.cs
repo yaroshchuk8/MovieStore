@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MovieStore.Domain.Users;
 
-namespace MovieStore.Infrastructure.Users.Persistence.Configurations;
+namespace MovieStore.Infrastructure.Users.Persistence.Domain.Configurations;
 
 public class WalletConfiguration : IEntityTypeConfiguration<Wallet>
 {

@@ -11,9 +11,9 @@ using MovieStore.Infrastructure.Common.Services;
 using MovieStore.Infrastructure.Common.Services.Interfaces;
 using MovieStore.Infrastructure.Genres.Persistence.Repositories;
 using MovieStore.Infrastructure.Movies.Persistence.Repositories;
+using MovieStore.Infrastructure.Users.Persistence.Domain.Repositories;
 using MovieStore.Infrastructure.Users.Persistence.Identity.Repositories;
 using MovieStore.Infrastructure.Users.Persistence.Identity.Repositories.Interfaces;
-using MovieStore.Infrastructure.Users.Persistence.Repositories;
 using MovieStore.Infrastructure.Users.Services;
 
 namespace MovieStore.Infrastructure;

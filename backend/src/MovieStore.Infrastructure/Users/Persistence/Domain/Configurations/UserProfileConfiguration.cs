@@ -4,7 +4,7 @@ using MovieStore.Domain.Users;
 using MovieStore.Infrastructure.Common.Persistence.Constants;
 using MovieStore.Infrastructure.Users.Persistence.Identity.Entities;
 
-namespace MovieStore.Infrastructure.Users.Persistence.Configurations;
+namespace MovieStore.Infrastructure.Users.Persistence.Domain.Configurations;
 
 public class UserProfileConfiguration : IEntityTypeConfiguration<UserProfile>
 {
