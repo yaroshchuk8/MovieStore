@@ -2,7 +2,7 @@ using ErrorOr;
 using MediatR;
 using MovieStore.Application.Users.DTOs;
 using MovieStore.Application.Users.Interfaces;
-using MovieStore.Domain.Users;
+using MovieStore.Domain.Users.Enums;
 
 namespace MovieStore.Application.Users.Commands.RegisterUser;
 

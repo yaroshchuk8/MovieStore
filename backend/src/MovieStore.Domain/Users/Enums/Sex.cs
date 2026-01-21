@@ -1,4 +1,4 @@
-namespace MovieStore.Domain.Users;
+namespace MovieStore.Domain.Users.Enums;
 
 public enum Sex
 {

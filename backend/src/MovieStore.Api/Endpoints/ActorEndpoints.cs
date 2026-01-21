@@ -5,7 +5,7 @@ using MovieStore.Api.Contracts.Actors.Requests;
 using MovieStore.Api.Helpers;
 using MovieStore.Application.Actors.Commands;
 using MovieStore.Application.Common.Models;
-using MovieStore.Domain.Users;
+using MovieStore.Domain.Users.Enums;
 
 namespace MovieStore.Api.Endpoints;
 

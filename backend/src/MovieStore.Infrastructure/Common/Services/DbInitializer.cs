@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MovieStore.Application.Users.Interfaces;
-using MovieStore.Domain.Users;
+using MovieStore.Domain.Users.Enums;
 using MovieStore.Infrastructure.Common.Persistence;
 using MovieStore.Infrastructure.Common.Services.Interfaces;
 using MovieStore.Infrastructure.Users.Persistence.Identity.Entities;

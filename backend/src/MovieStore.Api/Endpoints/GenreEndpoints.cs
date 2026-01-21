@@ -8,7 +8,7 @@ using MovieStore.Api.Helpers;
 using MovieStore.Api.OpenApi.Attributes;
 using MovieStore.Application.Genres.Commands.CreateGenre;
 using MovieStore.Application.Genres.Queries.GetGenres;
-using MovieStore.Domain.Users;
+using MovieStore.Domain.Users.Enums;
 
 namespace MovieStore.Api.Endpoints;
 

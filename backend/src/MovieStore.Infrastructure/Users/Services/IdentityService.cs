@@ -6,6 +6,7 @@ using MovieStore.Application.Common.Interfaces;
 using MovieStore.Application.Users.DTOs;
 using MovieStore.Application.Users.Interfaces;
 using MovieStore.Domain.Users;
+using MovieStore.Domain.Users.Enums;
 using MovieStore.Infrastructure.Common.Configurations;
 using MovieStore.Infrastructure.Common.Persistence;
 using MovieStore.Infrastructure.Users.Persistence.Identity.Entities;

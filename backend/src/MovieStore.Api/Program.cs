@@ -10,7 +10,7 @@ using Scalar.AspNetCore;
 var builder = WebApplication.CreateBuilder(args);
 {
     builder.Services.AddAuthorization();
-        
+    
     builder.Services.AddOpenApi(options =>
     {
         // Everything below is needed for OpenAPI generated documentation 
