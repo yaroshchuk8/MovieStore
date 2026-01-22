@@ -16,7 +16,7 @@ public static class DependencyInjection
     {
         public IServiceCollection AddAndValidateConfiguration(IConfiguration configuration)
         {
-            // used during compilation
+            // used during startup
             configuration.ValidateRequiredSection<CorsSettings>(nameof(CorsSettings));
             configuration.ValidateRequiredSection<DbSettings>(nameof(DbSettings));
             

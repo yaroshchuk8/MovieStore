@@ -35,7 +35,6 @@ public static class DependencyInjection
         private IServiceCollection AddPersistence(IConfiguration configuration)
         {
             var dbSettings = configuration.GetSection(nameof(DbSettings)).Get<DbSettings>()!;
-            // services.AddDbContext<MovieStoreDbContext>(options => options.UseSqlite(dbSettings.ConnectionString));
             services.AddDbContext<MovieStoreDbContext>(options => options.UseSqlServer(dbSettings.ConnectionString));
             
             return services;
@@ -60,7 +59,8 @@ public static class DependencyInjection
                 .AddScoped<IFileService, FileService>()
                 .AddScoped<IIdentityService, IdentityService>()
                 .AddScoped<IJwtService, JwtService>()
-                .AddScoped<IDbInitializer, DbInitializer>();
+                .AddScoped<IDbInitializer, DbInitializer>()
+                .AddScoped<ICurrentUserProvider, CurrentUserProvider>();
         }
 
         private IServiceCollection AddRepositories()
