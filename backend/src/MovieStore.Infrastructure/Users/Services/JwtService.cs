@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MovieStore.Application.Users.Interfaces;
 using MovieStore.Infrastructure.Common.Configurations;
+using MovieStore.Infrastructure.Users.Constants;
 
 namespace MovieStore.Infrastructure.Users.Services;
 
@@ -13,7 +14,7 @@ public class JwtService(IOptions<JwtSettings> jwtOptions) : IJwtService
 {
     private readonly JwtSettings _jwtSettings = jwtOptions.Value;
     
-    public string GenerateJwt(IIdentityUserContract identityUser, IList<string> roles)
+    public string GenerateJwt(IIdentityUserContract identityUser, int userProfileId, IList<string> roles)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.UTF8.GetBytes(_jwtSettings.Secret);
@@ -21,9 +22,11 @@ public class JwtService(IOptions<JwtSettings> jwtOptions) : IJwtService
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity([
-                new Claim(JwtRegisteredClaimNames.Sub, identityUser.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.UniqueName, identityUser.UserName ?? string.Empty),
-                ..roles.Select(role => new Claim(ClaimTypes.Role, role))
+                new Claim(JwtClaimNames.IdentityUserId, identityUser.Id.ToString()),
+                new Claim(JwtClaimNames.IdentityUserName, identityUser.UserName ?? string.Empty),
+                new Claim(JwtClaimNames.IdentityUserEmail, identityUser.Email ?? string.Empty),
+                new Claim(JwtClaimNames.DomainUserId, userProfileId.ToString()),
+                ..roles.Select(role => new Claim(JwtClaimNames.IdentityUserRole, role))
             ]),
             Expires = DateTime.UtcNow.Add(_jwtSettings.JwtTokenLifetime),
             Issuer = _jwtSettings.Issuer,

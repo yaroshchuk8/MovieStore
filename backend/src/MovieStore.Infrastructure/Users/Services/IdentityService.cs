@@ -24,7 +24,7 @@ internal class IdentityService(
     IJwtService jwtService)
     : IIdentityService
 {
-    public async Task<ErrorOr<(IIdentityUserContract IdentityUserContract, AuthTokens AuthTokens)>>
+    public async Task<ErrorOr<(IIdentityUserContract IdentityUserContract, UserProfile DomainUser, AuthTokens AuthTokens)>>
         CreateUserAndGenerateAuthTokensAsync(
             string email,
             string password,
@@ -40,14 +40,17 @@ internal class IdentityService(
             return createUserResult.Errors;
         }
         
-        var authTokens = await GenerateAuthTokensAsync(createUserResult.Value, [role.ToString()]);
+        var identityUser = createUserResult.Value.IdentityUser;
+        var domainUser = createUserResult.Value.DomainUser;
+        
+        var authTokens = await GenerateAuthTokensAsync(identityUser, domainUser.Id, [role.ToString()]);
         
         await transaction.CommitAsync();
         
-        return (createUserResult.Value, authTokens);
+        return (identityUser, domainUser, authTokens);
     }
     
-    public async Task<ErrorOr<IIdentityUserContract>> CreateUserAsync(
+    public async Task<ErrorOr<(IIdentityUserContract IdentityUserContract, UserProfile DomainUser)>> CreateUserAsync(
         string email,
         string password,
         string? name,
@@ -57,11 +60,11 @@ internal class IdentityService(
         await using var transaction = await context.Database.BeginTransactionAsync();
         var createUserResult = await CreateUserInternalAsync(email, password, name, sex, role);
         await transaction.CommitAsync();
-        return createUserResult;
+        return createUserResult.Value;
     }
     
     // Unsafe method. Needs to be wrapped in a transaction
-    private async Task<ErrorOr<IIdentityUserContract>> CreateUserInternalAsync(
+    private async Task<ErrorOr<(IdentityUserEntity IdentityUser, UserProfile DomainUser)>> CreateUserInternalAsync(
         string email,
         string password,
         string? name,
@@ -93,7 +96,7 @@ internal class IdentityService(
         await userProfileRepository.AddAsync(domainUser);
         await unitOfWork.CommitChangesAsync();
         
-        return identityUser;
+        return (identityUser, domainUser);
     }
 
     public async Task<ErrorOr<IIdentityUserContract>> CheckUserCredentialsAsync(string email, string password)
@@ -129,9 +132,10 @@ internal class IdentityService(
 
     public async Task<AuthTokens> GenerateAuthTokensAsync(
         IIdentityUserContract identityUserContract,
+        int userProfileId,
         IList<string> roles)
     {
-        var accessToken = jwtService.GenerateJwt(identityUserContract, roles);
+        var accessToken = jwtService.GenerateJwt(identityUserContract, userProfileId, roles);
         var refreshToken = await GenerateRefreshTokenAsync(identityUserContract.Id);
         
         return new AuthTokens(accessToken, refreshToken);
@@ -157,7 +161,7 @@ internal class IdentityService(
         
         // IdentityUser.Id is stored in 'sub' claim
         var userIdClaim = claimsPrincipal.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
-        if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out var userIdFromToken))
+        if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out var identityUserIdFromToken))
         {
             return Error.Unauthorized(description: "Invalid token claims.");
         }
@@ -176,21 +180,24 @@ internal class IdentityService(
             return Error.Unauthorized(description: "Invalid or expired refresh token.");
         }
         
-        if (storedToken.IdentityUserId != userIdFromToken)
+        if (storedToken.IdentityUserId != identityUserIdFromToken)
         {
             return Error.Unauthorized(description: "Token mismatch.");
         }
         
-        var user = await userManager.FindByIdAsync(userIdFromToken.ToString());
-        if (user is null) return Error.Unauthorized();
+        var identityUser = await userManager.FindByIdAsync(identityUserIdFromToken.ToString());
+        if (identityUser is null) return Error.Unauthorized();
 
+        var domainUser = await userProfileRepository.FirstOrDefaultAsync(u => u.IdentityUserId == identityUser.Id);
+        if (domainUser is null) return Error.Unauthorized();
+        
         // unitOfWork.CommitChangesAsync() is called inside GenerateAuthTokensAsync(), thus doing it here is excessive.
         // Placing entity state change prior to token generation works.
         storedToken.IsUsed = true;
         refreshTokenRepository.Update(storedToken);
         
-        var roles = await userManager.GetRolesAsync(user);
-        var authTokens = await GenerateAuthTokensAsync(user, roles);
+        var roles = await userManager.GetRolesAsync(identityUser);
+        var authTokens = await GenerateAuthTokensAsync(identityUser, domainUser.Id, roles);
         
         await transaction.CommitAsync();
 
