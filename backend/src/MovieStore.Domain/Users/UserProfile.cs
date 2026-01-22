@@ -14,4 +14,5 @@ public class UserProfile(int identityUserId, string? name, Sex? sex)
     public DateTime CreatedAt { get; init; }
     
     public Wallet? Wallet { get; set; }
+    public PublisherProfile PublisherProfile { get; set; }
 }

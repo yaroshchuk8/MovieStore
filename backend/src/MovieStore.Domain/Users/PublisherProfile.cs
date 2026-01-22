@@ -10,5 +10,5 @@ public class PublisherProfile
     
     public DateTime CreatedAt { get; init; }
     
-    public UserProfile? UserProfile { get; set; }
+    public UserProfile UserProfile { get; set; }
 }
