@@ -10,7 +10,8 @@ internal class BaseRepository<T>(MovieStoreDbContext context) : IBaseRepository<
     
     public async Task<List<T>> GetAllAsync(
         Expression<Func<T, bool>>? predicate = null,
-        Func<IQueryable<T>, IQueryable<T>>? includes = null,
+        // Func<IQueryable<T>, IQueryable<T>>? includes = null,
+        List<string>? includes = null,
         Func<IQueryable<T>, IQueryable<T>>? orderBy = null,
         int? skip = null,
         int? take = null,
@@ -18,9 +19,16 @@ internal class BaseRepository<T>(MovieStoreDbContext context) : IBaseRepository<
     {
         IQueryable<T> query = _dbSet;
 
+        // if (includes != null)
+        // {
+        //     query = includes(query);
+        // }
         if (includes != null)
         {
-            query = includes(query);
+            foreach (var includeStatement in includes)
+            {
+                query.Include(includeStatement);
+            }
         }
 
         if (predicate != null)
@@ -78,15 +86,23 @@ internal class BaseRepository<T>(MovieStoreDbContext context) : IBaseRepository<
 
     public async Task<T?> FirstOrDefaultAsync(
         Expression<Func<T, bool>>? predicate, 
-        Func<IQueryable<T>, IQueryable<T>>? includes = null,
+        // Func<IQueryable<T>, IQueryable<T>>? includes = null,
+        List<string>? includes = null,
         Func<IQueryable<T>, IQueryable<T>>? orderBy = null,
         bool asNoTracking = true)
     {
         IQueryable<T> query = _dbSet;
 
+        // if (includes != null)
+        // {
+        //     query = includes(query);
+        // }
         if (includes != null)
         {
-            query = includes(query);
+            foreach (var includeStatement in includes)
+            {
+                query.Include(includeStatement);
+            }
         }
         
         if (predicate != null)
@@ -109,13 +125,21 @@ internal class BaseRepository<T>(MovieStoreDbContext context) : IBaseRepository<
     
     public async Task<bool> ExistsAsync(
         Expression<Func<T, bool>> predicate, 
-        Func<IQueryable<T>, IQueryable<T>>? includes = null)
+        // Func<IQueryable<T>, IQueryable<T>>? includes = null
+        List<string>? includes = null)
     {
         IQueryable<T> query = _dbSet;
 
+        // if (includes != null)
+        // {
+        //     query = includes(query);
+        // }
         if (includes != null)
         {
-            query = includes(query);
+            foreach (var includeStatement in includes)
+            {
+                query.Include(includeStatement);
+            }
         }
         
         return await query.AnyAsync(predicate);
@@ -123,13 +147,21 @@ internal class BaseRepository<T>(MovieStoreDbContext context) : IBaseRepository<
     
     public async Task<int> CountAsync(
         Expression<Func<T, bool>>? predicate = null,
-        Func<IQueryable<T>, IQueryable<T>>? includes = null)
+        // Func<IQueryable<T>, IQueryable<T>>? includes = null
+        List<string>? includes = null)
     {
         IQueryable<T> query = _dbSet;
 
+        // if (includes != null)
+        // {
+        //     query = includes(query);
+        // }
         if (includes != null)
         {
-            query = includes(query);
+            foreach (var includeStatement in includes)
+            {
+                query.Include(includeStatement);
+            }
         }
 
         if (predicate != null)

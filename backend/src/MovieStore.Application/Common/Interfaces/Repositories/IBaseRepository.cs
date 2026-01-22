@@ -6,7 +6,8 @@ public interface IBaseRepository<T> where T : class
 {
     Task<List<T>> GetAllAsync(
         Expression<Func<T, bool>>? predicate = null,
-        Func<IQueryable<T>, IQueryable<T>>? includes = null,
+        // Func<IQueryable<T>, IQueryable<T>>? includes = null,
+        List<string>? includes = null,
         Func<IQueryable<T>, IQueryable<T>>? orderBy = null,
         int? skip = null,
         int? take = null,
@@ -15,16 +16,22 @@ public interface IBaseRepository<T> where T : class
 
     Task<T?> FirstOrDefaultAsync(
         Expression<Func<T, bool>>? predicate,
-        Func<IQueryable<T>, IQueryable<T>>? includes = null,
+        // Func<IQueryable<T>, IQueryable<T>>? includes = null,
+        List<string>? includes = null,
         Func<IQueryable<T>, IQueryable<T>>? orderBy = null,
         bool asNoTracking = true
     );
 
-    Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate, Func<IQueryable<T>, IQueryable<T>>? includes = null);
+    Task<bool> ExistsAsync(
+        Expression<Func<T, bool>> predicate,
+        // Func<IQueryable<T>, IQueryable<T>>? includes = null
+        List<string>? includes = null
+    );
     
     Task<int> CountAsync(
         Expression<Func<T, bool>>? predicate = null,
-        Func<IQueryable<T>, IQueryable<T>>? includes = null
+        // Func<IQueryable<T>, IQueryable<T>>? includes = null
+        List<string>? includes = null
     );
     
     Task AddAsync(T entity);
