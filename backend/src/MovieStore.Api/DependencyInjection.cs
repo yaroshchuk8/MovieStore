@@ -40,7 +40,8 @@ public static class DependencyInjection
                 .AddGlobalExceptionHandler()
                 .AddOpenApiWithTransformers()
                 .AddJwtAuth(configuration)
-                .AddCorsPolicy(configuration);
+                .AddCorsPolicy(configuration)
+                .AddHttpContextAccessor();
         }
         
         private IServiceCollection AddCorsPolicy(IConfiguration configuration)
