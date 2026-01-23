@@ -28,7 +28,11 @@ public static class AuthEndpoints
 
     private static async Task<IResult> RegisterUser(RegisterUserRequest request, ISender sender)
     {
-        var command = new RegisterUserCommand(request.Email, request.Password, request.Name, request.Sex);
+        var command = new RegisterUserCommand(
+            request.Email,
+            request.Password,
+            request.Name,
+            (Domain.Users.Enums.Sex?)request.Sex);
         var result = await sender.Send(command);
 
         return result.Match(

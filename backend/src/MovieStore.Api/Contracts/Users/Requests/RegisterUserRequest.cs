@@ -1,4 +1,4 @@
-using MovieStore.Domain.Users.Enums;
+using MovieStore.Api.Contracts.Users.Common;
 
 namespace MovieStore.Api.Contracts.Users.Requests;
 
