@@ -22,17 +22,9 @@ public interface IBaseRepository<T> where T : class
         bool asNoTracking = true
     );
 
-    Task<bool> ExistsAsync(
-        Expression<Func<T, bool>> predicate,
-        // Func<IQueryable<T>, IQueryable<T>>? includes = null
-        List<string>? includes = null
-    );
+    Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate);
     
-    Task<int> CountAsync(
-        Expression<Func<T, bool>>? predicate = null,
-        // Func<IQueryable<T>, IQueryable<T>>? includes = null
-        List<string>? includes = null
-    );
+    Task<int> CountAsync(Expression<Func<T, bool>>? predicate = null);
     
     Task AddAsync(T entity);
     Task AddRangeAsync(List<T> entity);

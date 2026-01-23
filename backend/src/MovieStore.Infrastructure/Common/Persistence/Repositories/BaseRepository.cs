@@ -123,46 +123,16 @@ internal class BaseRepository<T>(MovieStoreDbContext context) : IBaseRepository<
         return await query.FirstOrDefaultAsync();
     }
     
-    public async Task<bool> ExistsAsync(
-        Expression<Func<T, bool>> predicate, 
-        // Func<IQueryable<T>, IQueryable<T>>? includes = null
-        List<string>? includes = null)
+    public async Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate)
     {
         IQueryable<T> query = _dbSet;
-
-        // if (includes != null)
-        // {
-        //     query = includes(query);
-        // }
-        if (includes != null)
-        {
-            foreach (var includeStatement in includes)
-            {
-                query.Include(includeStatement);
-            }
-        }
         
         return await query.AnyAsync(predicate);
     }
     
-    public async Task<int> CountAsync(
-        Expression<Func<T, bool>>? predicate = null,
-        // Func<IQueryable<T>, IQueryable<T>>? includes = null
-        List<string>? includes = null)
+    public async Task<int> CountAsync(Expression<Func<T, bool>>? predicate = null)
     {
         IQueryable<T> query = _dbSet;
-
-        // if (includes != null)
-        // {
-        //     query = includes(query);
-        // }
-        if (includes != null)
-        {
-            foreach (var includeStatement in includes)
-            {
-                query.Include(includeStatement);
-            }
-        }
 
         if (predicate != null)
         {
