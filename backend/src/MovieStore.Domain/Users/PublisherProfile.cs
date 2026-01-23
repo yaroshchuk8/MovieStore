@@ -1,3 +1,5 @@
+using MovieStore.Domain.Movies;
+
 namespace MovieStore.Domain.Users;
 
 public class PublisherProfile
@@ -11,4 +13,5 @@ public class PublisherProfile
     public DateTime CreatedAt { get; init; }
     
     public UserProfile UserProfile { get; set; }
+    public List<Movie> Movies { get; set; }
 }

@@ -1,8 +1,11 @@
+using MovieStore.Domain.Users;
+
 namespace MovieStore.Domain.Movies;
 
 public class Movie(string title, string description, decimal price)
 {
     public int Id { get; set; }
+    public int PublisherProfileId { get; set; }
     
     public string Title { get; set; } = title;
     public const int TitleMaxLength = 150;
@@ -17,6 +20,7 @@ public class Movie(string title, string description, decimal price)
     
     public DateTime CreatedAt { get; init; }
     
+    public PublisherProfile PublisherProfile { get; set; }
     public List<MovieGenre> MovieGenres { get; set; }
     public List<MovieActor> MovieActors { get; set; }
 }
