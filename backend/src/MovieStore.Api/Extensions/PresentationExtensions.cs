@@ -41,6 +41,7 @@ public static class PresentationExtensions
             apiGroup.MapAuthEndpoints();
             apiGroup.MapActorEndpoints();
             apiGroup.MapGenreEndpoints();
+            apiGroup.MapUserEndpoints();
 
             if (app.Environment.IsDevelopment())
             {
