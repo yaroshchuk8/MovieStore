@@ -10,13 +10,11 @@ public static class PresentationExtensions
 {
     extension(WebApplication app)
     {
-        public async Task InitializeAndSeedDatabaseAsync()
+        public async Task InitializeDatabaseAsync()
         {
             using var scope = app.Services.CreateScope();
             var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-        
             await dbInitializer.InitializeAsync();
-            await dbInitializer.SeedAsync();
         }
 
         public IApplicationBuilder ConfigurePipeline(IConfiguration configuration)
