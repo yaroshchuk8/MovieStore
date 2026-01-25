@@ -9,7 +9,6 @@ using MovieStore.Infrastructure.Actors.Persistence.Repositories;
 using MovieStore.Infrastructure.Common.Configurations;
 using MovieStore.Infrastructure.Common.Persistence;
 using MovieStore.Infrastructure.Common.Services;
-using MovieStore.Infrastructure.Common.Services.Interfaces;
 using MovieStore.Infrastructure.Genres.Persistence.Repositories;
 using MovieStore.Infrastructure.Movies.Persistence.Repositories;
 using MovieStore.Infrastructure.Users.Persistence.Domain.Repositories;
