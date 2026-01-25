@@ -26,10 +26,12 @@ public static class DependencyInjection
                 configuration.GetAndValidateRequiredSection<FileStorageSettings>(nameof(FileStorageSettings));
             var refreshTokenSettingsSection =
                 configuration.GetAndValidateRequiredSection<RefreshTokenSettings>(nameof(RefreshTokenSettings));
+            var s3Settings = configuration.GetAndValidateRequiredSection<S3Settings>(nameof(S3Settings));
 
             services.Configure<JwtSettings>(jwtSettingsSection);
             services.Configure<FileStorageSettings>(fileStorageSettingsSection);
             services.Configure<RefreshTokenSettings>(refreshTokenSettingsSection);
+            services.Configure<S3Settings>(s3Settings);
             
             return services;
         }
