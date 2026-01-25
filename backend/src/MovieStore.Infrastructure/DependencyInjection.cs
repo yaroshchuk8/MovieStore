@@ -57,11 +57,13 @@ public static class DependencyInjection
         private IServiceCollection AddServices()
         {
             return services
-                .AddScoped<IFileService, FileService>()
+                // .AddScoped<IFileService, FileService>()
+                .AddScoped<IFileService, S3FileService>()
                 .AddScoped<IIdentityService, IdentityService>()
                 .AddScoped<IJwtService, JwtService>()
                 .AddScoped<IDbInitializer, DbInitializer>()
-                .AddScoped<ICurrentUserProvider, CurrentUserProvider>();
+                .AddScoped<ICurrentUserProvider, CurrentUserProvider>()
+                .AddScoped<IFileStorageInitializer,  S3Initializer>();
         }
 
         private IServiceCollection AddRepositories()
