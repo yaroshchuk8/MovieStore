@@ -14,7 +14,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 var app = builder.Build();
 {
-    await app.InitializeAndSeedDatabaseAsync();
+    await app.InitializeDatabaseAsync();
+    await app.InitializeFileStorageAsync();
     app.ConfigurePipeline(builder.Configuration);
     app.MapEndpoints();
     

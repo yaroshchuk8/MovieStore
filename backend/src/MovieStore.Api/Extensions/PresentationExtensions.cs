@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using MovieStore.Api.Configuration;
 using MovieStore.Api.Endpoints;
-using MovieStore.Infrastructure.Common.Services.Interfaces;
+using MovieStore.Application.Common.Interfaces;
 using Scalar.AspNetCore;
 
 namespace MovieStore.Api.Extensions;
@@ -15,6 +15,13 @@ public static class PresentationExtensions
             using var scope = app.Services.CreateScope();
             var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
             await dbInitializer.InitializeAsync();
+        }
+
+        public async Task InitializeFileStorageAsync()
+        {
+            using var scope = app.Services.CreateScope();
+            var fileStorageInitializer = scope.ServiceProvider.GetRequiredService<IFileStorageInitializer>();
+            await fileStorageInitializer.InitializeAsync();
         }
 
         public IApplicationBuilder ConfigurePipeline(IConfiguration configuration)
