@@ -1,3 +1,4 @@
+using Amazon.S3;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,7 +30,8 @@ public static class DependencyInjection
                 .AddPersistence(configuration)
                 .AddIdentity()
                 .AddServices()
-                .AddRepositories();
+                .AddRepositories()
+                .AddS3Client(configuration);
         }
         
         private IServiceCollection AddPersistence(IConfiguration configuration)
@@ -80,6 +82,23 @@ public static class DependencyInjection
             
             services.AddScoped<IUnitOfWork>(serviceProvider => serviceProvider.GetRequiredService<MovieStoreDbContext>());
         
+            return services;
+        }
+
+        private IServiceCollection AddS3Client(IConfiguration configuration)
+        {
+            var s3Settings = configuration.GetSection(nameof(S3Settings)).Get<S3Settings>()!;
+            var s3Config = new AmazonS3Config
+            {
+                ServiceURL = s3Settings.Endpoint, // e.g., "http://minio:9000"
+                ForcePathStyle = true,
+                UseHttp = true,
+            };
+
+            services.AddSingleton<IAmazonS3>(new AmazonS3Client(s3Settings.AccessKey, s3Settings.SecretKey, s3Config));
+
+            services.AddScoped<IFileService, S3FileService>();
+    
             return services;
         }
     }
