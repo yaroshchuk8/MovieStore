@@ -32,7 +32,7 @@ public class CreateActorCommandHandler(
             {
                 await fileService.DeleteFileAsync(uploadedImagePath);
             }
-            return Error.Unexpected("An unexpected error occurred while creating an actor.");
+            return Error.Unexpected(description: "An unexpected error occurred while creating an actor.");
         }
     }
 }
