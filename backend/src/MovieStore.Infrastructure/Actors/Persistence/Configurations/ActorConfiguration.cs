@@ -11,7 +11,7 @@ internal class ActorConfiguration : IEntityTypeConfiguration<Actor>
     {
         builder.HasKey(a => a.Id);
         builder.Property(a => a.Name).HasMaxLength(Actor.NameMaxLength).IsRequired();
-        builder.Property(a => a.ImagePath).HasMaxLength(Actor.ImagePathMaxLength).IsRequired(false);
+        builder.Property(a => a.ImageKey).HasMaxLength(Actor.ImageKeyMaxLength).IsRequired(false);
         builder.Property(a => a.CreatedAt).HasDefaultValueSql(SqlConstants.UtcDate).IsRequired();
 
         // Many-to-Many Relationship
