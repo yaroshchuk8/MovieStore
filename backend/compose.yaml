@@ -43,8 +43,6 @@
       # [CRITICAL] Overriding the connection string from appsettings.json
       # We use double underscore (__) to represent the JSON hierarchy "DbSettings:ConnectionString"
       - DbSettings__ConnectionString=Server=db;Database=MovieStore3;User Id=sa;Password=Password1_;TrustServerCertificate=True;
-      # This tells the C# code: "Inside your vault, use this shelf"
-      - FileStorageSettings__FolderPath=/app/storage
     ports:
       - "8080:8080"
       - "8081:8081"
@@ -53,10 +51,6 @@
         condition: service_healthy
       minio:
         condition: service_healthy
-    volumes:
-      # This is a 'Bind Mount'. It maps your local folder to the container.
-      # It is defined directly here, NOT in the global volumes section.
-      - /home/greenpanda/Storage/Files3:/app/storage
 volumes:
   sql_server_volume:
   minio_volume:

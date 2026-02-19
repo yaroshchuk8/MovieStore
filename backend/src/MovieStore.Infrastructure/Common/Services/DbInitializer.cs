@@ -19,7 +19,7 @@ public class DbInitializer(
 {
     public async Task InitializeAsync()
     {
-        await CheckDatabaseHealthAsync();
+        // await CheckDatabaseHealthAsync();
         await MigrateDatabaseAsync();
         await SeedDatabaseAsync();
     }
@@ -35,12 +35,10 @@ public class DbInitializer(
             {
                 return;
             }
-            else
-            {
-                retryCount++;
-                logger.LogWarning($"Database is not reachable. Retry {retryCount}/{retryAttempts}.");
-                await Task.Delay(2000);
-            }
+
+            retryCount++;
+            logger.LogWarning("Database is not reachable. Retry {RetryCount}/{RetryAttempts}.", retryCount, retryAttempts);
+            await Task.Delay(2000);
         }
 
         throw new Exception("Database not reachable.");
