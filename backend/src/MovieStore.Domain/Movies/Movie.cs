@@ -18,9 +18,14 @@ public class Movie(string title, string description, decimal price)
     public const int PricePrecision = 6;
     public const int PriceScale = 2;
     
+    public string PosterKey { get; set; }
+    public const int PosterKeyMaxLength = 100;
+    
     public DateTime CreatedAt { get; init; }
     
     public PublisherProfile PublisherProfile { get; set; }
     public List<MovieGenre> MovieGenres { get; set; }
     public List<MovieActor> MovieActors { get; set; }
+    public List<MoviePrivateAsset> MoviePrivateAssets { get; set; }
+    public List<MoviePublicAsset> MoviePublicAssets { get; set; }
 }

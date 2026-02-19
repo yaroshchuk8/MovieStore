@@ -1,7 +1,7 @@
 using FileSignatures;
 using FileSignatures.Formats;
 using FluentValidation;
-using MovieStore.Application.Common.Models;
+using MovieStore.Application.Common.DTOs;
 
 namespace MovieStore.Application.Common.Extensions;
 

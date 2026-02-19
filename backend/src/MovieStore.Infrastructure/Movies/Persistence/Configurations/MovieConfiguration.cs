@@ -14,6 +14,7 @@ internal class MovieConfiguration : IEntityTypeConfiguration<Movie>
         builder.Property(m => m.Description).HasMaxLength(Movie.DescriptionMaxLength).IsRequired();
         builder.Property(m => m.Price).HasPrecision(Movie.PricePrecision, Movie.PriceScale).IsRequired();
         builder.Property(m => m.CreatedAt).HasDefaultValueSql(SqlConstants.UtcDate).IsRequired();
+        builder.Property(m => m.PosterKey).HasMaxLength(Movie.PosterKeyMaxLength).IsRequired();
         
         builder.HasIndex(m => m.PublisherProfileId).IsUnique();
     }
