@@ -1,6 +1,6 @@
 using ErrorOr;
 using MediatR;
-using MovieStore.Application.Common.Models;
+using MovieStore.Application.Common.DTOs;
 
 namespace MovieStore.Application.Actors.Commands;
 

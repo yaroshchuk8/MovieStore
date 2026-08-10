@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using MovieStore.Api.Contracts.Actors.Requests;
 using MovieStore.Api.Helpers;
 using MovieStore.Application.Actors.Commands;
-using MovieStore.Application.Common.Models;
+using MovieStore.Application.Common.DTOs;
 using MovieStore.Domain.Users.Enums;
 
 namespace MovieStore.Api.Endpoints;
@@ -31,7 +31,7 @@ public static class ActorEndpoints
                 : new FileDescriptor(
                     Content: request.Image.OpenReadStream(),
                     Extension: Path.GetExtension(request.Image.FileName),
-                    ContentType: request.Image.ContentType,
+                    // ContentType: request.Image.ContentType,
                     SizeBytes: request.Image.Length)
         );
         var result = await sender.Send(command);
