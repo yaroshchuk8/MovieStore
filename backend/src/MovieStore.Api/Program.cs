@@ -9,7 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
         .AddAndValidateConfiguration(builder.Configuration)
         .AddApiLayerDependencies(builder.Configuration)
         .AddApplicationLayerDependencies()
-        .AddInfrastructureLayerDependencies(builder.Configuration);
+        .AddInfrastructureLayerDependencies(builder.Configuration)
+        .AddRequestHandlers();
 }
 
 var app = builder.Build();

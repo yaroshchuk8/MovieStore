@@ -8,9 +8,6 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/MovieStore.Api/MovieStore.Api.csproj", "src/MovieStore.Api/"]
-COPY ["src/MovieStore.Domain/MovieStore.Domain.csproj", "src/MovieStore.Domain/"]
-COPY ["src/MovieStore.Application/MovieStore.Application.csproj", "src/MovieStore.Application/"]
-COPY ["src/MovieStore.Infrastructure/MovieStore.Infrastructure.csproj", "src/MovieStore.Infrastructure/"]
 RUN dotnet restore "src/MovieStore.Api/MovieStore.Api.csproj"
 COPY . .
 WORKDIR "/src/src/MovieStore.Api"

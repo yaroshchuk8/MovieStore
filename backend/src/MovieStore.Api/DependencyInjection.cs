@@ -1,12 +1,34 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using Amazon.S3;
+using ErrorOr;
+using FileSignatures;
+using FileSignatures.Formats;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using MovieStore.Api.Actors.Commands;
+using MovieStore.Api.Common.Extensions;
 using MovieStore.Api.Configuration;
+using MovieStore.Api.Genres.Commands.CreateGenre;
+using MovieStore.Api.Genres.Queries.GetGenres;
 using MovieStore.Api.Handlers;
 using MovieStore.Api.OpenApi.Transformers;
 using MovieStore.Application.Common.Extensions;
+using MovieStore.Application.Common.Interfaces;
+using MovieStore.Application.Users.Commands;
+using MovieStore.Application.Users.Commands.LoginUser;
+using MovieStore.Application.Users.Commands.RefreshAuthTokens;
+using MovieStore.Application.Users.Commands.RegisterUser;
+using MovieStore.Application.Users.DTOs;
+using MovieStore.Application.Users.Interfaces;
+using MovieStore.Domain.Common;
 using MovieStore.Infrastructure.Common.Configurations;
+using MovieStore.Infrastructure.Common.Persistence;
+using MovieStore.Infrastructure.Common.Services;
+using MovieStore.Infrastructure.Users.Persistence.Identity.Entities;
+using MovieStore.Infrastructure.Users.Services;
 
 namespace MovieStore.Api;
 
@@ -142,6 +164,107 @@ public static class DependencyInjection
                 // Applies 400 Bad Request response for all endpoint with at least one parameter
                 options.AddOperationTransformer<ValidationErrorTransformer>();
             });
+        }
+        
+        public IServiceCollection AddApplicationLayerDependencies()
+        {
+            return services
+                .AddFluentValidation()
+                .AddFileSecurity();
+        }
+
+        private IServiceCollection AddFluentValidation()
+        {
+            services.AddValidatorsFromAssembly(typeof(Api.DependencyInjection).Assembly);
+            // services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+
+            return services;
+        }
+        
+        private IServiceCollection AddFileSecurity()
+        {
+            var inspector = new FileFormatInspector(
+                [
+                    new Png(),
+                    new Jpeg(), 
+                    new MP4()
+                ]
+            );
+
+            services.AddSingleton<IFileFormatInspector>(inspector);
+            return services;
+        }
+        
+        public IServiceCollection AddInfrastructureLayerDependencies(IConfiguration configuration)
+        {
+            return services
+                .AddPersistence(configuration)
+                .AddIdentity()
+                .AddServices()
+                .AddS3Client(configuration);
+        }
+        
+        private IServiceCollection AddPersistence(IConfiguration configuration)
+        {
+            var dbSettings = configuration.GetSection(nameof(DbSettings)).Get<DbSettings>()!;
+            services.AddDbContext<MovieStoreDbContext>(options => options.UseSqlServer(dbSettings.ConnectionString));
+            
+            return services;
+        }
+
+        private IServiceCollection AddIdentity()
+        {
+            services
+                .AddIdentityCore<IdentityUserEntity>(options => 
+                {
+                    options.User.RequireUniqueEmail = true;
+                })
+                .AddRoles<IdentityRoleEntity>()
+                .AddEntityFrameworkStores<MovieStoreDbContext>();
+
+            return services;
+        }
+
+        private IServiceCollection AddServices()
+        {
+            return services
+                // .AddScoped<IFileService, FileService>()
+                .AddScoped<IFileService, S3FileService>()
+                .AddScoped<IIdentityService, IdentityService>()
+                .AddScoped<IJwtService, JwtService>()
+                .AddScoped<IDbInitializer, DbInitializer>()
+                .AddScoped<ICurrentUserProvider, CurrentUserProvider>()
+                .AddScoped<IFileStorageInitializer,  S3Initializer>();
+        }
+
+        private IServiceCollection AddS3Client(IConfiguration configuration)
+        {
+            var s3Settings = configuration.GetSection(nameof(S3Settings)).Get<S3Settings>()!;
+            var s3Config = new AmazonS3Config
+            {
+                ServiceURL = s3Settings.Endpoint, // e.g., "http://minio:9000"
+                ForcePathStyle = true,
+                UseHttp = true,
+            };
+
+            services.AddSingleton<IAmazonS3>(new AmazonS3Client(s3Settings.AccessKey, s3Settings.SecretKey, s3Config));
+
+            services.AddScoped<IFileService, S3FileService>();
+    
+            return services;
+        }
+
+        public IServiceCollection AddRequestHandlers()
+        {
+            services.AddDecoratedRequestHandler<CreateActorCommand, Success, CreateActorCommandHandler>();
+            services.AddDecoratedRequestHandler<CreateGenreCommand, Success, CreateGenreCommandHandler>();
+            services.AddDecoratedRequestHandler<GetGenresQuery, PagedList<GetGenresQueryDto>, GetGenresQueryHandler>();
+            services.AddDecoratedRequestHandler<CreatePublisherProfileCommand, Success, CreatePublisherProfileCommandHandler>();
+            services.AddDecoratedRequestHandler<LoginUserCommand, AuthTokens, LoginUserCommandHandler>();
+            services.AddDecoratedRequestHandler<RefreshAuthTokensCommand, AuthTokens, RefreshAuthTokensCommandHandler>();
+            services.AddDecoratedRequestHandler<RegisterUserCommand, AuthTokens, RegisterUserCommandHandler>();
+            
+            return services;
         }
     }
 }

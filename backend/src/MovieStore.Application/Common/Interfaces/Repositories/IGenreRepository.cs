@@ -1,8 +1,0 @@
-using MovieStore.Domain.Genres;
-
-namespace MovieStore.Application.Common.Interfaces.Repositories;
-
-public interface IGenreRepository : IBaseRepository<Genre>
-{
-    
-}
