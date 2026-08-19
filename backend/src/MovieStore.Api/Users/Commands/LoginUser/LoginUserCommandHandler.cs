@@ -1,11 +1,11 @@
 using ErrorOr;
 using Microsoft.EntityFrameworkCore;
+using MovieStore.Api.Common.Persistence;
 using MovieStore.Api.Common.Pipeline;
-using MovieStore.Application.Users.DTOs;
-using MovieStore.Application.Users.Interfaces;
-using MovieStore.Infrastructure.Common.Persistence;
+using MovieStore.Api.Users.DTOs;
+using MovieStore.Api.Users.Services.Interfaces;
 
-namespace MovieStore.Application.Users.Commands.LoginUser;
+namespace MovieStore.Api.Users.Commands.LoginUser;
 
 public class LoginUserCommandHandler(
     IIdentityService identityService,
@@ -23,8 +23,12 @@ public class LoginUserCommandHandler(
         
         var identityUserContract = credentialsCheckResult.Value;
         var userRoles = await identityService.GetUserRolesAsync(identityUserContract);
-        var domainUser = context.UserProfile
+        var domainUser = await context.UserProfile
             .FirstOrDefaultAsync(u => u.IdentityUserId == identityUserContract.Id, cancellationToken: cancellationToken);
+        if (domainUser is null)
+        {
+            return Error.Unauthorized();
+        }
         var authTokens = await identityService.GenerateAuthTokensAsync(identityUserContract, domainUser.Id, userRoles);
 
         return authTokens;

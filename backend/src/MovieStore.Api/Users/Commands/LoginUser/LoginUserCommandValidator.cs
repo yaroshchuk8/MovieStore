@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace MovieStore.Application.Users.Commands.LoginUser;
+namespace MovieStore.Api.Users.Commands.LoginUser;
 
 public class LoginUserCommandValidator : AbstractValidator<LoginUserCommand>
 {

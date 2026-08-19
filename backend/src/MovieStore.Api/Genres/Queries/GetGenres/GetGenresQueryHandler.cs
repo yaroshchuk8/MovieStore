@@ -1,8 +1,8 @@
 using ErrorOr;
 using Microsoft.EntityFrameworkCore;
+using MovieStore.Api.Common.Pagination;
+using MovieStore.Api.Common.Persistence;
 using MovieStore.Api.Common.Pipeline;
-using MovieStore.Domain.Common;
-using MovieStore.Infrastructure.Common.Persistence;
 
 namespace MovieStore.Api.Genres.Queries.GetGenres;
 

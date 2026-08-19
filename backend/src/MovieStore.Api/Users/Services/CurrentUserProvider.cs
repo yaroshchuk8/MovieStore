@@ -1,9 +1,8 @@
 using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
-using MovieStore.Application.Users.Interfaces;
-using MovieStore.Infrastructure.Users.Constants;
+using MovieStore.Api.Users.Constants;
+using MovieStore.Api.Users.Services.Interfaces;
 
-namespace MovieStore.Infrastructure.Users.Services;
+namespace MovieStore.Api.Users.Services;
 
 public class CurrentUserProvider(IHttpContextAccessor httpContextAccessor) : ICurrentUserProvider
 {

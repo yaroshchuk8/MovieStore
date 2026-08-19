@@ -1,5 +1,5 @@
-using MovieStore.Domain.Users.Enums;
+using MovieStore.Api.Users.Entities.Domain.Enums;
 
-namespace MovieStore.Application.Users.Commands.RegisterUser;
+namespace MovieStore.Api.Users.Commands.RegisterUser;
 
 public record RegisterUserCommand(string Email, string Password, string? Name, Sex? Sex);

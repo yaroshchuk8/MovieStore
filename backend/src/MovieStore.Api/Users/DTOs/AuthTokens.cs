@@ -1,3 +1,3 @@
-namespace MovieStore.Application.Users.DTOs;
+namespace MovieStore.Api.Users.DTOs;
 
 public record AuthTokens(string AccessToken, Guid RefreshToken);

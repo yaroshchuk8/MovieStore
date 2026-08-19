@@ -1,4 +1,4 @@
-using MovieStore.Domain.Movies;
+using MovieStore.Api.Movies.Entities;
 
 namespace MovieStore.Api.Actors;
 

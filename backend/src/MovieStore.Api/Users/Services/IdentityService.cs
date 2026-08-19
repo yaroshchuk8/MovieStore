@@ -3,16 +3,15 @@ using ErrorOr;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using MovieStore.Application.Common.Interfaces;
-using MovieStore.Application.Users.DTOs;
-using MovieStore.Application.Users.Interfaces;
-using MovieStore.Domain.Users;
-using MovieStore.Domain.Users.Enums;
-using MovieStore.Infrastructure.Common.Configurations;
-using MovieStore.Infrastructure.Common.Persistence;
-using MovieStore.Infrastructure.Users.Persistence.Identity.Entities;
+using MovieStore.Api.Common.Configuration;
+using MovieStore.Api.Common.Persistence;
+using MovieStore.Api.Users.DTOs;
+using MovieStore.Api.Users.Entities.Domain;
+using MovieStore.Api.Users.Entities.Domain.Enums;
+using MovieStore.Api.Users.Entities.Identity;
+using MovieStore.Api.Users.Services.Interfaces;
 
-namespace MovieStore.Infrastructure.Users.Services;
+namespace MovieStore.Api.Users.Services;
 
 internal class IdentityService(
     MovieStoreDbContext context,
@@ -21,7 +20,7 @@ internal class IdentityService(
     IJwtService jwtService)
     : IIdentityService
 {
-    public async Task<ErrorOr<(IIdentityUserContract IdentityUserContract, UserProfile DomainUser, AuthTokens AuthTokens)>>
+    public async Task<ErrorOr<(IdentityUserEntity IdentityUserContract, UserProfile DomainUser, AuthTokens AuthTokens)>>
         CreateUserAndGenerateAuthTokensAsync(
             string email,
             string password,
@@ -47,7 +46,7 @@ internal class IdentityService(
         return (identityUser, domainUser, authTokens);
     }
     
-    public async Task<ErrorOr<(IIdentityUserContract IdentityUserContract, UserProfile DomainUser)>> CreateUserAsync(
+    public async Task<ErrorOr<(IdentityUserEntity IdentityUserContract, UserProfile DomainUser)>> CreateUserAsync(
         string email,
         string password,
         string? name,
@@ -96,7 +95,7 @@ internal class IdentityService(
         return (identityUser, domainUser);
     }
 
-    public async Task<ErrorOr<IIdentityUserContract>> CheckUserCredentialsAsync(string email, string password)
+    public async Task<ErrorOr<IdentityUserEntity>> CheckUserCredentialsAsync(string email, string password)
     {
         var identityUser = await userManager.FindByEmailAsync(email);
         if (identityUser is null)
@@ -128,7 +127,7 @@ internal class IdentityService(
     }
 
     public async Task<AuthTokens> GenerateAuthTokensAsync(
-        IIdentityUserContract identityUserContract,
+        IdentityUserEntity identityUserContract,
         int userProfileId,
         IList<string> roles)
     {
@@ -138,11 +137,9 @@ internal class IdentityService(
         return new AuthTokens(accessToken, refreshToken);
     }
     
-    public async Task<List<string>> GetUserRolesAsync(IIdentityUserContract identityUserContract)
+    public async Task<List<string>> GetUserRolesAsync(IdentityUserEntity identityUser)
     {
-        var identityUser = identityUserContract as IdentityUserEntity;
-        
-        var roles = await userManager.GetRolesAsync(identityUser!);
+        var roles = await userManager.GetRolesAsync(identityUser);
         return roles.ToList();
     }
 

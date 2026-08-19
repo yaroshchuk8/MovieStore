@@ -1,7 +1,7 @@
 using FluentValidation;
-using MovieStore.Domain.Users;
+using MovieStore.Api.Users.Entities.Domain;
 
-namespace MovieStore.Application.Users.Commands;
+namespace MovieStore.Api.Users.Commands.CreatePublisherProfile;
 
 public class CreatePublisherProfileCommandValidator : AbstractValidator<CreatePublisherProfileCommand>
 {

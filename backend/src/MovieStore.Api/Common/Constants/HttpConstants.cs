@@ -1,4 +1,4 @@
-namespace MovieStore.Api.Constants;
+namespace MovieStore.Api.Common.Constants;
 
 public static class HttpConstants
 {

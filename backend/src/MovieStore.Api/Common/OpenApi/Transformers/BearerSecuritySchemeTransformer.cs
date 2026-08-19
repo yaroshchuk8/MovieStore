@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
-using MovieStore.Api.Constants;
+using MovieStore.Api.Common.Constants;
 
-namespace MovieStore.Api.OpenApi.Transformers;
+namespace MovieStore.Api.Common.OpenApi.Transformers;
 
 public class BearerSecuritySchemeTransformer(IAuthenticationSchemeProvider authenticationSchemeProvider)
     : IOpenApiDocumentTransformer

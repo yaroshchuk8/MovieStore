@@ -4,17 +4,18 @@ using System.Text;
 using ErrorOr;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using MovieStore.Application.Users.Interfaces;
-using MovieStore.Infrastructure.Common.Configurations;
-using MovieStore.Infrastructure.Users.Constants;
+using MovieStore.Api.Common.Configuration;
+using MovieStore.Api.Users.Constants;
+using MovieStore.Api.Users.Entities.Identity;
+using MovieStore.Api.Users.Services.Interfaces;
 
-namespace MovieStore.Infrastructure.Users.Services;
+namespace MovieStore.Api.Users.Services;
 
 public class JwtService(IOptions<JwtSettings> jwtOptions) : IJwtService
 {
     private readonly JwtSettings _jwtSettings = jwtOptions.Value;
     
-    public string GenerateJwt(IIdentityUserContract identityUser, int userProfileId, IList<string> roles)
+    public string GenerateJwt(IdentityUserEntity identityUser, int userProfileId, IList<string> roles)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.UTF8.GetBytes(_jwtSettings.Secret);

@@ -1,4 +1,4 @@
-namespace MovieStore.Infrastructure.Common.Persistence.Constants;
+namespace MovieStore.Api.Common.Persistence.Constants;
 
 internal static class SqlConstants
 {

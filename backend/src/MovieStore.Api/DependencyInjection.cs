@@ -8,27 +8,24 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using MovieStore.Api.Actors.Commands;
-using MovieStore.Api.Common.Extensions;
-using MovieStore.Api.Configuration;
+using MovieStore.Api.Actors.Commands.CreateActor;
+using MovieStore.Api.Common.Configuration;
+using MovieStore.Api.Common.ErrorHandling;
+using MovieStore.Api.Common.FileStorage;
+using MovieStore.Api.Common.OpenApi.Transformers;
+using MovieStore.Api.Common.Pagination;
+using MovieStore.Api.Common.Persistence;
+using MovieStore.Api.Common.Pipeline;
 using MovieStore.Api.Genres.Commands.CreateGenre;
 using MovieStore.Api.Genres.Queries.GetGenres;
-using MovieStore.Api.Handlers;
-using MovieStore.Api.OpenApi.Transformers;
-using MovieStore.Application.Common.Extensions;
-using MovieStore.Application.Common.Interfaces;
-using MovieStore.Application.Users.Commands;
-using MovieStore.Application.Users.Commands.LoginUser;
-using MovieStore.Application.Users.Commands.RefreshAuthTokens;
-using MovieStore.Application.Users.Commands.RegisterUser;
-using MovieStore.Application.Users.DTOs;
-using MovieStore.Application.Users.Interfaces;
-using MovieStore.Domain.Common;
-using MovieStore.Infrastructure.Common.Configurations;
-using MovieStore.Infrastructure.Common.Persistence;
-using MovieStore.Infrastructure.Common.Services;
-using MovieStore.Infrastructure.Users.Persistence.Identity.Entities;
-using MovieStore.Infrastructure.Users.Services;
+using MovieStore.Api.Users.Commands.CreatePublisherProfile;
+using MovieStore.Api.Users.Commands.LoginUser;
+using MovieStore.Api.Users.Commands.RefreshAuthTokens;
+using MovieStore.Api.Users.Commands.RegisterUser;
+using MovieStore.Api.Users.DTOs;
+using MovieStore.Api.Users.Entities.Identity;
+using MovieStore.Api.Users.Services;
+using MovieStore.Api.Users.Services.Interfaces;
 
 namespace MovieStore.Api;
 
@@ -57,33 +54,43 @@ public static class DependencyInjection
             
             return services;
         }
-
-        public IServiceCollection AddApiLayerDependencies(IConfiguration configuration)
+        
+        public IServiceCollection AddExceptionHandling()
         {
             return services
-                .AddGlobalExceptionHandler()
-                .AddOpenApiWithTransformers()
-                .AddJwtAuth(configuration)
-                .AddCorsPolicy(configuration)
-                .AddHttpContextAccessor();
+                .AddExceptionHandler<GlobalExceptionHandler>()
+                .AddProblemDetails(); // Required for structured error responses
         }
         
-        private IServiceCollection AddCorsPolicy(IConfiguration configuration)
+        public IServiceCollection AddOpenApiDocumentation()
         {
-            var corsSettings = configuration.GetSection(nameof(CorsSettings)).Get<CorsSettings>()!;
-            
-            services.AddCors(opt =>
+            return services.AddOpenApi(options =>
             {
-                opt.AddPolicy(corsSettings.PolicyName, policy =>
-                {
-                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins(corsSettings.AllowedOrigins);
-                });
-            });
+                // Everything below is needed for OpenAPI generated documentation 
+        
+                // Defines the "Authorize" globally
+                options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
 
-            return services;
+                // Registers required types
+                options.AddDocumentTransformer<SchemaRegistrationTransformer>();
+
+                options.AddSchemaTransformer<EnumSchemaTransformer>();
+    
+                // Applies the padlock icon to specific [Authorize] endpoints and documents 401/403 responses
+                options.AddOperationTransformer<SecurityRequirementsTransformer>();
+
+                // Applies pagination header for all endpoints with [ProvidesPaginationHeader] marker attribute
+                options.AddOperationTransformer<PaginationHeaderTransformer>();
+        
+                // Applies 500 Internal Error response for all endpoints
+                options.AddOperationTransformer<InternalServerErrorTransformer>();
+
+                // Applies 400 Bad Request response for all endpoint with at least one parameter
+                options.AddOperationTransformer<ValidationErrorTransformer>();
+            });
         }
 
-        private IServiceCollection AddJwtAuth(IConfiguration configuration)
+        public IServiceCollection AddJwtAuthentication(IConfiguration configuration)
         {
             services.AddAuthorization();
             
@@ -130,89 +137,33 @@ public static class DependencyInjection
         
             return services;
         }
-
-        private IServiceCollection AddGlobalExceptionHandler()
+        
+        public IServiceCollection AddCorsPolicy(IConfiguration configuration)
         {
-            return services
-                .AddExceptionHandler<GlobalExceptionHandler>()
-                .AddProblemDetails(); // Required for structured error responses
-        }
-
-        private IServiceCollection AddOpenApiWithTransformers()
-        {
-            return services.AddOpenApi(options =>
+            var corsSettings = configuration.GetSection(nameof(CorsSettings)).Get<CorsSettings>()!;
+            
+            services.AddCors(opt =>
             {
-                // Everything below is needed for OpenAPI generated documentation 
-        
-                // Defines the "Authorize" globally
-                options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
-
-                // Registers required types
-                options.AddDocumentTransformer<SchemaRegistrationTransformer>();
-
-                options.AddSchemaTransformer<EnumSchemaTransformer>();
-    
-                // Applies the padlock icon to specific [Authorize] endpoints and documents 401/403 responses
-                options.AddOperationTransformer<SecurityRequirementsTransformer>();
-
-                // Applies pagination header for all endpoints with [ProvidesPaginationHeader] marker attribute
-                options.AddOperationTransformer<PaginationHeaderTransformer>();
-        
-                // Applies 500 Internal Error response for all endpoints
-                options.AddOperationTransformer<InternalServerErrorTransformer>();
-
-                // Applies 400 Bad Request response for all endpoint with at least one parameter
-                options.AddOperationTransformer<ValidationErrorTransformer>();
+                opt.AddPolicy(corsSettings.PolicyName, policy =>
+                {
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins(corsSettings.AllowedOrigins);
+                });
             });
-        }
-        
-        public IServiceCollection AddApplicationLayerDependencies()
-        {
-            return services
-                .AddFluentValidation()
-                .AddFileSecurity();
-        }
-
-        private IServiceCollection AddFluentValidation()
-        {
-            services.AddValidatorsFromAssembly(typeof(Api.DependencyInjection).Assembly);
-            // services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
             return services;
         }
         
-        private IServiceCollection AddFileSecurity()
-        {
-            var inspector = new FileFormatInspector(
-                [
-                    new Png(),
-                    new Jpeg(), 
-                    new MP4()
-                ]
-            );
-
-            services.AddSingleton<IFileFormatInspector>(inspector);
-            return services;
-        }
-        
-        public IServiceCollection AddInfrastructureLayerDependencies(IConfiguration configuration)
-        {
-            return services
-                .AddPersistence(configuration)
-                .AddIdentity()
-                .AddServices()
-                .AddS3Client(configuration);
-        }
-        
-        private IServiceCollection AddPersistence(IConfiguration configuration)
+        public IServiceCollection AddPersistence(IConfiguration configuration)
         {
             var dbSettings = configuration.GetSection(nameof(DbSettings)).Get<DbSettings>()!;
             services.AddDbContext<MovieStoreDbContext>(options => options.UseSqlServer(dbSettings.ConnectionString));
             
+            services.AddScoped<IDbInitializer, DbInitializer>();
+            
             return services;
         }
-
-        private IServiceCollection AddIdentity()
+        
+        public IServiceCollection AddIdentity()
         {
             services
                 .AddIdentityCore<IdentityUserEntity>(options => 
@@ -224,21 +175,18 @@ public static class DependencyInjection
 
             return services;
         }
-
-        private IServiceCollection AddServices()
+        
+        public IServiceCollection AddFileStorage(IConfiguration configuration)
         {
-            return services
-                // .AddScoped<IFileService, FileService>()
-                .AddScoped<IFileService, S3FileService>()
-                .AddScoped<IIdentityService, IdentityService>()
-                .AddScoped<IJwtService, JwtService>()
-                .AddScoped<IDbInitializer, DbInitializer>()
-                .AddScoped<ICurrentUserProvider, CurrentUserProvider>()
-                .AddScoped<IFileStorageInitializer,  S3Initializer>();
-        }
-
-        private IServiceCollection AddS3Client(IConfiguration configuration)
-        {
+            var inspector = new FileFormatInspector(
+                [
+                    new Png(),
+                    new Jpeg(), 
+                    new MP4()
+                ]
+            );
+            services.AddSingleton<IFileFormatInspector>(inspector);
+            
             var s3Settings = configuration.GetSection(nameof(S3Settings)).Get<S3Settings>()!;
             var s3Config = new AmazonS3Config
             {
@@ -246,12 +194,26 @@ public static class DependencyInjection
                 ForcePathStyle = true,
                 UseHttp = true,
             };
-
             services.AddSingleton<IAmazonS3>(new AmazonS3Client(s3Settings.AccessKey, s3Settings.SecretKey, s3Config));
 
             services.AddScoped<IFileService, S3FileService>();
-    
+            services.AddScoped<IFileStorageInitializer>();
+            
             return services;
+        }
+
+        public IServiceCollection AddFluentValidation()
+        {
+            services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
+            return services;
+        }
+        
+        public IServiceCollection AddUserServices()
+        {
+            return services
+                .AddScoped<IIdentityService, IdentityService>()
+                .AddScoped<IJwtService, JwtService>()
+                .AddScoped<ICurrentUserProvider, CurrentUserProvider>();
         }
 
         public IServiceCollection AddRequestHandlers()

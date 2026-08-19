@@ -1,11 +1,11 @@
 using ErrorOr;
 using Microsoft.EntityFrameworkCore;
+using MovieStore.Api.Common.Persistence;
 using MovieStore.Api.Common.Pipeline;
-using MovieStore.Application.Users.Interfaces;
-using MovieStore.Domain.Users;
-using MovieStore.Infrastructure.Common.Persistence;
+using MovieStore.Api.Users.Entities.Domain;
+using MovieStore.Api.Users.Services.Interfaces;
 
-namespace MovieStore.Application.Users.Commands;
+namespace MovieStore.Api.Users.Commands.CreatePublisherProfile;
 
 public class CreatePublisherProfileCommandHandler(
     MovieStoreDbContext context,

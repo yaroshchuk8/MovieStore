@@ -1,4 +1,4 @@
-namespace MovieStore.Application.Movies.DTOs;
+namespace MovieStore.Api.Movies.DTOs;
 
 public class MovieDto
 {

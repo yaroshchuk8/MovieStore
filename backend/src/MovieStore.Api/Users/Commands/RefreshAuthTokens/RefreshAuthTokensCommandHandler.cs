@@ -1,9 +1,9 @@
 using ErrorOr;
 using MovieStore.Api.Common.Pipeline;
-using MovieStore.Application.Users.DTOs;
-using MovieStore.Application.Users.Interfaces;
+using MovieStore.Api.Users.DTOs;
+using MovieStore.Api.Users.Services.Interfaces;
 
-namespace MovieStore.Application.Users.Commands.RefreshAuthTokens;
+namespace MovieStore.Api.Users.Commands.RefreshAuthTokens;
 
 public class RefreshAuthTokensCommandHandler(IIdentityService identityService)
     : IRequestHandler<RefreshAuthTokensCommand, AuthTokens>

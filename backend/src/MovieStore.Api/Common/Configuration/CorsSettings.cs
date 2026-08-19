@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace MovieStore.Api.Configuration;
+namespace MovieStore.Api.Common.Configuration;
 
 public class CorsSettings
 {

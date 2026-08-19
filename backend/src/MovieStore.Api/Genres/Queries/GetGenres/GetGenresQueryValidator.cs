@@ -1,7 +1,6 @@
 using FluentValidation;
-using MovieStore.Api.Genres.Queries.GetGenres;
 
-namespace MovieStore.Application.Genres.Queries.GetGenres;
+namespace MovieStore.Api.Genres.Queries.GetGenres;
 
 public class GetGenresQueryValidator : AbstractValidator<GetGenresQuery>
 {

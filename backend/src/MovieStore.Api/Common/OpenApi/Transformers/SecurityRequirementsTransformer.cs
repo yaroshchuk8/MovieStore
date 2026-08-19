@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
 
-namespace MovieStore.Api.OpenApi.Transformers;
+namespace MovieStore.Api.Common.OpenApi.Transformers;
 
 public class SecurityRequirementsTransformer : IOpenApiOperationTransformer
 {

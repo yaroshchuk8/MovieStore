@@ -1,11 +1,10 @@
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi;
-using MovieStore.Api.Constants;
-using MovieStore.Api.OpenApi.Attributes;
-using MovieStore.Domain.Common;
+using MovieStore.Api.Common.Constants;
+using MovieStore.Api.Common.Pagination;
 
-namespace MovieStore.Api.OpenApi.Transformers;
+namespace MovieStore.Api.Common.OpenApi.Transformers;
 
 public class PaginationHeaderTransformer : IOpenApiOperationTransformer
 {

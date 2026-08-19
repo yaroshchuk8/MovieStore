@@ -1,6 +1,6 @@
 using ErrorOr;
+using MovieStore.Api.Common.Persistence;
 using MovieStore.Api.Common.Pipeline;
-using MovieStore.Infrastructure.Common.Persistence;
 
 namespace MovieStore.Api.Genres.Commands.CreateGenre;
 

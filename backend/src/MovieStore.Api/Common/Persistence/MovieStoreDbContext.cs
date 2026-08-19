@@ -2,12 +2,11 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MovieStore.Api.Actors;
 using MovieStore.Api.Genres;
-using MovieStore.Application.Common.Interfaces;
-using MovieStore.Domain.Movies;
-using MovieStore.Domain.Users;
-using MovieStore.Infrastructure.Users.Persistence.Identity.Entities;
+using MovieStore.Api.Movies.Entities;
+using MovieStore.Api.Users.Entities.Domain;
+using MovieStore.Api.Users.Entities.Identity;
 
-namespace MovieStore.Infrastructure.Common.Persistence;
+namespace MovieStore.Api.Common.Persistence;
 
 public class MovieStoreDbContext(DbContextOptions<MovieStoreDbContext> options)
     : IdentityDbContext<

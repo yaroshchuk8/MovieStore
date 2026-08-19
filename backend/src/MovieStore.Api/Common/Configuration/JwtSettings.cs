@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace MovieStore.Infrastructure.Common.Configurations;
+namespace MovieStore.Api.Common.Configuration;
 
 public class JwtSettings
 {

@@ -1,3 +1,3 @@
-namespace MovieStore.Application.Users.Commands.RefreshAuthTokens;
+namespace MovieStore.Api.Users.Commands.RefreshAuthTokens;
 
 public record RefreshAuthTokensCommand(string AccessToken, Guid RefreshToken);

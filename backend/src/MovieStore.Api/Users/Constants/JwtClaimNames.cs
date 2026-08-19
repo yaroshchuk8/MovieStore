@@ -1,6 +1,6 @@
 using Microsoft.IdentityModel.JsonWebTokens;
 
-namespace MovieStore.Infrastructure.Users.Constants;
+namespace MovieStore.Api.Users.Constants;
 
 public static class JwtClaimNames
 {

@@ -1,4 +1,4 @@
-using MovieStore.Application.Movies.DTOs;
+using MovieStore.Api.Movies.DTOs;
 
 namespace MovieStore.Api.Genres.DTOs;
 
